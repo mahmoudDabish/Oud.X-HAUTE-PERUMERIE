@@ -18,24 +18,23 @@ export const AuthPage: React.FC = () => {
     return null;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !password || (mode === 'register' && !name)) {
+      return; // Basic validation
+    }
+
     setIsLoading(true);
 
-    setTimeout(() => {
-      if (mode === 'login') {
-        login(email || 'karim.elsayed@luxury.com', password || 'password');
-      } else {
-        register(name || 'Karim El-Sayed', email || 'karim.elsayed@luxury.com', password || 'password', phone);
-      }
-      setIsLoading(false);
-      navigateTo('/account');
-    }, 600);
-  };
-
-  const handleDemoLogin = () => {
-    login('karim.elsayed@luxury.com', 'demo123');
-    navigateTo('/account');
+    if (mode === 'login') {
+      await login(email, password);
+    } else {
+      await register(name, email, password);
+    }
+    
+    setIsLoading(false);
+    // Note: navigateTo('/account') is handled safely if login was successful
+    // because `user` state will update and trigger the redirection at the top.
   };
 
   return (
@@ -158,16 +157,6 @@ export const AuthPage: React.FC = () => {
             {mode === 'login' ? 'ENTER PRIVÉ ATELIER' : 'CREATE PRIVILEGE ACCOUNT'}
           </Button>
 
-          {/* Quick Demo Access */}
-          <div className="pt-2">
-            <button
-              type="button"
-              onClick={handleDemoLogin}
-              className="w-full py-2.5 rounded bg-[#11100E] border border-[#C9A45C]/40 text-xs font-semibold text-[#E3C27A] hover:bg-[#C9A45C]/10 transition-colors uppercase tracking-wider flex items-center justify-center gap-1.5"
-            >
-              <Sparkles className="w-3.5 h-3.5" /> 1-Click VIP Demo Account Access
-            </button>
-          </div>
         </form>
 
         <div className="flex items-center justify-center gap-2 text-[10px] text-[#8E713D]">

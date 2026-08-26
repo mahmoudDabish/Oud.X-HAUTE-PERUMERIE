@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from '../components/products/ProductCard';
 import { Badge } from '../components/ui/Badge';
-import { Rating } from '../components/ui/Rating';
 import { Button } from '../components/ui/Button';
 import {
   Heart,
@@ -189,7 +188,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
 
               {/* Rating & Review counter */}
               <div className="flex items-center gap-3 pt-1">
-                <Rating rating={product.rating} reviewCount={product.reviewCount} />
+                <span className="text-xs text-[#A7A29A] italic">No reviews yet.</span>
                 <span className="text-neutral-500">•</span>
                 <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5" /> 100% Certified Authentic

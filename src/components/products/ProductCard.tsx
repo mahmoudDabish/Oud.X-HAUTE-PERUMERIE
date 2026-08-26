@@ -3,7 +3,6 @@ import { Product } from '../../types';
 import { useShop } from '../../context/ShopContext';
 import { Heart, ShoppingBag, Eye } from 'lucide-react';
 import { Badge } from '../ui/Badge';
-import { Rating } from '../ui/Rating';
 import { Button } from '../ui/Button';
 
 export interface ProductCardProps {
@@ -181,9 +180,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </p>
         )}
 
-        {/* Rating */}
-        <div className="mb-3">
-          <Rating rating={displayRating} reviewCount={displayReviews} />
+        {/* No Rating Display for Dev Data */}
+        <div className="mb-3 flex items-center h-4">
+          <span className="text-[10px] text-[#A7A29A] italic">No reviews yet</span>
         </div>
 
         {/* Available Size Pills if multiple */}

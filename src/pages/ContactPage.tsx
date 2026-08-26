@@ -188,19 +188,11 @@ export const ContactPage: React.FC = () => {
               </h3>
 
               <div className="space-y-4 text-xs text-[#A7A29A]">
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-[#C9A45C] shrink-0 mt-0.5" />
-                  <div>
-                    <strong className="text-[#F5F2EA] block">OUD_X Flagship Sanctuary</strong>
-                    <span>Road 90 North, Exclusive District, New Cairo, Egypt</span>
-                  </div>
-                </div>
-
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5 text-[#C9A45C] shrink-0" />
                   <div>
                     <strong className="text-[#F5F2EA] block">VIP Direct Line</strong>
-                    <span>+20 100 892 4100 / +20 2 2789 9000</span>
+                    <span>01127977819</span>
                   </div>
                 </div>
 
@@ -208,7 +200,7 @@ export const ContactPage: React.FC = () => {
                   <Mail className="w-5 h-5 text-[#C9A45C] shrink-0" />
                   <div>
                     <strong className="text-[#F5F2EA] block">Electronic Inquiries</strong>
-                    <span>concierge@oudx-fragrances.com</span>
+                    <span>oudx.fragrances@gmail.com</span>
                   </div>
                 </div>
 

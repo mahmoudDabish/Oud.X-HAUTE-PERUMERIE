@@ -45,8 +45,42 @@ export const AccountPage: React.FC = () => {
     deleteOrder,
     formatPrice,
     navigateTo,
-    showToast
+    showToast,
+    user
   } = useShop();
+
+  if (user?.role !== 'admin') {
+    return (
+      <div className="min-h-screen bg-[#070707] text-[#F5F2EA] py-24 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
+        <div className="max-w-xl mx-auto space-y-6 text-center">
+          <ShieldCheck className="w-16 h-16 text-[#C9A45C] mx-auto opacity-50 mb-6" />
+          <h1 className="font-cinzel text-3xl sm:text-4xl font-bold text-[#F5F2EA]">
+            Welcome to OUD.X Privé
+          </h1>
+          <p className="text-[#A7A29A] leading-relaxed">
+            Welcome back, {user ? user.name : 'Guest'}. Your exclusive client portal is currently undergoing scheduled maintenance to bring you a more personalized luxury experience.
+          </p>
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button
+              onClick={() => navigateTo('/shop')}
+              className="px-8 py-3 rounded-full bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-sm uppercase tracking-[2px] transition-colors w-full sm:w-auto"
+            >
+              Continue Shopping
+            </button>
+            
+            {!user && (
+              <button
+                onClick={() => navigateTo('/auth')}
+                className="px-8 py-3 rounded-full bg-transparent border border-[#C9A45C] hover:bg-[#C9A45C]/10 text-[#C9A45C] font-bold text-sm uppercase tracking-[2px] transition-colors w-full sm:w-auto"
+              >
+                Sign In / Register
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Tab navigation
   const [activeTab, setActiveTab] = useState<'inventory' | 'orders' | 'alerts' | 'analytics'>('inventory');

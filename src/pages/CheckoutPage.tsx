@@ -127,7 +127,7 @@ export const CheckoutPage: React.FC = () => {
           <div className="p-4 rounded-lg bg-[#11100E] border border-white/10 text-left text-xs space-y-2">
             <div className="flex justify-between">
               <span className="text-[#A7A29A]">Tracking Number:</span>
-              <span className="font-mono text-[#F0D9A4]">{placedOrder.trackingNumber}</span>
+              <span className="font-mono text-[#F0D9A4]">{placedOrder.trackingNumber || 'Pending Assignment'}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-[#A7A29A]">Estimated Delivery:</span>

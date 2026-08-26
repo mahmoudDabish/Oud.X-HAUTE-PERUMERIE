@@ -20,12 +20,13 @@ CREATE TABLE products (
   story TEXT,
   price NUMERIC NOT NULL,
   compare_at_price NUMERIC,
-  category_id UUID REFERENCES categories(id),
+  category_id TEXT,
   gender TEXT,
   concentration TEXT,
   fragrance_family TEXT,
   longevity TEXT,
   sillage TEXT,
+  notes JSONB,
   season TEXT[],
   size TEXT,
   stock INTEGER DEFAULT 0,
@@ -171,6 +172,16 @@ DECLARE
     v_stock INTEGER;
     v_items_array JSONB;
 BEGIN
+    -- Security Validation: Ensure authenticated users can only create orders for themselves
+    IF auth.uid() IS NOT NULL AND p_user_id IS NOT NULL AND auth.uid() != p_user_id THEN
+        RAISE EXCEPTION 'Unauthorized: User ID mismatch';
+    END IF;
+
+    -- Security Validation: Ensure anon users cannot create orders assigned to a registered user
+    IF auth.uid() IS NULL AND p_user_id IS NOT NULL THEN
+        RAISE EXCEPTION 'Unauthorized: Guests cannot create orders for registered users';
+    END IF;
+
     -- 1. Iterate through requested items to validate stock and accumulate subtotal
     FOR v_item IN SELECT * FROM jsonb_to_recordset(p_items) AS x(product_id UUID, size TEXT, quantity INTEGER)
     LOOP
@@ -250,4 +261,28 @@ BEGIN
         'total', v_total
     )::jsonb;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
+
+-- Revoke execute from public to secure the function, but grant to anon and authenticated
+REVOKE EXECUTE ON FUNCTION create_order FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION create_order TO anon, authenticated;
+
+ - -   T r i g g e r   t o   a u t o m a t i c a l l y   c r e a t e   a   p r o f i l e   f o r   n e w   u s e r s 
+ c r e a t e   o r   r e p l a c e   f u n c t i o n   p u b l i c . h a n d l e _ n e w _ u s e r ( ) 
+ r e t u r n s   t r i g g e r 
+ l a n g u a g e   p l p g s q l 
+ s e c u r i t y   d e f i n e r   s e t   s e a r c h _ p a t h   =   ' ' 
+ a s   \ $ \ $ 
+ b e g i n 
+     i n s e r t   i n t o   p u b l i c . p r o f i l e s   ( i d ,   f u l l _ n a m e ,   r o l e ) 
+     v a l u e s   ( n e w . i d ,   n e w . r a w _ u s e r _ m e t a _ d a t a - > > ' f u l l _ n a m e ' ,   ' c u s t o m e r ' ) ; 
+     r e t u r n   n e w ; 
+ e n d ; 
+ \ $ \ $ ; 
+ 
+ d r o p   t r i g g e r   i f   e x i s t s   o n _ a u t h _ u s e r _ c r e a t e d   o n   a u t h . u s e r s ; 
+ c r e a t e   t r i g g e r   o n _ a u t h _ u s e r _ c r e a t e d 
+     a f t e r   i n s e r t   o n   a u t h . u s e r s 
+     f o r   e a c h   r o w   e x e c u t e   p r o c e d u r e   p u b l i c . h a n d l e _ n e w _ u s e r ( ) ; 
+  
+ 

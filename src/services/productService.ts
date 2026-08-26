@@ -29,10 +29,14 @@ export const productService = {
         gender: p.gender,
         concentration: p.concentration,
         fragranceFamily: p.fragrance_family,
-        notes: p.notes || { top: [], heart: [], base: [] },
+        notes: {
+          top: p.notes?.top || [],
+          heart: p.notes?.heart || [],
+          base: p.notes?.base || []
+        },
         longevity: p.longevity,
         sillage: p.sillage,
-        season: p.season,
+        season: Array.isArray(p.season) ? p.season : [],
         size: p.size,
         availableSizes: p.product_variants || [],
         stock: p.stock,
@@ -82,10 +86,14 @@ export const productService = {
         gender: p.gender,
         concentration: p.concentration,
         fragranceFamily: p.fragrance_family,
-        notes: p.notes || { top: [], heart: [], base: [] },
+        notes: {
+          top: p.notes?.top || [],
+          heart: p.notes?.heart || [],
+          base: p.notes?.base || []
+        },
         longevity: p.longevity,
         sillage: p.sillage,
-        season: p.season,
+        season: Array.isArray(p.season) ? p.season : [],
         size: p.size,
         availableSizes: p.product_variants || [],
         stock: p.stock,
@@ -109,9 +117,14 @@ export const productService = {
   // Admin Mutations
   async createProduct(productData: Partial<Product>): Promise<{ data: any, error: any }> {
     try {
+      const generatedSlug = productData.slug || 
+        (productData.name 
+          ? productData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.floor(Math.random() * 1000)
+          : `product-${Date.now()}`);
+
       const insertData = {
         name: productData.name,
-        slug: productData.slug,
+        slug: generatedSlug,
         brand: productData.brand,
         subtitle: productData.subtitle,
         description: productData.description,
@@ -141,7 +154,67 @@ export const productService = {
         .select()
         .single();
         
-      return { data, error };
+      if (error || !data) return { data: null, error };
+
+      // Insert images if available
+      if (productData.images && productData.images.length > 0) {
+        const imageInserts = productData.images.map((url, idx) => ({
+          product_id: data.id,
+          url,
+          is_main: idx === 0
+        }));
+        await supabase.from('product_images').insert(imageInserts);
+      }
+
+      // Insert variants if available
+      if (productData.availableSizes && productData.availableSizes.length > 0) {
+        const variantInserts = productData.availableSizes.map(v => ({
+          product_id: data.id,
+          size: v.size,
+          price: v.price,
+          compare_at_price: v.compareAtPrice
+        }));
+        await supabase.from('product_variants').insert(variantInserts);
+      }
+
+      // Return fully mapped product for frontend state
+      const mappedProduct: Product = {
+        id: data.id,
+        name: data.name,
+        slug: data.slug,
+        brand: data.brand,
+        subtitle: data.subtitle,
+        description: data.description,
+        story: data.story,
+        price: data.price,
+        compareAtPrice: data.compare_at_price,
+        category: data.category_id,
+        gender: data.gender,
+        concentration: data.concentration,
+        fragranceFamily: data.fragrance_family,
+        notes: {
+          top: data.notes?.top || [],
+          heart: data.notes?.heart || [],
+          base: data.notes?.base || []
+        },
+        longevity: data.longevity,
+        sillage: data.sillage,
+        season: Array.isArray(data.season) ? data.season : [],
+        size: data.size,
+        availableSizes: Array.isArray(productData.availableSizes) ? productData.availableSizes : [],
+        stock: data.stock,
+        badge: data.badge,
+        images: Array.isArray(productData.images) ? productData.images : [],
+        isFeatured: data.is_featured,
+        isBestSeller: data.is_best_seller,
+        isNew: data.is_new,
+        isSale: data.is_sale,
+        rating: 5,
+        reviewCount: 0,
+        reviews: []
+      };
+
+      return { data: mappedProduct, error: null };
     } catch (error) {
       return { data: null, error };
     }

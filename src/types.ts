@@ -122,6 +122,7 @@ export interface UserProfile {
   phone: string;
   tier: 'Oud Privé Member' | 'Silver Connoisseur' | 'Gold Master';
   points: number;
+  role?: 'customer' | 'admin';
   addresses: UserAddress[];
   orders: Order[];
 }

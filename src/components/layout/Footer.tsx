@@ -185,17 +185,13 @@ export const Footer: React.FC = () => {
               Boutique Concierge
             </h4>
             <div className="space-y-3 text-xs text-[#A7A29A]">
-              <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-[#C9A45C] shrink-0 mt-0.5" />
-                <span>Road 90 North, Exclusive District, New Cairo, Egypt</span>
-              </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#C9A45C] shrink-0" />
-                <span>+20 100 892 4100 / +20 2 2789 9000</span>
+                <span>01127977819</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-[#C9A45C] shrink-0" />
-                <span>concierge@oudx-fragrances.com</span>
+                <span>oudx.fragrances@gmail.com</span>
               </div>
               <div className="pt-2 text-[11px] text-[#8E713D]">
                 <span>Mon – Sun: 11:00 AM – 11:00 PM CLT</span>

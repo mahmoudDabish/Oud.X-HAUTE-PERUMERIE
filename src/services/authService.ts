@@ -60,6 +60,7 @@ export const authService = {
         phone: profileData.phone || '',
         tier: profileData.tier || 'Oud Privé Member',
         points: profileData.points || 0,
+        role: profileData.role || 'customer',
         addresses: [],
         orders: []
       };

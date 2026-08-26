@@ -68,8 +68,8 @@ interface ShopContextType {
   user: UserProfile | null;
   orders: Order[];
   isLoggedIn: boolean;
-  login: (email: string, name?: string) => void;
-  register: (name: string, email: string) => void;
+  login: (email: string, password?: string) => Promise<void>;
+  register: (name: string, email: string, password?: string) => Promise<void>;
   logout: () => void;
   addOrder: (order: Omit<Order, 'id' | 'orderNumber' | 'date'>) => Order;
 
