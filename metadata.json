@@ -1,0 +1,6 @@
+{
+  "name": "OUD-X — Luxury Fragrance Boutique",
+  "description": "A luxury Middle Eastern and niche perfume e-commerce boutique featuring cinematic aesthetics, curated oud collections, and seamless shopping.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
