@@ -365,6 +365,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
   const discount = 0; // Disabled as requested
   const shipping = 0; // Free delivery as requested
+  const amountToFreeShipping = 0;
   const total = Math.max(0, subtotal);
 
   const applyPromoCode = (code: string) => {
