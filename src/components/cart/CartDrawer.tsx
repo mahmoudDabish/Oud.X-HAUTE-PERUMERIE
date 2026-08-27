@@ -71,28 +71,6 @@ export const CartDrawer: React.FC = () => {
             </button>
           </div>
 
-          {/* Free Shipping Progress Meter */}
-          <div className="px-5 py-3.5 bg-[#151310]/60 border-b border-[#C9A45C]/15 backdrop-blur-md">
-            <div className="flex items-center justify-between text-xs mb-1.5">
-              <span className="text-[#A7A29A] flex items-center gap-1.5 text-[11px]">
-                <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" />
-                {amountToFreeShipping === 0 ? (
-                  <span className="text-emerald-400 font-semibold">Complimentary VIP Delivery Unlocked!</span>
-                ) : (
-                  <span>
-                    Add <strong className="text-[#F0D9A4]">{formatPrice(amountToFreeShipping)}</strong> for Free Delivery
-                  </span>
-                )}
-              </span>
-              <span className="text-[10px] text-[#C9A45C] font-mono font-bold">{progressPercent}%</span>
-            </div>
-            <div className="w-full h-1.5 bg-black/60 rounded-full overflow-hidden border border-white/5">
-              <div
-                className="h-full bg-gradient-to-r from-[#8E713D] via-[#C9A45C] to-[#E3C27A] transition-all duration-500 rounded-full"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-          </div>
 
           {/* Cart Items List */}
           <div className="flex-1 overflow-y-auto p-5 space-y-3">
@@ -209,20 +187,10 @@ export const CartDrawer: React.FC = () => {
                   <span>Subtotal</span>
                   <span className="font-cinzel font-semibold text-[#F5F2EA]">{formatPrice(subtotal)}</span>
                 </div>
-                <div className="flex justify-between text-xs text-[#A7A29A]">
-                  <span>Shipping</span>
-                  <span className="text-xs">
-                    {subtotal >= freeShippingThreshold ? (
-                      <span className="text-emerald-400 font-semibold uppercase">Complimentary</span>
-                    ) : (
-                      <span className="text-[#F5F2EA] font-cinzel">{formatPrice(150)}</span>
-                    )}
-                  </span>
-                </div>
                 <div className="flex justify-between text-sm font-semibold pt-2 border-t border-[#C9A45C]/15 text-[#F5F2EA]">
-                  <span>Estimated Total</span>
+                  <span>Total Amount</span>
                   <span className="font-cinzel text-base text-[#F0D9A4]">
-                    {formatPrice(subtotal + (subtotal >= freeShippingThreshold ? 0 : 150))}
+                    {formatPrice(subtotal)}
                   </span>
                 </div>
               </div>

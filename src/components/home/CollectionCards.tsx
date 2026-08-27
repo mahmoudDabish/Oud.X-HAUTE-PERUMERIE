@@ -38,7 +38,7 @@ const COLLECTION_CATEGORIES = [
 ];
 
 export const CollectionCards: React.FC = () => {
-  const { navigateTo } = useShop();
+  const { navigateTo, products } = useShop();
 
   const getCollectionIcon = (id: string) => {
     switch (id) {
@@ -51,6 +51,25 @@ export const CollectionCards: React.FC = () => {
       case 'oud':
       default:
         return <Crown className="w-5 h-5 text-[#E3C27A]" />;
+    }
+  };
+
+  const getDynamicItemCount = (id: string) => {
+    switch (id) {
+      case 'men':
+        return products.filter(p => p.gender === 'Men').length;
+      case 'women':
+        return products.filter(p => p.gender === 'Women').length;
+      case 'unisex':
+        return products.filter(p => p.gender === 'Unisex').length;
+      case 'oud':
+        return products.filter(p => 
+          p.categoryId === '33333333-3333-3333-3333-333333333333' || 
+          p.category === 'Oud' || 
+          p.category === '33333333-3333-3333-3333-333333333333'
+        ).length;
+      default:
+        return 0;
     }
   };
 
@@ -103,7 +122,7 @@ export const CollectionCards: React.FC = () => {
                 </div>
 
                 <span className="text-[10px] uppercase tracking-[2px] font-mono text-[#F0D9A4] bg-[#070707]/75 px-3 py-1 rounded-full border border-[#C9A45C]/20 backdrop-blur-md">
-                  {cat.itemCount} Fragrances
+                  {getDynamicItemCount(cat.id)} Fragrances
                 </span>
               </div>
 

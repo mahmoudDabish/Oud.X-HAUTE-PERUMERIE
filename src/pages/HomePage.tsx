@@ -5,6 +5,7 @@ import { TrustFeatures } from '../components/home/TrustFeatures';
 import { BestSellers } from '../components/home/BestSellers';
 import { NewArrivals } from '../components/home/NewArrivals';
 
+import { PromoBanner } from '../components/home/PromoBanner';
 import { BrandLogos } from '../components/home/BrandLogos';
 import { Newsletter } from '../components/home/Newsletter';
 
@@ -26,8 +27,8 @@ export const HomePage: React.FC = () => {
       {/* 5. Editorial New Arrivals / Launch */}
       <NewArrivals />
 
-      {/* Banner removed as per request */}
-
+      {/* 6. Exclusive Promotional Offer Banner */}
+      <PromoBanner />
       {/* Section Removed: Testimonials (No Fake Reviews) */}
 
       {/* 8. Luxury Brand Houses */}

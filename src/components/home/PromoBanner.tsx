@@ -7,7 +7,6 @@ export const PromoBanner: React.FC = () => {
   const { navigateTo, applyPromoCode } = useShop();
 
   const handleApplyPromo = () => {
-    applyPromoCode('OUDX20');
     navigateTo('/shop?filter=sale');
   };
 
@@ -52,7 +51,7 @@ export const PromoBanner: React.FC = () => {
             </div>
 
             <p className="text-xs sm:text-sm text-[#A7A29A] leading-relaxed max-w-lg">
-              Indulge in our curated private vaults and bespoke travel atomizers. Use privilege code <strong className="text-[#F0D9A4] bg-[#070707]/80 px-2.5 py-1 rounded-full border border-[#C9A45C]/30 font-mono tracking-wider">OUDX20</strong> at checkout.
+              Indulge in our curated private vaults and bespoke travel atomizers. <strong className="text-[#F0D9A4]">Discounts are applied automatically</strong> to selected items in the shop. No code required.
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
@@ -63,7 +62,7 @@ export const PromoBanner: React.FC = () => {
                 rightIcon={<ArrowRight className="w-4 h-4" />}
                 className="shadow-xl shadow-[#C9A45C]/15 tracking-[2px] font-bold"
               >
-                SHOP NOW WITH 20% OFF
+                SHOP THE SALE
               </Button>
 
               <Button
