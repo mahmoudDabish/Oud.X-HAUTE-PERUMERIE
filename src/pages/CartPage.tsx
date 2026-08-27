@@ -220,10 +220,7 @@ export const CartPage: React.FC = () => {
                     <span className="font-cinzel text-lg text-[#E3C27A]">{formatPrice(total)}</span>
                   </div>
                 </div>
-
-                {/* Promo Code Input Removed as per request */}
-              </div>
-
+              
                 {/* Proceed Button */}
                 <Button
                   onClick={() => navigateTo('/checkout')}
