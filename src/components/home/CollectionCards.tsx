@@ -120,10 +120,6 @@ export const CollectionCards: React.FC = () => {
                 <div className="w-10 h-10 rounded-full bg-[#070707]/75 border border-[#C9A45C]/30 backdrop-blur-md flex items-center justify-center group-hover:border-[#E3C27A] group-hover:scale-105 transition-all">
                   {getCollectionIcon(cat.id)}
                 </div>
-
-                <span className="text-[10px] uppercase tracking-[2px] font-mono text-[#F0D9A4] bg-[#070707]/75 px-3 py-1 rounded-full border border-[#C9A45C]/20 backdrop-blur-md">
-                  {getDynamicItemCount(cat.id)} Fragrances
-                </span>
               </div>
 
               {/* Card Bottom Content */}
