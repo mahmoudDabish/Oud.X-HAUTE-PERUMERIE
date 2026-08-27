@@ -363,40 +363,12 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
   const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   
-  let discount = 0;
-  if (appliedPromo === 'OUDX20') {
-    discount = Math.round(subtotal * 0.20);
-  } else if (appliedPromo === 'WELCOME10') {
-    discount = Math.round(subtotal * 0.10);
-  } else if (appliedPromo === 'ROYAL500' && subtotal >= 3000) {
-    discount = 500;
-  }
-
+  const discount = 0; // Disabled as requested
   const shipping = 0; // Free delivery as requested
-  const total = Math.max(0, subtotal - discount + shipping);
-  const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+  const total = Math.max(0, subtotal);
 
   const applyPromoCode = (code: string) => {
-    const clean = code.trim().toUpperCase();
-    if (clean === 'OUDX20') {
-      setAppliedPromo('OUDX20');
-      showToast('20% Privilege Discount Applied', 'Exclusive promotion activated', 'gold');
-      return { success: true, message: '20% discount applied successfully!' };
-    }
-    if (clean === 'WELCOME10') {
-      setAppliedPromo('WELCOME10');
-      showToast('10% Welcome Gift Applied', 'New member privilege active', 'gold');
-      return { success: true, message: '10% welcome discount applied!' };
-    }
-    if (clean === 'ROYAL500') {
-      if (subtotal < 3000) {
-        return { success: false, message: 'ROYAL500 requires minimum order of 3,000 EGP' };
-      }
-      setAppliedPromo('ROYAL500');
-      showToast('500 EGP Royal Privilege Applied', '', 'gold');
-      return { success: true, message: '500 EGP voucher applied!' };
-    }
-    return { success: false, message: 'Invalid or expired promotional code' };
+    return { success: false, message: 'Promotional codes are currently disabled.' };
   };
 
   const removePromoCode = () => {

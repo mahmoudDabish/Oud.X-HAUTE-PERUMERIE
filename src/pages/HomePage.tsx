@@ -4,7 +4,7 @@ import { CollectionCards } from '../components/home/CollectionCards';
 import { TrustFeatures } from '../components/home/TrustFeatures';
 import { BestSellers } from '../components/home/BestSellers';
 import { NewArrivals } from '../components/home/NewArrivals';
-import { PromoBanner } from '../components/home/PromoBanner';
+
 import { BrandLogos } from '../components/home/BrandLogos';
 import { Newsletter } from '../components/home/Newsletter';
 
@@ -26,8 +26,7 @@ export const HomePage: React.FC = () => {
       {/* 5. Editorial New Arrivals / Launch */}
       <NewArrivals />
 
-      {/* 6. Exclusive Promotional Offer Banner */}
-      <PromoBanner />
+      {/* Banner removed as per request */}
 
       {/* Section Removed: Testimonials (No Fake Reviews) */}
 

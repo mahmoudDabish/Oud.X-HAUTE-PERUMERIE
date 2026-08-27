@@ -221,39 +221,8 @@ export const CartPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Promo Code Input */}
-                <div className="pt-2 border-t border-white/5">
-                  {appliedPromo ? (
-                    <div className="flex items-center justify-between p-2.5 rounded bg-[#11100E] border border-emerald-500/40 text-xs">
-                      <div className="flex items-center gap-1.5 text-emerald-400">
-                        <Tag className="w-3.5 h-3.5" />
-                        <span>Code <strong>{appliedPromo}</strong> applied</span>
-                      </div>
-                      <button
-                        onClick={removePromoCode}
-                        className="text-neutral-400 hover:text-red-400 text-[10px] underline uppercase"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ) : (
-                    <form onSubmit={handleApplyPromo} className="space-y-2">
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={promoInput}
-                          onChange={(e) => setPromoInput(e.target.value)}
-                          placeholder="Promo Code (e.g. OUDX20)"
-                          className="flex-1 bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded px-3 py-2 text-xs uppercase text-[#F5F2EA] placeholder:text-[#A7A29A]/50 focus:outline-none"
-                        />
-                        <Button type="submit" variant="secondary" size="sm">
-                          APPLY
-                        </Button>
-                      </div>
-                      {promoError && <p className="text-[11px] text-red-400">{promoError}</p>}
-                    </form>
-                  )}
-                </div>
+                {/* Promo Code Input Removed as per request */}
+              </div>
 
                 {/* Proceed Button */}
                 <Button
