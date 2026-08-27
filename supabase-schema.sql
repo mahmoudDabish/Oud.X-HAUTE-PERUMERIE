@@ -20,7 +20,7 @@ CREATE TABLE products (
   story TEXT,
   price NUMERIC NOT NULL,
   compare_at_price NUMERIC,
-  category_id TEXT,
+  category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
   gender TEXT,
   concentration TEXT,
   fragrance_family TEXT,

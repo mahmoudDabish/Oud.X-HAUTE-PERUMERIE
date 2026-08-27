@@ -4,15 +4,24 @@ import { Product } from '../types';
 export const productService = {
   async getProducts(): Promise<{ data: Product[] | null, error: any }> {
     try {
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('products')
         .select(`
           *,
+          categories ( id, name ),
           product_variants ( size, price, compare_at_price ),
           product_images ( url, is_main )
         `);
         
-      if (error) return { data: null, error };
+      if (error && error.code === 'PGRST200') {
+        // Fallback if relations like categories aren't set up yet
+        console.warn('Relationships missing, falling back to basic products fetch');
+        const fallback = await supabase.from('products').select('*');
+        data = fallback.data;
+        error = fallback.error;
+      }
+        
+      if (error || !data) return { data: null, error };
 
       // Transform data to match frontend types
       const products: Product[] = data.map((p: any) => ({
@@ -25,7 +34,8 @@ export const productService = {
         story: p.story,
         price: p.price,
         compareAtPrice: p.compare_at_price,
-        category: p.category_id,
+        category: p.categories?.name || p.category_id,
+        categoryId: p.category_id,
         gender: p.gender,
         concentration: p.concentration,
         fragranceFamily: p.fragrance_family,
@@ -63,6 +73,7 @@ export const productService = {
         .from('products')
         .select(`
           *,
+          categories ( id, name ),
           product_variants ( size, price, compare_at_price ),
           product_images ( url, is_main )
         `)
@@ -82,7 +93,8 @@ export const productService = {
         story: p.story,
         price: p.price,
         compareAtPrice: p.compare_at_price,
-        category: p.category_id,
+        category: p.categories?.name || p.category_id,
+        categoryId: p.category_id,
         gender: p.gender,
         concentration: p.concentration,
         fragranceFamily: p.fragrance_family,
@@ -131,7 +143,7 @@ export const productService = {
         story: productData.story,
         price: productData.price || 0,
         compare_at_price: productData.compareAtPrice,
-        category_id: productData.category,
+        category_id: productData.categoryId || productData.category,
         gender: productData.gender,
         concentration: productData.concentration,
         fragrance_family: productData.fragranceFamily,
@@ -188,7 +200,8 @@ export const productService = {
         story: data.story,
         price: data.price,
         compareAtPrice: data.compare_at_price,
-        category: data.category_id,
+        category: productData.category || data.category_id,
+        categoryId: data.category_id,
         gender: data.gender,
         concentration: data.concentration,
         fragranceFamily: data.fragrance_family,
@@ -228,6 +241,8 @@ export const productService = {
       if (updates.stock !== undefined) updateData.stock = updates.stock;
       if (updates.description) updateData.description = updates.description;
       if (updates.isFeatured !== undefined) updateData.is_featured = updates.isFeatured;
+      if (updates.categoryId) updateData.category_id = updates.categoryId;
+      if (updates.gender) updateData.gender = updates.gender;
 
       const { error } = await supabase
         .from('products')

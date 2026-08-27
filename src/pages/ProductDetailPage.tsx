@@ -64,6 +64,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
     compareAtPrice: product.compareAtPrice
   };
 
+  const CATEGORY_MAP: Record<string, string> = {
+    'all': 'All Collections',
+    '11111111-1111-1111-1111-111111111111': 'Perfumes',
+    '22222222-2222-2222-2222-222222222222': 'Body Splash',
+    '33333333-3333-3333-3333-333333333333': 'Oud',
+    '44444444-4444-4444-4444-444444444444': 'Body Care',
+    '55555555-5555-5555-5555-555555555555': 'Gift Sets'
+  };
+  
+  const displayCategory = CATEGORY_MAP[product.category] || product.category;
+
   const isFav = isInWishlist(product.id);
 
   const relatedProducts = products
@@ -89,8 +100,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
             <ChevronRight className="w-3 h-3 text-[#8E713D]" />
             <button onClick={() => navigateTo('/shop')} className="hover:text-[#F5F2EA]">Shop</button>
             <ChevronRight className="w-3 h-3 text-[#8E713D]" />
-            <button onClick={() => navigateTo(`/collections/${product.category}`)} className="hover:text-[#F5F2EA] capitalize">
-              {product.category}
+            <button onClick={() => navigateTo(`/collections/${product.categoryId || product.category}`)} className="hover:text-[#F5F2EA] capitalize">
+              {displayCategory}
             </button>
             <ChevronRight className="w-3 h-3 text-[#8E713D]" />
             <span className="text-[#C9A45C] font-serif truncate max-w-xs">{product.name}</span>
@@ -102,8 +113,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
           
-          {/* Left Media Gallery (7 Cols) */}
-          <div className="lg:col-span-7 space-y-4">
+          {/* Left Media Gallery (5 Cols) */}
+          <div className="lg:col-span-5 space-y-4">
             {/* Primary Large Visual Display */}
             <div className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-[#C9A45C]/35 bg-[#0D0C0A] shadow-2xl">
               <img
@@ -166,8 +177,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
             </div>
           </div>
 
-          {/* Right Product Information & Controls (5 Cols) */}
-          <div className="lg:col-span-5 space-y-6">
+          {/* Right Product Information & Controls (7 Cols) */}
+          <div className="lg:col-span-7 space-y-6">
             
             {/* Header: Brand, Title, Rating */}
             <div className="space-y-2">
@@ -270,24 +281,27 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
                 {/* Add to Bag */}
                 <Button
                   onClick={handleAddToCart}
-                  variant="primary"
+                  disabled={product.stock <= 0}
+                  variant={product.stock <= 0 ? "secondary" : "primary"}
                   size="lg"
                   fullWidth
-                  leftIcon={<ShoppingBag className="w-4 h-4" />}
+                  leftIcon={product.stock > 0 ? <ShoppingBag className="w-4 h-4" /> : undefined}
                 >
-                  ADD TO SHOPPING BAG
+                  {product.stock <= 0 ? 'OUT OF STOCK' : 'ADD TO SHOPPING BAG'}
                 </Button>
               </div>
 
               {/* Buy Now Direct Button */}
-              <Button
-                onClick={handleBuyNow}
-                variant="secondary"
-                size="md"
-                fullWidth
-              >
-                BUY NOW WITH 1-CLICK CHECKOUT
-              </Button>
+              {product.stock > 0 && (
+                <Button
+                  onClick={handleBuyNow}
+                  variant="secondary"
+                  size="md"
+                  fullWidth
+                >
+                  BUY NOW WITH 1-CLICK CHECKOUT
+                </Button>
+              )}
             </div>
 
             {/* Olfactory Notes Pyramid */}

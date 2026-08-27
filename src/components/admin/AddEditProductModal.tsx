@@ -44,7 +44,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
   const [price, setPrice] = useState(1950);
   const [compareAtPrice, setCompareAtPrice] = useState<number | undefined>(undefined);
   const [stock, setStock] = useState(25);
-  const [category, setCategory] = useState<Product['category']>('oud');
+  const [category, setCategory] = useState<string>('11111111-1111-1111-1111-111111111111');
   const [gender, setGender] = useState<FragranceGender>('unisex');
   const [concentration, setConcentration] = useState<FragranceConcentration>('Eau de Parfum');
   const [fragranceFamily, setFragranceFamily] = useState<FragranceFamily>('Smoky Oud');
@@ -79,7 +79,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
       setPrice(productToEdit.price || 1950);
       setCompareAtPrice(productToEdit.compareAtPrice);
       setStock(productToEdit.stock ?? 25);
-      setCategory(productToEdit.category || 'oud');
+      setCategory(productToEdit.categoryId || '11111111-1111-1111-1111-111111111111');
       setGender((productToEdit.gender as FragranceGender) || 'unisex');
       setConcentration(productToEdit.concentration || 'Eau de Parfum');
       setFragranceFamily(productToEdit.fragranceFamily || 'Smoky Oud');
@@ -112,7 +112,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
       setPrice(1950);
       setCompareAtPrice(undefined);
       setStock(25);
-      setCategory('oud');
+      setCategory('11111111-1111-1111-1111-111111111111');
       setGender('unisex');
       setConcentration('Eau de Parfum');
       setFragranceFamily('Smoky Oud');
@@ -178,7 +178,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
       price: Number(price),
       compareAtPrice: compareAtPrice ? Number(compareAtPrice) : undefined,
       stock: Number(stock),
-      category,
+      categoryId: category,
       gender: gender as 'men' | 'women' | 'unisex',
       concentration,
       fragranceFamily,
@@ -187,7 +187,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
       badge: badge === 'NONE' ? undefined : badge,
       isBestSeller: badge === 'BEST SELLER',
       isNew: badge === 'NEW',
-      isSale: badge === 'SALE',
+      isSale: badge === 'SALE' || sizes.some(s => s.compareAtPrice && Number(s.compareAtPrice) > Number(s.price)),
       images: imageUrls,
       size: sizes[0]?.size || '100ml / 3.4 fl.oz',
       availableSizes: sizes.map(s => ({
@@ -363,12 +363,11 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
                 onChange={e => setCategory(e.target.value as any)}
                 className="w-full px-3 py-2.5 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-xs text-[#F5F2EA] focus:outline-none focus:border-[#C9A45C]"
               >
-                <option value="oud">Oud Collection</option>
-                <option value="men">Men's Haute</option>
-                <option value="women">Women's Niche</option>
-                <option value="unisex">Unisex Privé</option>
-                <option value="exclusive">VIP Exclusive</option>
-                <option value="gift-set">Gift Set</option>
+                <option value="11111111-1111-1111-1111-111111111111">Perfumes</option>
+                <option value="22222222-2222-2222-2222-222222222222">Body Splash</option>
+                <option value="33333333-3333-3333-3333-333333333333">Oud</option>
+                <option value="44444444-4444-4444-4444-444444444444">Body Care</option>
+                <option value="55555555-5555-5555-5555-555555555555">Gift Sets</option>
               </select>
             </div>
 
@@ -527,7 +526,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
                     className="flex-1 px-3 py-1.5 bg-[#070707] border border-white/10 rounded-lg text-xs text-[#F5F2EA] focus:outline-none focus:border-[#C9A45C]"
                   />
                   <div className="flex items-center gap-1.5 w-36">
-                    <span className="text-xs text-[#A7A29A]">EGP:</span>
+                    <span className="text-[10px] uppercase text-[#A7A29A]">Price:</span>
                     <input
                       type="number"
                       value={s.price}
@@ -537,6 +536,20 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
                         setSizes(updated);
                       }}
                       className="w-full px-2 py-1.5 bg-[#070707] border border-white/10 rounded-lg text-xs text-[#F0D9A4] font-bold focus:outline-none focus:border-[#C9A45C]"
+                    />
+                  </div>
+                  <div className="flex items-center gap-1.5 w-36">
+                    <span className="text-[10px] uppercase text-[#A7A29A]">Was:</span>
+                    <input
+                      type="number"
+                      value={s.compareAtPrice || ''}
+                      placeholder="e.g. 2400"
+                      onChange={e => {
+                        const updated = [...sizes];
+                        updated[idx].compareAtPrice = e.target.value ? Number(e.target.value) : undefined;
+                        setSizes(updated);
+                      }}
+                      className="w-full px-2 py-1.5 bg-[#070707] border border-white/10 rounded-lg text-xs text-[#A7A29A] line-through focus:outline-none focus:border-[#C9A45C]"
                     />
                   </div>
                   {sizes.length > 1 && (

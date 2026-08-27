@@ -9,13 +9,22 @@ import { AnimatePresence, motion } from 'motion/react';
 export const ShopPage: React.FC = () => {
   const { products, navigateTo, currentRoute } = useShop();
 
+  const CATEGORY_MAP: Record<string, string> = {
+    'all': 'All Collections',
+    '11111111-1111-1111-1111-111111111111': 'Perfumes',
+    '22222222-2222-2222-2222-222222222222': 'Body Splash',
+    '33333333-3333-3333-3333-333333333333': 'Oud',
+    '44444444-4444-4444-4444-444444444444': 'Body Care',
+    '55555555-5555-5555-5555-555555555555': 'Gift Sets'
+  };
+
   // Parse initial query/filter from current URL if needed
   const initialCategory = useMemo(() => {
-    if (currentRoute.includes('category=gift-set')) return 'gift-set';
-    if (currentRoute.includes('collections/men')) return 'men';
-    if (currentRoute.includes('collections/women')) return 'women';
-    if (currentRoute.includes('collections/unisex')) return 'unisex';
-    if (currentRoute.includes('collections/oud')) return 'oud';
+    if (currentRoute.includes('category=55555555-5555-5555-5555-555555555555')) return '55555555-5555-5555-5555-555555555555';
+    if (currentRoute.includes('collections/perfumes')) return '11111111-1111-1111-1111-111111111111';
+    if (currentRoute.includes('collections/body-splash')) return '22222222-2222-2222-2222-222222222222';
+    if (currentRoute.includes('collections/oud')) return '33333333-3333-3333-3333-333333333333';
+    if (currentRoute.includes('collections/body-care')) return '44444444-4444-4444-4444-444444444444';
     return 'all';
   }, [currentRoute]);
 
@@ -59,11 +68,7 @@ export const ShopPage: React.FC = () => {
     return products.filter((product) => {
       // Category filter
       if (filters.category !== 'all') {
-        if (filters.category === 'oud' && product.category !== 'oud') return false;
-        if (filters.category === 'men' && product.gender !== 'men' && product.category !== 'men') return false;
-        if (filters.category === 'women' && product.gender !== 'women' && product.category !== 'women') return false;
-        if (filters.category === 'unisex' && product.gender !== 'unisex' && product.category !== 'unisex') return false;
-        if (filters.category === 'gift-set' && product.category !== 'gift-set') return false;
+        if (product.categoryId !== filters.category) return false;
       }
 
       // Quick query filters from banner/promos
@@ -119,7 +124,7 @@ export const ShopPage: React.FC = () => {
             {filters.category !== 'all' && (
               <>
                 <ChevronRight className="w-3 h-3 text-[#8E713D]" />
-                <span className="text-[#F0D9A4] capitalize">{filters.category}</span>
+                <span className="text-[#F0D9A4] capitalize">{CATEGORY_MAP[filters.category] || filters.category}</span>
               </>
             )}
           </nav>

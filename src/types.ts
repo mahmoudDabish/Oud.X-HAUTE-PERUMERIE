@@ -38,7 +38,8 @@ export interface Product {
   price: number;
   compareAtPrice?: number;
   images: string[];
-  category: 'men' | 'women' | 'unisex' | 'oud' | 'exclusive' | 'gift-set';
+  category: string;
+  categoryId?: string;
   gender: 'men' | 'women' | 'unisex';
   size: string; // e.g. "100ml / 3.4 fl.oz"
   availableSizes: { size: string; price: number; compareAtPrice?: number }[];

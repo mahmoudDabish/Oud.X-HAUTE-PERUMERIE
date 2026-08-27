@@ -47,7 +47,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const displayImage = image || product.images[0];
   const displayName = name || product.name;
   const displayBrand = brand || product.brand;
-  const displayCategory = category || product.category;
+  const CATEGORY_MAP: Record<string, string> = {
+    'all': 'All Collections',
+    '11111111-1111-1111-1111-111111111111': 'Perfumes',
+    '22222222-2222-2222-2222-222222222222': 'Body Splash',
+    '33333333-3333-3333-3333-333333333333': 'Oud',
+    '44444444-4444-4444-4444-444444444444': 'Body Care',
+    '55555555-5555-5555-5555-555555555555': 'Gift Sets'
+  };
+  
+  const displayCategory = CATEGORY_MAP[category || product.category] || category || product.category;
   
   const currentSizeObj = product.availableSizes?.[selectedSizeIndex];
   const displaySize = size || currentSizeObj?.size || product.size;
@@ -79,6 +88,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (product.stock <= 0) return;
     if (onAddToCart) {
       onAddToCart();
     } else {
@@ -149,13 +159,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div className={`absolute bottom-3 inset-x-3 hidden sm:flex transition-all duration-300 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0 pointer-events-none'}`}>
           <Button
             onClick={handleQuickAdd}
-            variant="primary"
+            disabled={product.stock <= 0}
+            variant={product.stock <= 0 ? "secondary" : "primary"}
             size="sm"
             fullWidth
-            leftIcon={<ShoppingBag className="w-3.5 h-3.5" />}
+            leftIcon={product.stock > 0 ? <ShoppingBag className="w-3.5 h-3.5" /> : undefined}
             className="shadow-xl shadow-black/80 text-[10px] tracking-[2px] font-bold"
           >
-            QUICK ADD
+            {product.stock <= 0 ? 'OUT OF STOCK' : 'QUICK ADD'}
           </Button>
         </div>
       </div>
@@ -223,7 +234,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {/* Mobile Cart Button */}
           <button
             onClick={handleQuickAdd}
-            className="sm:hidden p-2 rounded-full bg-[#C9A45C] text-[#070707] active:bg-[#E3C27A]"
+            disabled={product.stock <= 0}
+            className={`sm:hidden p-2 rounded-full ${
+              product.stock > 0 
+                ? 'bg-[#C9A45C] text-[#070707] active:bg-[#E3C27A]' 
+                : 'bg-stone-800 text-stone-500 cursor-not-allowed'
+            }`}
             aria-label="Add to cart"
           >
             <ShoppingBag className="w-4 h-4" />

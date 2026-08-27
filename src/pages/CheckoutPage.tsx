@@ -40,14 +40,12 @@ export const CheckoutPage: React.FC = () => {
   const [building, setBuilding] = useState('Villa 42');
   const [apartment, setApartment] = useState('Suite 2');
 
-  const [deliveryMethod, setDeliveryMethod] = useState<'standard' | 'express'>('standard');
   const [paymentMethod, setPaymentMethod] = useState<'Card' | 'Instapay' | 'COD'>('Card');
 
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [placedOrder, setPlacedOrder] = useState<Order | null>(null);
 
-  const deliveryFee = deliveryMethod === 'express' ? shipping + 75 : shipping;
-  const finalTotal = total + (deliveryMethod === 'express' ? 75 : 0);
+  const finalTotal = total;
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,7 +81,7 @@ export const CheckoutPage: React.FC = () => {
       items,
       shippingAddress,
       actualPaymentMethod,
-      deliveryMethod === 'express',
+      false, // standard delivery only
       appliedPromo
     );
 
@@ -96,6 +94,10 @@ export const CheckoutPage: React.FC = () => {
 
     if (orderResponse) {
       clearCart();
+      
+      const message = `Hello OUD.X Privé, I would like to confirm my new order.\n\n*Order Number:* #${orderResponse.order_number}\n*Name:* ${fullName}\n*Total:* ${formatPrice(finalTotal)}`;
+      window.open(`https://wa.me/201127977819?text=${encodeURIComponent(message)}`, '_blank');
+      
       setPlacedOrder({
         ...orderResponse,
         orderNumber: orderResponse.order_number, // map backend key
@@ -318,58 +320,7 @@ export const CheckoutPage: React.FC = () => {
                       />
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Section 3: Delivery Method */}
-              <div className="p-6 rounded-xl bg-[#0D0C0A] border border-[#C9A45C]/25 space-y-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <h2 className="font-cinzel text-xs font-bold uppercase tracking-widest text-[#E3C27A]">
-                    3. Delivery Speed
-                  </h2>
-                </div>
-
-                <div className="space-y-3">
-                  <label
-                    onClick={() => setDeliveryMethod('standard')}
-                    className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-all ${
-                      deliveryMethod === 'standard'
-                        ? 'border-[#C9A45C] bg-[#C9A45C]/10 text-[#F5F2EA]'
-                        : 'border-white/10 bg-[#11100E] text-[#A7A29A]'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Truck className="w-5 h-5 text-[#C9A45C]" />
-                      <div>
-                        <div className="text-xs font-semibold text-[#F5F2EA]">VIP White-Glove Courier</div>
-                        <div className="text-[11px] text-[#A7A29A]">Delivery within 24–48 hours across Egypt</div>
-                      </div>
-                    </div>
-                    <span className="font-cinzel text-xs font-bold text-[#E3C27A]">
-                      {shipping === 0 ? 'Complimentary' : formatPrice(shipping)}
-                    </span>
-                  </label>
-
-                  <label
-                    onClick={() => setDeliveryMethod('express')}
-                    className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-all ${
-                      deliveryMethod === 'express'
-                        ? 'border-[#C9A45C] bg-[#C9A45C]/10 text-[#F5F2EA]'
-                        : 'border-white/10 bg-[#11100E] text-[#A7A29A]'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Sparkles className="w-5 h-5 text-[#E3C27A]" />
-                      <div>
-                        <div className="text-xs font-semibold text-[#F5F2EA]">Express Same-Day Priority</div>
-                        <div className="text-[11px] text-[#A7A29A]">Guaranteed delivery within 6–12 hours (Cairo & Giza)</div>
-                      </div>
-                    </div>
-                    <span className="font-cinzel text-xs font-bold text-[#E3C27A]">
-                      +{formatPrice(75)}
-                    </span>
-                  </label>
-                </div>
+                              {/* Removed Delivery Options */}      </div>
               </div>
 
               {/* Section 4: Payment Method */}
@@ -471,13 +422,7 @@ export const CheckoutPage: React.FC = () => {
 
                   <div className="flex justify-between text-[#A7A29A]">
                     <span>Delivery Fee</span>
-                    <span>
-                      {deliveryFee === 0 ? (
-                        <span className="text-emerald-400 font-semibold uppercase">Complimentary</span>
-                      ) : (
-                        <span className="font-cinzel text-[#F5F2EA]">{formatPrice(deliveryFee)}</span>
-                      )}
-                    </span>
+                    <span className="text-emerald-400 font-semibold uppercase">Complimentary</span>
                   </div>
 
                   <div className="flex justify-between text-base font-bold text-[#F5F2EA] border-t border-white/10 pt-3">
@@ -494,7 +439,7 @@ export const CheckoutPage: React.FC = () => {
                   isLoading={isPlacingOrder}
                   className="shadow-xl shadow-[#C9A45C]/20 text-xs tracking-widest font-bold"
                 >
-                  {isPlacingOrder ? 'CONFIRMING ALLOCATION...' : `CONFIRM ORDER (${formatPrice(finalTotal)})`}
+                  {isPlacingOrder ? 'PROCESSING...' : `CONFIRM VIA WHATSAPP (${formatPrice(finalTotal)})`}
                 </Button>
 
                 <div className="flex items-center justify-center gap-2 text-[10px] text-[#8E713D]">

@@ -19,11 +19,11 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
 }) => {
   const categories = [
     { label: 'All Collections', value: 'all' },
-    { label: 'Oud Collection', value: 'oud' },
-    { label: 'Men Fragrances', value: 'men' },
-    { label: 'Women Fragrances', value: 'women' },
-    { label: 'Unisex Elixirs', value: 'unisex' },
-    { label: 'Gift Sets & Vaults', value: 'gift-set' }
+    { label: 'Perfumes', value: '11111111-1111-1111-1111-111111111111' },
+    { label: 'Body Splash', value: '22222222-2222-2222-2222-222222222222' },
+    { label: 'Oud', value: '33333333-3333-3333-3333-333333333333' },
+    { label: 'Body Care', value: '44444444-4444-4444-4444-444444444444' },
+    { label: 'Gift Sets', value: '55555555-5555-5555-5555-555555555555' }
   ];
 
   const fragranceFamilies: FragranceFamily[] = [
@@ -139,6 +139,28 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
             );
           })}
         </div>
+      </div>
+
+      {/* Availability Section */}
+      <div className="space-y-2">
+        <label className="block text-[11px] font-bold uppercase tracking-[2px] text-[#C9A45C]">
+          Availability
+        </label>
+        <button
+          onClick={() => onChange({ ...filters, inStockOnly: !filters.inStockOnly })}
+          className="flex items-center gap-2 group"
+        >
+          <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-all ${
+            filters.inStockOnly 
+              ? 'bg-[#C9A45C] border-[#C9A45C]' 
+              : 'border-white/20 bg-[#151310] group-hover:border-[#C9A45C]/50'
+          }`}>
+            {filters.inStockOnly && <Check className="w-3 h-3 text-[#070707]" />}
+          </div>
+          <span className="text-xs text-[#A7A29A] group-hover:text-[#F5F2EA] transition-colors">
+            In Stock Only
+          </span>
+        </button>
       </div>
 
       {/* Fragrance Family Section */}

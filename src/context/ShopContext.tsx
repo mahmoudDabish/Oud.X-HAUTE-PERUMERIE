@@ -3,6 +3,7 @@ import { Product, CartItem, UserProfile, Order, UserAddress } from '../types';
 import { productService } from '../services/productService';
 import { authService } from '../services/authService';
 import { wishlistService } from '../services/wishlistService';
+import { supabase } from '../lib/supabaseClient';
 
 interface ToastMessage {
   id: string;
@@ -137,6 +138,20 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoadingProducts(false);
     }
     loadProducts();
+
+    // Subscribe to realtime updates for products
+    const channel = supabase
+      .channel('public:products')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, payload => {
+        // Just reload the products to ensure we get joined data (categories, etc.) correctly
+        // We could optimize this by manually updating the state, but fetching guarantees correctness
+        loadProducts();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   // All Orders (Global Store & Admin Orders with LocalStorage Persistence)
@@ -157,9 +172,15 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Cart state
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
+      if (typeof window === 'undefined') return [];
       const saved = localStorage.getItem('oudx_cart');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return Array.isArray(parsed) ? parsed : [];
+      }
+      return [];
+    } catch (e) {
+      console.error("Failed to parse cart from localStorage:", e);
       return [];
     }
   });
@@ -168,9 +189,24 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     try {
-      localStorage.setItem('oudx_cart', JSON.stringify(cart));
-    } catch {
-      // ignore
+      // Strip out massive base64 images to prevent localStorage QuotaExceededError
+      // Safely handle cases where images might be undefined
+      const safeCart = cart.map(item => ({
+        ...item,
+        product: {
+          ...item.product,
+          images: Array.isArray(item.product.images) 
+            ? item.product.images.map(img => 
+                (typeof img === 'string' && img.startsWith('data:image') && img.length > 100000)
+                  ? 'https://images.unsplash.com/photo-1615631648086-325025c9e51e?q=80&w=600&auto=format&fit=crop' 
+                  : img
+              )
+            : []
+        }
+      }));
+      localStorage.setItem('oudx_cart', JSON.stringify(safeCart));
+    } catch (e) {
+      console.error("Failed to save cart to localStorage:", e);
     }
   }, [cart]);
 
@@ -336,7 +372,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     discount = 500;
   }
 
-  const shipping = (subtotal - discount) >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : 150;
+  const shipping = 0; // Free delivery as requested
   const total = Math.max(0, subtotal - discount + shipping);
   const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
 
