@@ -22,6 +22,8 @@ export const CartDrawer: React.FC = () => {
 
   const progressPercent = Math.min(100, Math.round(((freeShippingThreshold - amountToFreeShipping) / freeShippingThreshold) * 100));
 
+  const hasInsufficientStock = cart.some(item => item.quantity > item.product.stock);
+
   const handleCheckout = () => {
     setIsCartDrawerOpen(false);
     navigateTo('/checkout');
@@ -137,6 +139,11 @@ export const CartDrawer: React.FC = () => {
                       <p className="text-[10px] text-[#A7A29A] mt-0.5">
                         Size: <span className="text-[#F5F2EA]">{item.selectedSize}</span>
                       </p>
+                      {item.quantity > item.product.stock && (
+                        <p className="text-[10px] text-red-400 mt-0.5 font-bold">
+                          {item.product.stock === 0 ? 'Out of stock' : `Only ${item.product.stock} available`}
+                        </p>
+                      )}
                     </div>
 
                     <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#C9A45C]/15">
@@ -201,9 +208,10 @@ export const CartDrawer: React.FC = () => {
                   onClick={handleCheckout}
                   variant="primary"
                   fullWidth
+                  disabled={hasInsufficientStock}
                   rightIcon={<ArrowRight className="w-4 h-4" />}
                 >
-                  PROCEED TO CHECKOUT
+                  {hasInsufficientStock ? 'PLEASE UPDATE QUANTITIES' : 'PROCEED TO CHECKOUT'}
                 </Button>
 
                 <Button

@@ -47,9 +47,11 @@ export const CheckoutPage: React.FC = () => {
 
   const finalTotal = total;
 
+  const hasInsufficientStock = cart.some(item => item.quantity > item.product.stock);
+
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (cart.length === 0 || isPlacingOrder) return;
+    if (cart.length === 0 || isPlacingOrder || hasInsufficientStock) return;
 
     setIsPlacingOrder(true);
 
@@ -398,6 +400,11 @@ export const CheckoutPage: React.FC = () => {
                       <div className="flex-1 min-w-0">
                         <div className="font-serif-luxury text-sm text-[#F5F2EA] truncate">{item.product.name}</div>
                         <div className="text-[11px] text-[#A7A29A]">{item.selectedSize} × {item.quantity}</div>
+                        {item.quantity > item.product.stock && (
+                          <div className="text-[10px] text-red-400 font-bold mt-0.5">
+                            {item.product.stock === 0 ? 'Out of stock' : `Only ${item.product.stock} available`}
+                          </div>
+                        )}
                       </div>
                       <span className="font-cinzel text-xs font-bold text-[#E3C27A]">
                         {formatPrice(item.price * item.quantity)}
@@ -436,10 +443,15 @@ export const CheckoutPage: React.FC = () => {
                   variant="primary"
                   size="lg"
                   fullWidth
+                  disabled={hasInsufficientStock}
                   isLoading={isPlacingOrder}
                   className="shadow-xl shadow-[#C9A45C]/20 text-xs tracking-widest font-bold"
                 >
-                  {isPlacingOrder ? 'PROCESSING...' : `CONFIRM VIA WHATSAPP (${formatPrice(finalTotal)})`}
+                  {isPlacingOrder 
+                    ? 'PROCESSING...' 
+                    : hasInsufficientStock 
+                      ? 'INSUFFICIENT STOCK IN CART' 
+                      : `CONFIRM VIA WHATSAPP (${formatPrice(finalTotal)})`}
                 </Button>
 
                 <div className="flex items-center justify-center gap-2 text-[10px] text-[#8E713D]">

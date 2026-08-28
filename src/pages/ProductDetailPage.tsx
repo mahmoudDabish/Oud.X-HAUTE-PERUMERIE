@@ -187,8 +187,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
                 <span className="text-[#8E713D]">{product.fragranceFamily}</span>
               </div>
 
-              <h1 className="font-serif-luxury text-3xl sm:text-4xl font-normal text-[#F5F2EA] leading-tight">
+              <h1 className="font-serif-luxury text-3xl sm:text-4xl font-normal text-[#F5F2EA] leading-tight flex items-center gap-3 flex-wrap">
                 {product.name}
+                {product.stock <= 0 && (
+                  <span className="px-3 py-1 text-xs font-bold tracking-widest text-[#A7A29A] border border-white/20 rounded-full bg-[#151310]/80">
+                    OUT OF STOCK
+                  </span>
+                )}
               </h1>
 
               {product.subtitle && (
@@ -272,7 +277,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
                   <span className="w-8 text-center text-xs font-semibold text-[#F5F2EA]">{quantity}</span>
                   <button
                     onClick={() => setQuantity(q => q + 1)}
-                    className="w-8 h-8 flex items-center justify-center text-[#A7A29A] hover:text-[#F5F2EA] font-bold"
+                    disabled={quantity >= product.stock}
+                    className="w-8 h-8 flex items-center justify-center text-[#A7A29A] hover:text-[#F5F2EA] font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     +
                   </button>

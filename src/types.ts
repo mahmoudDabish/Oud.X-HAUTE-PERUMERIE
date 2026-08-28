@@ -1,4 +1,4 @@
-export type FragranceGender = 'men' | 'women' | 'unisex' | 'oud';
+export type FragranceGender = 'men' | 'women' | 'unisex';
 
 export type FragranceFamily = 
   | 'Oriental Woody' 
@@ -40,7 +40,7 @@ export interface Product {
   images: string[];
   category: string;
   categoryId?: string;
-  gender: 'men' | 'women' | 'unisex';
+  gender: FragranceGender;
   size: string; // e.g. "100ml / 3.4 fl.oz"
   availableSizes: { size: string; price: number; compareAtPrice?: number }[];
   concentration: FragranceConcentration;
@@ -75,7 +75,7 @@ export interface FilterState {
   brand: string[];
   priceRange: [number, number];
   minRating: number;
-  inStockOnly: boolean;
+  availability: 'all' | 'in_stock' | 'out_of_stock';
   searchQuery: string;
   sortBy: 'featured' | 'price-low' | 'price-high' | 'rating' | 'newest';
 }

@@ -65,7 +65,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   
   const displayRating = rating !== undefined ? rating : product.rating;
   const displayReviews = reviews !== undefined ? reviews : product.reviewCount;
-  const displayBadge = badge || product.badge;
+  
+  const isSale = product.isSale || (displayComparePrice && displayComparePrice > displayPrice);
+  const displayBadge = badge || product.badge || (isSale ? 'SALE' : undefined);
 
   const isFav = controlledIsFavorite !== undefined ? controlledIsFavorite : isInWishlist(product.id);
 
@@ -124,11 +126,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Top Badges & Actions Bar */}
         <div className="absolute top-3 inset-x-3 flex items-start justify-between gap-2 pointer-events-none">
-          {displayBadge ? (
-            <Badge variant={displayBadge} />
-          ) : (
-            <div />
-          )}
+          <div className="flex flex-col gap-1.5 pointer-events-none">
+            {product.stock <= 0 ? (
+              <span className="px-2 py-1 text-[9px] font-bold tracking-widest text-[#A7A29A] uppercase bg-[#151310]/90 border border-white/20 rounded shadow-md backdrop-blur-md">
+                OUT OF STOCK
+              </span>
+            ) : displayBadge ? (
+              <Badge variant={displayBadge as any} />
+            ) : null}
+          </div>
 
           <div className="flex flex-col gap-1.5 pointer-events-auto">
             {/* Wishlist Button */}

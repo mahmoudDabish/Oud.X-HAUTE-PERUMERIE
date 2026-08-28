@@ -5,20 +5,20 @@ import { Sparkles, ArrowRight, ChevronLeft, ChevronRight, ShieldCheck } from 'lu
 import { motion, AnimatePresence } from 'motion/react';
 
 export const Hero: React.FC = () => {
-  const { navigateTo } = useShop();
+  const { navigateTo, products } = useShop();
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const slides = [
+  const defaultSlides = [
     {
       id: '01',
       eyebrow: 'HAUTE PARFUMERIE & RARE EXTRACTS',
       titleLine1: 'SCENT OF LUXURY,',
       titleLine2: 'ESSENCE OF YOU',
       description: 'Discover mastercrafted fragrances inspired by timeless Arabian elegance and aged Assamese agarwood.',
-      primaryCta: 'SHOP COLLECTION',
-      primaryLink: '/shop',
-      secondaryCta: 'EXPLORE OUD',
-      secondaryLink: '/collections/oud',
+      primaryCta: 'SHOP PRODUCT',
+      primaryLink: '/products/badee-al-oud-oud-for-glory',
+      secondaryCta: 'EXPLORE COLLECTIONS',
+      secondaryLink: '/shop',
       image: '/src/assets/images/hero_oud_bottle_1787700482747.jpg',
       badge: 'FEATURED MASTERPIECE',
       perfumeName: "Bade'e Al Oud (Oud For Glory)",
@@ -30,10 +30,10 @@ export const Hero: React.FC = () => {
       titleLine1: 'WARM EMBERS,',
       titleLine2: 'SUBLIME SPICES',
       description: 'Intoxicating roasted Arabic coffee, dark dates, and Madagascar bourbon vanilla in an imperial crystal flacon.',
-      primaryCta: 'DISCOVER KHAMRAH',
+      primaryCta: 'SHOP PRODUCT',
       primaryLink: '/products/khamrah-qahwa',
-      secondaryCta: 'VIEW BEST SELLERS',
-      secondaryLink: '/shop?filter=bestsellers',
+      secondaryCta: 'EXPLORE COLLECTIONS',
+      secondaryLink: '/shop',
       image: '/src/assets/images/new_arrivals_perfume_1787700509279.jpg',
       badge: 'GOURMAND FAVORITE',
       perfumeName: 'Khamrah Qahwa Sublime',
@@ -45,16 +45,55 @@ export const Hero: React.FC = () => {
       titleLine1: 'TIMELESS HERITAGE,',
       titleLine2: 'PURE AGED OUD',
       description: 'Handcrafted in numbered batches of 500 bottles. Wild Assam agarwood married with morning-picked Taif rose.',
-      primaryCta: 'DISCOVER RESERVE',
+      primaryCta: 'SHOP PRODUCT',
       primaryLink: '/products/royal-oud-imperial',
-      secondaryCta: 'ABOUT ATELIER',
-      secondaryLink: '/about',
+      secondaryCta: 'EXPLORE COLLECTIONS',
+      secondaryLink: '/shop',
       image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1400&auto=format&fit=crop',
       badge: 'LIMITED TO 500 FLACONS',
       perfumeName: 'Royal Oud Imperial Reserve',
       notes: 'Assam Oud • Taif Rose • Omani Frankincense'
     }
   ];
+
+  const featuredProducts = products?.filter(p => p.isFeatured) || [];
+
+  const presetTitles = [
+    { line1: 'TIMELESS HERITAGE,', line2: 'PURE AGED OUD', eyebrow: 'ROYAL RESERVE COLLECTION' },
+    { line1: 'SCENT OF LUXURY,', line2: 'ESSENCE OF YOU', eyebrow: 'HAUTE PARFUMERIE & RARE EXTRACTS' },
+    { line1: 'WARM EMBERS,', line2: 'SUBLIME SPICES', eyebrow: 'GOURMAND ORIENTAL EXTRAIT' },
+  ];
+
+  const dynamicSlides = featuredProducts.length > 0 
+    ? featuredProducts.map((p, index) => {
+        const preset = presetTitles[index % presetTitles.length];
+        
+        let notesDisplay = 'Smoked Agarwood • Saffron • Royal Amber';
+        if (p.notes && p.notes.top && p.notes.heart && p.notes.base) {
+          notesDisplay = [p.notes.top[0], p.notes.heart[0], p.notes.base[0]].filter(Boolean).join(' • ');
+        } else if (p.subtitle) {
+          notesDisplay = p.subtitle;
+        }
+
+        return {
+          id: `0${index + 1}`,
+          eyebrow: preset.eyebrow,
+          titleLine1: preset.line1,
+          titleLine2: preset.line2,
+          description: p.description || p.subtitle || 'Discover mastercrafted fragrances inspired by timeless Arabian elegance.',
+          primaryCta: 'SHOP PRODUCT',
+          primaryLink: `/products/${p.slug}`,
+          secondaryCta: 'EXPLORE COLLECTIONS',
+          secondaryLink: '/shop',
+          image: p.images[0] || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1400&auto=format&fit=crop',
+          badge: p.badge || 'FEATURED MASTERPIECE',
+          perfumeName: p.name,
+          notes: notesDisplay
+        };
+      })
+    : defaultSlides;
+
+  const slides = dynamicSlides;
 
   useEffect(() => {
     const timer = setInterval(() => {

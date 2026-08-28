@@ -210,6 +210,17 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [cart]);
 
+  // Compute live cart by syncing with live products data to fix stock/price sync issues
+  const liveCart = React.useMemo(() => {
+    return cart.map(item => {
+      const liveProd = products.find(p => p.id === item.product.id);
+      if (liveProd) {
+        return { ...item, product: liveProd };
+      }
+      return item;
+    });
+  }, [cart, products]);
+
   // Wishlist state
   const [wishlist, setWishlist] = useState<string[]>(() => {
     try {
@@ -315,9 +326,16 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Cart operations
   const addToCart = (product: Product, size?: string, quantity: number = 1, openDrawer: boolean = true) => {
-    const selectedSize = size || product.size;
-    const sizeConfig = product.availableSizes.find(s => s.size === selectedSize);
-    const itemPrice = sizeConfig ? sizeConfig.price : product.price;
+    const liveProd = products.find(p => p.id === product.id) || product;
+    
+    if (liveProd.stock <= 0) {
+      showToast('Out of Stock', 'This item is currently unavailable.', 'info');
+      return;
+    }
+
+    const selectedSize = size || liveProd.size;
+    const sizeConfig = liveProd.availableSizes?.find(s => s.size === selectedSize);
+    const itemPrice = sizeConfig ? sizeConfig.price : liveProd.price;
 
     setCart(prev => {
       const existingIndex = prev.findIndex(item => item.product.id === product.id && item.selectedSize === selectedSize);
@@ -346,6 +364,13 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeFromCart(productId, size);
       return;
     }
+    
+    const liveProd = products.find(p => p.id === productId);
+    if (liveProd && quantity > liveProd.stock) {
+      showToast('Insufficient Stock', `Only ${liveProd.stock} units available.`, 'info');
+      return;
+    }
+
     setCart(prev => prev.map(item => {
       if (item.product.id === productId && item.selectedSize === size) {
         return { ...item, quantity };
@@ -359,9 +384,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAppliedPromo(null);
   };
 
-  // Calculations
-  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
-  const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  // Calculations using liveCart
+  const cartCount = liveCart.reduce((acc, item) => acc + item.quantity, 0);
+  const subtotal = liveCart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   
   const discount = 0; // Disabled as requested
   const shipping = 0; // Free delivery as requested
@@ -576,7 +601,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         products,
         getProductBySlug,
-        cart,
+        cart: liveCart,
         isCartDrawerOpen,
         setIsCartDrawerOpen,
         addToCart,

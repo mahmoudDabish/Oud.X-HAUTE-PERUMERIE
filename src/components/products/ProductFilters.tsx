@@ -146,21 +146,26 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
         <label className="block text-[11px] font-bold uppercase tracking-[2px] text-[#C9A45C]">
           Availability
         </label>
-        <button
-          onClick={() => onChange({ ...filters, inStockOnly: !filters.inStockOnly })}
-          className="flex items-center gap-2 group"
-        >
-          <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-all ${
-            filters.inStockOnly 
-              ? 'bg-[#C9A45C] border-[#C9A45C]' 
-              : 'border-white/20 bg-[#151310] group-hover:border-[#C9A45C]/50'
-          }`}>
-            {filters.inStockOnly && <Check className="w-3 h-3 text-[#070707]" />}
-          </div>
-          <span className="text-xs text-[#A7A29A] group-hover:text-[#F5F2EA] transition-colors">
-            In Stock Only
-          </span>
-        </button>
+        <div className="space-y-1.5">
+          {['all', 'in_stock', 'out_of_stock'].map((opt) => (
+            <button
+              key={opt}
+              onClick={() => onChange({ ...filters, availability: opt as any })}
+              className="flex items-center gap-2 group w-full text-left"
+            >
+              <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-all ${
+                filters.availability === opt 
+                  ? 'bg-[#C9A45C] border-[#C9A45C]' 
+                  : 'border-white/20 bg-[#151310] group-hover:border-[#C9A45C]/50'
+              }`}>
+                {filters.availability === opt && <Check className="w-3 h-3 text-[#070707]" />}
+              </div>
+              <span className="text-xs text-[#A7A29A] group-hover:text-[#F5F2EA] transition-colors capitalize">
+                {opt.replace(/_/g, ' ')}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Fragrance Family Section */}
@@ -251,24 +256,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
         </div>
       </div>
 
-      {/* Rating & In-Stock */}
-      <div className="space-y-2 pt-2 border-t border-[#C9A45C]/15">
-        <label
-          onClick={() => onChange({ ...filters, inStockOnly: !filters.inStockOnly })}
-          className="flex items-center gap-2.5 text-xs text-[#A7A29A] hover:text-[#F5F2EA] cursor-pointer select-none py-1 px-1.5 rounded-lg hover:bg-white/5 transition-colors"
-        >
-          <div
-            className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-              filters.inStockOnly
-                ? 'border-[#C9A45C] bg-[#C9A45C] text-[#070707]'
-                : 'border-[#C9A45C]/30 bg-[#070707]/60'
-            }`}
-          >
-            {filters.inStockOnly && <Check className="w-3 h-3 stroke-[3]" />}
-          </div>
-          <span>In-Stock Items Only</span>
-        </label>
-      </div>
+      {/* Rating & Availability Footer removed as it is handled above */}
 
       {/* Mobile Apply Button */}
       {isMobile && (

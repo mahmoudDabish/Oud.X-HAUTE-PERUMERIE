@@ -20,6 +20,9 @@ export const ShopPage: React.FC = () => {
 
   // Parse initial query/filter from current URL if needed
   const initialCategory = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('category')) return params.get('category') as string;
+    
     if (currentRoute.includes('category=55555555-5555-5555-5555-555555555555')) return '55555555-5555-5555-5555-555555555555';
     if (currentRoute.includes('collections/perfumes')) return '11111111-1111-1111-1111-111111111111';
     if (currentRoute.includes('collections/body-splash')) return '22222222-2222-2222-2222-222222222222';
@@ -32,17 +35,20 @@ export const ShopPage: React.FC = () => {
   const initialFilterNew = currentRoute.includes('filter=new');
   const initialFilterBest = currentRoute.includes('filter=bestsellers');
 
-  const [filters, setFilters] = useState<FilterState>({
-    category: initialCategory,
-    gender: [],
-    fragranceFamily: [],
-    concentration: [],
-    brand: [],
-    priceRange: [0, 6000],
-    minRating: 0,
-    inStockOnly: false,
-    searchQuery: '',
-    sortBy: initialFilterNew ? 'newest' : initialFilterBest ? 'rating' : 'featured'
+  const [filters, setFilters] = useState<FilterState>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      category: initialCategory,
+      gender: params.get('gender') ? params.get('gender')!.split(',') : [],
+      fragranceFamily: [],
+      concentration: [],
+      brand: [],
+      priceRange: [0, 6000],
+      minRating: 0,
+      availability: (params.get('availability') as any) || 'all',
+      searchQuery: '',
+      sortBy: initialFilterNew ? 'newest' : initialFilterBest ? 'rating' : 'featured'
+    };
   });
 
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
@@ -57,11 +63,31 @@ export const ShopPage: React.FC = () => {
       brand: [],
       priceRange: [0, 6000],
       minRating: 0,
-      inStockOnly: false,
+      availability: 'all',
       searchQuery: '',
       sortBy: 'featured'
     });
   };
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    let changed = false;
+    
+    if (filters.category !== 'all') { params.set('category', filters.category); changed = true; }
+    else if (params.has('category')) { params.delete('category'); changed = true; }
+    
+    if (filters.gender.length > 0) { params.set('gender', filters.gender.join(',')); changed = true; }
+    else if (params.has('gender')) { params.delete('gender'); changed = true; }
+    
+    if (filters.availability !== 'all') { params.set('availability', filters.availability); changed = true; }
+    else if (params.has('availability')) { params.delete('availability'); changed = true; }
+    
+    if (changed) {
+      const searchString = params.toString();
+      const newUrl = searchString ? `${window.location.pathname}?${searchString}` : window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, [filters]);
 
   // Filtered & Sorted Products
   const filteredProducts = useMemo(() => {
@@ -96,8 +122,11 @@ export const ShopPage: React.FC = () => {
         return false;
       }
 
-      // In stock
-      if (filters.inStockOnly && product.stock <= 0) {
+      // Availability
+      if (filters.availability === 'in_stock' && product.stock <= 0) {
+        return false;
+      }
+      if (filters.availability === 'out_of_stock' && product.stock > 0) {
         return false;
       }
 

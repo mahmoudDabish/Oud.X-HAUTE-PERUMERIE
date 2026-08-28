@@ -21,7 +21,7 @@ CREATE TABLE products (
   price NUMERIC NOT NULL,
   compare_at_price NUMERIC,
   category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
-  gender TEXT,
+  gender TEXT CHECK (gender IN ('men', 'women', 'unisex')),
   concentration TEXT,
   fragrance_family TEXT,
   longevity TEXT,

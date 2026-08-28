@@ -51,6 +51,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
   const [longevity, setLongevity] = useState<Product['longevity']>('14-18 Hours (Beast Mode)');
   const [sillage, setSillage] = useState<Product['sillage']>('Intense / Enormous');
   const [badge, setBadge] = useState<Product['badge'] | 'NONE'>('NEW');
+  const [isFeatured, setIsFeatured] = useState(false);
 
   // Notes
   const [topNotes, setTopNotes] = useState('Saffron, Nutmeg, Lavender');
@@ -64,9 +65,8 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
   const [customImageUrl, setCustomImageUrl] = useState('');
 
   // Sizes
-  const [sizes, setSizes] = useState([
-    { size: '50ml / 1.7 fl.oz', price: 1350, compareAtPrice: 1550 },
-    { size: '100ml / 3.4 fl.oz', price: 1950, compareAtPrice: 2300 }
+  const [sizes, setSizes] = useState<{size: string, price: number, compareAtPrice?: number}[]>([
+    { size: '100ml / 3.4 fl.oz', price: 1950, compareAtPrice: undefined }
   ]);
 
   useEffect(() => {
@@ -86,6 +86,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
       setLongevity(productToEdit.longevity || '14-18 Hours (Beast Mode)');
       setSillage(productToEdit.sillage || 'Intense / Enormous');
       setBadge(productToEdit.badge || 'NONE');
+      setIsFeatured(productToEdit.isFeatured || false);
 
       if (productToEdit.notes) {
         setTopNotes(productToEdit.notes.top?.join(', ') || '');
@@ -119,13 +120,13 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
       setLongevity('14-18 Hours (Beast Mode)');
       setSillage('Intense / Enormous');
       setBadge('NEW');
+      setIsFeatured(false);
       setTopNotes('Saffron, Bergamot, Pink Pepper');
       setHeartNotes('Royal Cambodian Oud, Bulgarian Rose, Patchouli');
       setBaseNotes('Aged Ambergris, Dark Incense, Bourbon Vanilla');
       setImageUrls(['/src/assets/images/hero_oud_bottle_1787700482747.jpg']);
       setSizes([
-        { size: '50ml / 1.7 fl.oz', price: 1350, compareAtPrice: 1550 },
-        { size: '100ml / 3.4 fl.oz', price: 1950, compareAtPrice: 2300 }
+        { size: '100ml / 3.4 fl.oz', price: 1950, compareAtPrice: undefined }
       ]);
     }
   }, [productToEdit, isOpen]);
@@ -146,7 +147,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
   };
 
   const handleAddSize = () => {
-    setSizes([...sizes, { size: '200ml / 6.8 fl.oz', price: Math.round(price * 1.7) }]);
+    setSizes([...sizes, { size: '', price: price }]);
   };
 
   const handleRemoveSize = (index: number) => {
@@ -188,6 +189,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
       isBestSeller: badge === 'BEST SELLER',
       isNew: badge === 'NEW',
       isSale: badge === 'SALE' || sizes.some(s => s.compareAtPrice && Number(s.compareAtPrice) > Number(s.price)),
+      isFeatured,
       images: imageUrls,
       size: sizes[0]?.size || '100ml / 3.4 fl.oz',
       availableSizes: sizes.map(s => ({
@@ -270,18 +272,33 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
             </div>
           </div>
 
-          {/* Subtitle */}
-          <div className="space-y-1.5">
-            <label className="block text-xs uppercase font-bold tracking-[2px] text-[#C9A45C]">
-              Subtitle / Olfactory Slogan
-            </label>
-            <input
-              type="text"
-              value={subtitle}
-              onChange={e => setSubtitle(e.target.value)}
-              placeholder="e.g. Smoky Cambodian Oud & Royal Saffron"
-              className="w-full px-4 py-2.5 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-sm text-[#F5F2EA] placeholder-stone-600 focus:outline-none focus:border-[#C9A45C]"
-            />
+          {/* Subtitle & Featured */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="md:col-span-3 space-y-1.5">
+              <label className="block text-xs uppercase font-bold tracking-[2px] text-[#C9A45C]">
+                Subtitle / Olfactory Slogan
+              </label>
+              <input
+                type="text"
+                value={subtitle}
+                onChange={e => setSubtitle(e.target.value)}
+                placeholder="e.g. Smoky Cambodian Oud & Royal Saffron"
+                className="w-full px-4 py-2.5 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-sm text-[#F5F2EA] placeholder-stone-600 focus:outline-none focus:border-[#C9A45C]"
+              />
+            </div>
+            <div className="md:col-span-1 space-y-1.5 flex flex-col justify-end pb-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isFeatured}
+                  onChange={e => setIsFeatured(e.target.checked)}
+                  className="w-4 h-4 rounded border-[#C9A45C]/30 text-[#C9A45C] focus:ring-[#C9A45C] bg-[#151310]"
+                />
+                <span className="text-xs uppercase font-bold tracking-[1px] text-[#C9A45C]">
+                  Show in Hero Carousel
+                </span>
+              </label>
+            </div>
           </div>
 
           {/* Row 2: Price, Compare Price, Stock, Badge */}
@@ -522,7 +539,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
                       updated[idx].size = e.target.value;
                       setSizes(updated);
                     }}
-                    placeholder="e.g. 50ml / 1.7 fl.oz"
+                    placeholder="e.g. 100ml"
                     className="flex-1 px-3 py-1.5 bg-[#070707] border border-white/10 rounded-lg text-xs text-[#F5F2EA] focus:outline-none focus:border-[#C9A45C]"
                   />
                   <div className="flex items-center gap-1.5 w-36">
