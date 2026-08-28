@@ -6,7 +6,6 @@ import { BestSellers } from '../components/home/BestSellers';
 import { NewArrivals } from '../components/home/NewArrivals';
 
 import { PromoBanner } from '../components/home/PromoBanner';
-import { BrandLogos } from '../components/home/BrandLogos';
 import { Newsletter } from '../components/home/Newsletter';
 
 export const HomePage: React.FC = () => {
@@ -31,8 +30,6 @@ export const HomePage: React.FC = () => {
       <PromoBanner />
       {/* Section Removed: Testimonials (No Fake Reviews) */}
 
-      {/* 8. Luxury Brand Houses */}
-      <BrandLogos />
 
       {/* 9. Privé Club VIP Newsletter */}
       <Newsletter />

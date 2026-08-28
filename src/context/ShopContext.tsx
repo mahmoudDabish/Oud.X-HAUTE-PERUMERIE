@@ -15,6 +15,7 @@ interface ToastMessage {
 interface ShopContextType {
   // Products
   products: Product[];
+  isLoadingProducts: boolean;
   getProductBySlug: (slug: string) => Product | undefined;
   
   // Cart
@@ -600,6 +601,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <ShopContext.Provider
       value={{
         products,
+        isLoadingProducts,
         getProductBySlug,
         cart: liveCart,
         isCartDrawerOpen,

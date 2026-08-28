@@ -5,7 +5,7 @@ import { Sparkles, ArrowRight, ChevronLeft, ChevronRight, ShieldCheck } from 'lu
 import { motion, AnimatePresence } from 'motion/react';
 
 export const Hero: React.FC = () => {
-  const { navigateTo, products } = useShop();
+  const { navigateTo, products, isLoadingProducts } = useShop();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const defaultSlides = [
@@ -103,6 +103,19 @@ export const Hero: React.FC = () => {
   }, [slides.length]);
 
   const active = slides[currentSlide] || slides[0];
+
+  if (isLoadingProducts) {
+    return (
+      <section className="relative min-h-[85vh] lg:min-h-[92vh] flex items-center bg-[#070707] overflow-hidden">
+        <div className="absolute top-1/2 right-1/4 w-[450px] h-[450px] bg-radial from-[#C9A45C]/15 to-transparent rounded-full blur-[60px] pointer-events-none -translate-y-1/2" />
+        <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-[#C9A45C]/10 rounded-full blur-[80px] pointer-events-none -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-20 right-[12%] w-[1px] h-[450px] bg-gradient-to-b from-transparent via-[#C9A45C]/30 to-transparent pointer-events-none hidden lg:block" />
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="w-10 h-10 border-2 border-[#C9A45C]/20 border-t-[#C9A45C] rounded-full animate-spin" />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative min-h-[85vh] lg:min-h-[92vh] flex items-center bg-[#070707] overflow-hidden">

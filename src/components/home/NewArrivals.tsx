@@ -4,7 +4,14 @@ import { Button } from '../ui/Button';
 import { Sparkles, ArrowRight, Award, Flame } from 'lucide-react';
 
 export const NewArrivals: React.FC = () => {
-  const { navigateTo } = useShop();
+  const { navigateTo, products } = useShop();
+
+  const newProduct = products?.find(p => p.isNew) || products?.[0];
+  const perfumeName = newProduct?.name || 'Royal Oud Imperial Reserve';
+  const slug = newProduct?.slug || 'royal-oud-imperial';
+  const link = `/products/${slug}`;
+  const image = newProduct?.images?.[0] || '/src/assets/images/new_arrivals_perfume_1787700509279.jpg';
+  const description = newProduct?.description || 'Be the first to discover our latest olfactory creations, distilled from aged Cambodian agarwoods, honeyed Turkish ambergris, and sun-drenched Taif roses.';
 
   return (
     <section className="py-24 bg-[#0D0C0A] relative overflow-hidden border-t border-[#C9A45C]/15">
@@ -28,8 +35,8 @@ export const NewArrivals: React.FC = () => {
                 NEW ARRIVALS: <br />
                 <span className="text-[#C9A45C] italic font-serif">THE ROYAL ELIXIRS</span>
               </h2>
-              <p className="text-sm sm:text-base text-[#A7A29A] max-w-lg leading-relaxed">
-                Be the first to discover our latest olfactory creations, distilled from aged Cambodian agarwoods, honeyed Turkish ambergris, and sun-drenched Taif roses.
+              <p className="text-sm sm:text-base text-[#A7A29A] max-w-lg leading-relaxed line-clamp-3">
+                {description}
               </p>
             </div>
 
@@ -64,12 +71,12 @@ export const NewArrivals: React.FC = () => {
               </Button>
 
               <Button
-                onClick={() => navigateTo('/products/royal-oud-imperial')}
+                onClick={() => navigateTo(link)}
                 variant="secondary"
                 size="lg"
-                className="tracking-[2px] font-bold"
+                className="tracking-[2px] font-bold uppercase truncate max-w-[200px]"
               >
-                VIEW ROYAL OUD
+                VIEW PRODUCT
               </Button>
             </div>
           </div>
@@ -79,8 +86,8 @@ export const NewArrivals: React.FC = () => {
             <div className="relative rounded-2xl overflow-hidden border border-[#C9A45C]/25 bg-[#151310]/60 backdrop-blur-xl shadow-2xl p-3.5">
               <div className="aspect-[4/3] sm:aspect-[16/11] rounded-xl overflow-hidden relative">
                 <img
-                  src="/src/assets/images/new_arrivals_perfume_1787700509279.jpg"
-                  alt="OUD_X New Arrivals Flacon"
+                  src={image}
+                  alt={perfumeName}
                   referrerPolicy="no-referrer"
                   loading="lazy"
                   className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700"
@@ -94,11 +101,11 @@ export const NewArrivals: React.FC = () => {
                       Limited Edition Launch
                     </span>
                     <span className="font-serif-luxury text-base sm:text-lg text-[#F5F2EA] font-medium">
-                      Royal Oud Imperial Reserve
+                      {perfumeName}
                     </span>
                   </div>
                   <button
-                    onClick={() => navigateTo('/products/royal-oud-imperial')}
+                    onClick={() => navigateTo(link)}
                     className="text-xs uppercase tracking-[2px] text-[#F0D9A4] hover:text-white font-semibold flex items-center gap-1 transition-colors"
                   >
                     <span>Details</span>
