@@ -48,7 +48,11 @@ export const productService = {
         sillage: p.sillage,
         season: Array.isArray(p.season) ? p.season : [],
         size: p.size,
-        availableSizes: p.product_variants || [],
+        availableSizes: p.product_variants?.map((v: any) => ({
+          size: v.size,
+          price: v.price,
+          compareAtPrice: v.compare_at_price
+        })) || [],
         stock: p.stock,
         badge: p.badge,
         images: p.product_images?.map((img: any) => img.url) || [],
@@ -106,8 +110,11 @@ export const productService = {
         longevity: p.longevity,
         sillage: p.sillage,
         season: Array.isArray(p.season) ? p.season : [],
-        size: p.size,
-        availableSizes: p.product_variants || [],
+        availableSizes: p.product_variants?.map((v: any) => ({
+          size: v.size,
+          price: v.price,
+          compareAtPrice: v.compare_at_price
+        })) || [],
         stock: p.stock,
         badge: p.badge,
         images: p.product_images?.map((img: any) => img.url) || [],
@@ -236,20 +243,54 @@ export const productService = {
   async updateProduct(id: string, updates: Partial<Product>): Promise<{ error: any }> {
     try {
       const updateData: any = {};
-      if (updates.name) updateData.name = updates.name;
-      if (updates.price !== undefined) updateData.price = updates.price;
-      if (updates.stock !== undefined) updateData.stock = updates.stock;
-      if (updates.description) updateData.description = updates.description;
-      if (updates.isFeatured !== undefined) updateData.is_featured = updates.isFeatured;
-      if (updates.categoryId) updateData.category_id = updates.categoryId;
-      if (updates.gender) updateData.gender = updates.gender;
+      if ('name' in updates) updateData.name = updates.name;
+      if ('price' in updates) updateData.price = updates.price;
+      if ('compareAtPrice' in updates) updateData.compare_at_price = updates.compareAtPrice ?? null;
+      if ('stock' in updates) updateData.stock = updates.stock;
+      if ('description' in updates) updateData.description = updates.description;
+      if ('isFeatured' in updates) updateData.is_featured = updates.isFeatured;
+      if ('isSale' in updates) updateData.is_sale = updates.isSale;
+      if ('isNew' in updates) updateData.is_new = updates.isNew;
+      if ('isBestSeller' in updates) updateData.is_best_seller = updates.isBestSeller;
+      if ('badge' in updates) updateData.badge = updates.badge ?? null;
+      if ('categoryId' in updates) updateData.category_id = updates.categoryId;
+      if ('gender' in updates) updateData.gender = updates.gender;
 
       const { error } = await supabase
         .from('products')
         .update(updateData)
         .eq('id', id);
 
-      return { error };
+      if (error) return { error };
+
+      // Update variants if provided
+      if ('availableSizes' in updates && Array.isArray(updates.availableSizes)) {
+        await supabase.from('product_variants').delete().eq('product_id', id);
+        if (updates.availableSizes.length > 0) {
+          const variantInserts = updates.availableSizes.map(v => ({
+            product_id: id,
+            size: v.size,
+            price: v.price,
+            compare_at_price: v.compareAtPrice
+          }));
+          await supabase.from('product_variants').insert(variantInserts);
+        }
+      }
+
+      // Update images if provided
+      if ('images' in updates && Array.isArray(updates.images)) {
+        await supabase.from('product_images').delete().eq('product_id', id);
+        if (updates.images.length > 0) {
+          const imageInserts = updates.images.map((url, idx) => ({
+            product_id: id,
+            url,
+            is_main: idx === 0
+          }));
+          await supabase.from('product_images').insert(imageInserts);
+        }
+      }
+
+      return { error: null };
     } catch (error) {
       return { error };
     }

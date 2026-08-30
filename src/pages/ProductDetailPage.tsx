@@ -32,7 +32,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
     toggleWishlist,
     formatPrice,
     navigateTo,
-    showToast
+    showToast,
+    isLoadingProducts
   } = useShop();
 
   const product = getProductBySlug(slug) || products[0];
@@ -41,6 +42,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeAccordion, setActiveAccordion] = useState<'details' | 'shipping' | 'usage' | null>('details');
+
+  if (isLoadingProducts) {
+    return (
+      <div className="min-h-screen bg-[#070707] text-[#F5F2EA] flex flex-col items-center justify-center p-8 text-center space-y-4 pb-24">
+        <div className="w-12 h-12 border-4 border-[#C9A45C]/30 border-t-[#C9A45C] rounded-full animate-spin mb-4"></div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (

@@ -4,7 +4,7 @@ import { ProductCard } from '../products/ProductCard';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
 export const BestSellers: React.FC = () => {
-  const { products, navigateTo } = useShop();
+  const { products, isLoadingProducts, navigateTo } = useShop();
   const [activeTab, setActiveTab] = useState<'all' | 'oud' | 'men' | 'unisex'>('all');
 
   const bestSellerProducts = products.filter(p => p.isBestSeller || p.badge === 'BEST SELLER');
@@ -63,11 +63,17 @@ export const BestSellers: React.FC = () => {
         </div>
 
         {/* Product Cards Grid: 4 columns desktop, 3 tablet, 2 mobile */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {filtered.slice(0, 4).map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {isLoadingProducts ? (
+          <div className="py-12 flex items-center justify-center">
+            <div className="w-12 h-12 border-4 border-[#C9A45C]/30 border-t-[#C9A45C] rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {filtered.slice(0, 4).map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
 
       </div>
     </section>

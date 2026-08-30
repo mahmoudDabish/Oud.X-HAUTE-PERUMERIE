@@ -7,7 +7,7 @@ import { SlidersHorizontal, ChevronRight, Grid3X3, LayoutGrid, Sparkles } from '
 import { AnimatePresence, motion } from 'motion/react';
 
 export const ShopPage: React.FC = () => {
-  const { products, navigateTo, currentRoute } = useShop();
+  const { products, isLoadingProducts, navigateTo, currentRoute } = useShop();
 
   const CATEGORY_MAP: Record<string, string> = {
     'all': 'All Collections',
@@ -245,7 +245,11 @@ export const ShopPage: React.FC = () => {
             </div>
 
             {/* Products Grid */}
-            {filteredProducts.length === 0 ? (
+            {isLoadingProducts ? (
+              <div className="py-24 flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-[#C9A45C]/30 border-t-[#C9A45C] rounded-full animate-spin"></div>
+              </div>
+            ) : filteredProducts.length === 0 ? (
               <div className="py-24 text-center p-8 rounded-xl bg-[#0D0C0A] border border-white/5 space-y-4">
                 <div className="w-16 h-16 rounded-full bg-[#11100E] border border-[#C9A45C]/30 mx-auto flex items-center justify-center text-[#C9A45C]">
                   <Sparkles className="w-8 h-8" />
