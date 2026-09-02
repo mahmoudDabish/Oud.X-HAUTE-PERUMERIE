@@ -100,6 +100,12 @@ export const productService = {
         category: p.categories?.name || p.category_id,
         categoryId: p.category_id,
         gender: p.gender,
+        size: p.size,
+        availableSizes: p.product_variants?.map((v: any) => ({
+          size: v.size,
+          price: v.price,
+          compareAtPrice: v.compare_at_price
+        })) || [],
         concentration: p.concentration,
         fragranceFamily: p.fragrance_family,
         notes: {
@@ -110,11 +116,6 @@ export const productService = {
         longevity: p.longevity,
         sillage: p.sillage,
         season: Array.isArray(p.season) ? p.season : [],
-        availableSizes: p.product_variants?.map((v: any) => ({
-          size: v.size,
-          price: v.price,
-          compareAtPrice: v.compare_at_price
-        })) || [],
         stock: p.stock,
         badge: p.badge,
         images: p.product_images?.map((img: any) => img.url) || [],

@@ -1,47 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useShop } from '../../context/ShopContext';
 import { Sparkles, ArrowRight, Shield, Crown, Flame, Gem } from 'lucide-react';
-
-const COLLECTION_CATEGORIES = [
-  {
-    id: 'men',
-    title: 'MEN COLLECTION',
-    subtitle: 'Powerful woods, smoky birch, and bold spiced resins.',
-    image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1000&auto=format&fit=crop',
-    href: '/collections/men',
-    itemCount: 18
-  },
-  {
-    id: 'women',
-    title: 'WOMEN COLLECTION',
-    subtitle: 'Velvety Damask roses, radiant florals, and sweet amber nectar.',
-    image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=1000&auto=format&fit=crop',
-    href: '/collections/women',
-    itemCount: 22
-  },
-  {
-    id: 'unisex',
-    title: 'UNISEX COLLECTION',
-    subtitle: 'Masterfully balanced gourmand amber, coffee, and golden spices.',
-    image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=1000&auto=format&fit=crop',
-    href: '/collections/unisex',
-    itemCount: 26
-  },
-  {
-    id: 'oud',
-    title: 'OUD COLLECTION',
-    subtitle: 'Pure aged agarwood, rare resin extracts, and imperial elixirs.',
-    image: '/src/assets/images/hero_oud_bottle_1787700482747.jpg',
-    href: '/collections/oud',
-    itemCount: 15
-  }
-];
+import { collectionService, HomeCollection } from '../../services/collectionService';
 
 export const CollectionCards: React.FC = () => {
   const { navigateTo, products } = useShop();
+  const [collections, setCollections] = useState<HomeCollection[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const getCollectionIcon = (id: string) => {
-    switch (id) {
+  useEffect(() => {
+    async function loadCollections() {
+      setIsLoading(true);
+      setError(null);
+      const { data, error: err } = await collectionService.getHomeCollections();
+      if (err) {
+        setError(err);
+      } else if (data) {
+        setCollections(data);
+      }
+      setIsLoading(false);
+    }
+    loadCollections();
+  }, []);
+
+  const getCollectionIcon = (iconType: string) => {
+    switch (iconType) {
       case 'men':
         return <Shield className="w-5 h-5 text-[#C9A45C]" />;
       case 'women':
@@ -54,24 +38,21 @@ export const CollectionCards: React.FC = () => {
     }
   };
 
-  const getDynamicItemCount = (id: string) => {
-    switch (id) {
-      case 'men':
-        return products.filter(p => p.gender === 'Men').length;
-      case 'women':
-        return products.filter(p => p.gender === 'Women').length;
-      case 'unisex':
-        return products.filter(p => p.gender === 'Unisex').length;
-      case 'oud':
-        return products.filter(p => 
-          p.categoryId === '33333333-3333-3333-3333-333333333333' || 
-          p.category === 'Oud' || 
-          p.category === '33333333-3333-3333-3333-333333333333'
-        ).length;
-      default:
-        return 0;
-    }
-  };
+  if (isLoading && collections.length === 0) {
+    return (
+      <section className="py-20 bg-[#0D0C0A] relative border-t border-[#C9A45C]/15 overflow-hidden min-h-[600px] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-[#C9A45C]/30 border-t-[#C9A45C] rounded-full animate-spin"></div>
+      </section>
+    );
+  }
+
+  if (error && collections.length === 0) {
+    return (
+      <section className="py-20 bg-[#0D0C0A] relative border-t border-[#C9A45C]/15 overflow-hidden min-h-[600px] flex items-center justify-center">
+        <div className="text-[#A7A29A] text-sm">Unable to load collections at this time.</div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-20 bg-[#0D0C0A] relative border-t border-[#C9A45C]/15 overflow-hidden">
@@ -95,9 +76,10 @@ export const CollectionCards: React.FC = () => {
           </p>
         </div>
 
-        {/* 4 Cards Grid with Frosted Glass Panels */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {COLLECTION_CATEGORIES.map((cat) => (
+        {/* Cards Grid with Frosted Glass Panels */}
+        {collections.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {collections.map((cat) => (
             <div
               key={cat.id}
               onClick={() => navigateTo(cat.href)}
@@ -105,7 +87,7 @@ export const CollectionCards: React.FC = () => {
             >
               {/* Background Image with subtle frosted zoom */}
               <img
-                src={cat.image}
+                src={cat.image_url}
                 alt={cat.title}
                 referrerPolicy="no-referrer"
                 loading="lazy"
@@ -118,7 +100,7 @@ export const CollectionCards: React.FC = () => {
               {/* Card Top: Frosted Icon & Count Pill */}
               <div className="relative z-10 flex items-center justify-between">
                 <div className="w-10 h-10 rounded-full bg-[#070707]/75 border border-[#C9A45C]/30 backdrop-blur-md flex items-center justify-center group-hover:border-[#E3C27A] group-hover:scale-105 transition-all">
-                  {getCollectionIcon(cat.id)}
+                  {getCollectionIcon(cat.icon_type)}
                 </div>
               </div>
 
@@ -144,9 +126,15 @@ export const CollectionCards: React.FC = () => {
               </div>
             </div>
           ))}
-        </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center py-12 text-[#A7A29A]">
+            <p>No collections currently available.</p>
+          </div>
+        )}
 
       </div>
     </section>
   );
 };
+
