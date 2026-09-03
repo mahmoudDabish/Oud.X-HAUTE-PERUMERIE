@@ -118,7 +118,7 @@ BEGIN
         'total', v_total
     )::jsonb;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Permissions
 REVOKE EXECUTE ON FUNCTION create_order FROM PUBLIC;

@@ -260,7 +260,7 @@ BEGIN
         'total', v_total
     )::jsonb;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Revoke execute from public to secure the function, but grant to anon and authenticated
 REVOKE EXECUTE ON FUNCTION create_order FROM PUBLIC;
