@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
 import { orderService } from '../services/orderService';
 import { Button } from '../components/ui/Button';
@@ -60,16 +60,34 @@ export const CheckoutPage: React.FC = () => {
     showToast
   } = useShop();
 
-  const [contactEmail, setContactEmail] = useState(user?.email || 'karim.elsayed@luxury.com');
-  const [contactPhone, setContactPhone] = useState(user?.phone || '+20 100 123 4567');
+  const [contactEmail, setContactEmail] = useState(user?.email || '');
+  const [contactPhone, setContactPhone] = useState(user?.phone || '');
   
-  const [fullName, setFullName] = useState(user?.name || 'Karim El-Sayed');
+  const [fullName, setFullName] = useState(user?.name || '');
   const [governorate, setGovernorate] = useState('Cairo');
-  const [cityArea, setCityArea] = useState('New Cairo');
-  const [streetAddress, setStreetAddress] = useState('Road 90 North, Villa 42');
-  const [building, setBuilding] = useState('Villa 42');
-  const [apartment, setApartment] = useState('Suite 2');
+  const [cityArea, setCityArea] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
+  const [building, setBuilding] = useState('');
+  const [apartment, setApartment] = useState('');
   const [additionalDetails, setAdditionalDetails] = useState('');
+
+  // Auto-fill from user profile when logged in
+  useEffect(() => {
+    if (user) {
+      if (user.email && !contactEmail) setContactEmail(user.email);
+      if (user.phone && !contactPhone) setContactPhone(user.phone);
+      if (user.name && !fullName) setFullName(user.name);
+
+      const defaultAddr = user.addresses?.find(a => a.isDefault) || user.addresses?.[0];
+      if (defaultAddr) {
+        if (defaultAddr.governorate) setGovernorate(defaultAddr.governorate);
+        if (defaultAddr.area) setCityArea(defaultAddr.area);
+        if (defaultAddr.streetAddress) setStreetAddress(defaultAddr.streetAddress);
+        if (defaultAddr.building) setBuilding(defaultAddr.building);
+        if (defaultAddr.apartment) setApartment(defaultAddr.apartment);
+      }
+    }
+  }, [user]);
 
   const [paymentMethod, setPaymentMethod] = useState<'Card' | 'Instapay' | 'COD'>('Card');
 
@@ -274,7 +292,8 @@ export const CheckoutPage: React.FC = () => {
                       required
                       value={contactEmail}
                       onChange={(e) => setContactEmail(e.target.value)}
-                      className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded px-3 py-2.5 text-[#F5F2EA] focus:outline-none"
+                      placeholder="e.g. client@domain.com"
+                      className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded px-3 py-2.5 text-[#F5F2EA] focus:outline-none placeholder:text-[#555]"
                     />
                   </div>
                   <div>
@@ -284,7 +303,8 @@ export const CheckoutPage: React.FC = () => {
                       required
                       value={contactPhone}
                       onChange={(e) => setContactPhone(e.target.value)}
-                      className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded px-3 py-2.5 text-[#F5F2EA] focus:outline-none"
+                      placeholder="e.g. 0100 123 4567"
+                      className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded px-3 py-2.5 text-[#F5F2EA] focus:outline-none placeholder:text-[#555]"
                     />
                   </div>
                 </div>
@@ -307,8 +327,8 @@ export const CheckoutPage: React.FC = () => {
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      placeholder="e.g. Karim El-Sayed"
-                      className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded px-3 py-2.5 text-[#F5F2EA] focus:outline-none"
+                      placeholder="e.g. Mahmoud Dabish"
+                      className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded px-3 py-2.5 text-[#F5F2EA] focus:outline-none placeholder:text-[#555]"
                     />
                   </div>
 
