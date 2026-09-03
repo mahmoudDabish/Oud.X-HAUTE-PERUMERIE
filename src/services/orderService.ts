@@ -9,7 +9,18 @@ export interface CheckoutItem {
 
 function mapDatabaseOrders(data: any[]): Order[] {
   return (data || []).map((o: any) => {
-    const shippingFee = Number(o.shipping_fee ?? o.shipping ?? 0);
+    let shippingFee = Number(o.shipping_fee ?? o.shipping ?? 0);
+    let total = Number(o.total || 0);
+    const subtotal = Number(o.subtotal || 0);
+    const discount = Number(o.discount || 0);
+
+    // If an order has the automatic 150 EGP fee from legacy backend function,
+    // neutralize it so every order starts with 0 EGP shipping as requested!
+    if (shippingFee === 150 && (total === subtotal + 150 || total === (subtotal - discount + 150))) {
+      shippingFee = 0;
+      total = Math.max(0, subtotal - discount);
+    }
+
     return {
       id: o.id,
       orderNumber: o.order_number || o.id,
@@ -25,11 +36,11 @@ function mapDatabaseOrders(data: any[]): Order[] {
             day: 'numeric'
           }),
       status: (o.status || 'Processing') as Order['status'],
-      subtotal: Number(o.subtotal || 0),
+      subtotal,
       shipping: shippingFee,
       shippingFee: shippingFee,
-      discount: Number(o.discount || 0),
-      total: Number(o.total || 0),
+      discount,
+      total,
       paymentMethod: (o.payment_method || 'Cash on Delivery') as Order['paymentMethod'],
       shippingAddress: o.shipping_address || {
         id: '',
@@ -81,6 +92,30 @@ export const orderService = {
         p_express_delivery: false, // Standard delivery only, 0 shipping fee default
         p_promo_code: promoCode || ''
       });
+
+      if (error) return { data: null, error };
+
+      if (data) {
+        // If legacy database function returned a total with automatic 150 shipping, strip it!
+        const subtotal = Number(data.subtotal || 0);
+        const discount = Number(data.discount || 0);
+        let cleanTotal = Number(data.total || 0);
+
+        if (subtotal > 0) {
+          cleanTotal = Math.max(0, subtotal - discount);
+        } else if (cleanTotal >= 150) {
+          cleanTotal = cleanTotal - 150;
+        }
+
+        const sanitizedData = {
+          ...data,
+          shipping: 0,
+          shipping_fee: 0,
+          total: cleanTotal
+        };
+
+        return { data: sanitizedData, error: null };
+      }
 
       return { data, error };
     } catch (error) {
