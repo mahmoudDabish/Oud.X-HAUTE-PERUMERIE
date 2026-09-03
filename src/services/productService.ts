@@ -4,66 +4,88 @@ import { Product } from '../types';
 export const productService = {
   async getProducts(): Promise<{ data: Product[] | null, error: any }> {
     try {
-      let { data, error } = await supabase
+      // Fetch base products and categories
+      let { data: productsData, error: productsError } = await supabase
         .from('products')
         .select(`
           *,
-          categories ( id, name ),
-          product_variants ( size, price, compare_at_price ),
-          product_images ( url, is_main )
-        `);
+          categories ( id, name )
+        `)
+        .order('created_at', { ascending: false });
         
-      if (error && error.code === 'PGRST200') {
-        // Fallback if relations like categories aren't set up yet
+      if (productsError && productsError.code === 'PGRST200') {
         console.warn('Relationships missing, falling back to basic products fetch');
         const fallback = await supabase.from('products').select('*');
-        data = fallback.data;
-        error = fallback.error;
+        productsData = fallback.data;
+        productsError = fallback.error;
       }
         
-      if (error || !data) return { data: null, error };
+      if (productsError || !productsData) return { data: null, error: productsError };
+
+      // Fetch variants
+      const { data: variantsData, error: variantsError } = await supabase.from('product_variants').select('*');
+      if (variantsError) {
+        console.warn('Could not load product variants:', variantsError);
+      }
+      
+      // Fetch product images directly (now lightweight Storage URLs)
+      let imagesData: any[] = [];
+      const { data: imgData, error: imgError } = await supabase
+        .from('product_images')
+        .select('product_id, url, is_main');
+
+      if (imgError) {
+        console.warn('Could not load product images from Supabase:', imgError.message);
+      } else if (imgData) {
+        imagesData = imgData;
+      }
 
       // Transform data to match frontend types
-      const products: Product[] = data.map((p: any) => ({
-        id: p.id,
-        name: p.name,
-        slug: p.slug,
-        brand: p.brand,
-        subtitle: p.subtitle,
-        description: p.description,
-        story: p.story,
-        price: p.price,
-        compareAtPrice: p.compare_at_price,
-        category: p.categories?.name || p.category_id,
-        categoryId: p.category_id,
-        gender: p.gender,
-        concentration: p.concentration,
-        fragranceFamily: p.fragrance_family,
-        notes: {
-          top: p.notes?.top || [],
-          heart: p.notes?.heart || [],
-          base: p.notes?.base || []
-        },
-        longevity: p.longevity,
-        sillage: p.sillage,
-        season: Array.isArray(p.season) ? p.season : [],
-        size: p.size,
-        availableSizes: p.product_variants?.map((v: any) => ({
-          size: v.size,
-          price: v.price,
-          compareAtPrice: v.compare_at_price
-        })) || [],
-        stock: p.stock,
-        badge: p.badge,
-        images: p.product_images?.map((img: any) => img.url) || [],
-        isFeatured: p.is_featured,
-        isBestSeller: p.is_best_seller,
-        isNew: p.is_new,
-        isSale: p.is_sale,
-        rating: p.rating || 5,
-        reviewCount: p.review_count || 0,
-        reviews: []
-      }));
+      const products: Product[] = productsData.map((p: any) => {
+        const productVariants = variantsData?.filter(v => v.product_id === p.id) || [];
+        const productImages = imagesData?.filter(img => img.product_id === p.id) || [];
+        
+        return {
+          id: p.id,
+          name: p.name,
+          slug: p.slug,
+          brand: p.brand,
+          subtitle: p.subtitle,
+          description: p.description,
+          story: p.story,
+          price: p.price,
+          compareAtPrice: p.compare_at_price,
+          category: p.categories?.name || p.category_id,
+          categoryId: p.category_id,
+          gender: p.gender,
+          size: p.size,
+          availableSizes: productVariants.map((v: any) => ({
+            size: v.size,
+            price: v.price,
+            compareAtPrice: v.compare_at_price
+          })),
+          concentration: p.concentration,
+          fragranceFamily: p.fragrance_family,
+          notes: {
+            top: p.notes?.top || [],
+            heart: p.notes?.heart || [],
+            base: p.notes?.base || []
+          },
+          longevity: p.longevity,
+          sillage: p.sillage,
+          season: Array.isArray(p.season) ? p.season : [],
+          stock: p.stock,
+          badge: p.badge,
+          images: productImages.map((img: any) => img.url),
+          isFeatured: p.is_featured,
+          isBestSeller: p.is_best_seller,
+          isNew: p.is_new,
+          isSale: p.is_sale,
+          rating: p.rating || 5,
+          reviewCount: p.review_count || 0,
+          reviews: []
+        };
+      });
 
       return { data: products, error: null };
     } catch (error) {
@@ -73,20 +95,24 @@ export const productService = {
 
   async getProductBySlug(slug: string): Promise<{ data: Product | null, error: any }> {
     try {
-      const { data, error } = await supabase
+      const { data: p, error } = await supabase
         .from('products')
         .select(`
           *,
           categories ( id, name ),
-          product_variants ( size, price, compare_at_price ),
-          product_images ( url, is_main )
+          product_variants ( size, price, compare_at_price )
         `)
         .eq('slug', slug)
         .single();
         
-      if (error || !data) return { data: null, error };
+      if (error || !p) return { data: null, error };
 
-      const p = data;
+      // Fetch images for this specific product
+      const { data: productImages } = await supabase
+        .from('product_images')
+        .select('url')
+        .eq('product_id', p.id);
+
       const product: Product = {
         id: p.id,
         name: p.name,
@@ -118,7 +144,7 @@ export const productService = {
         season: Array.isArray(p.season) ? p.season : [],
         stock: p.stock,
         badge: p.badge,
-        images: p.product_images?.map((img: any) => img.url) || [],
+        images: productImages?.map((img: any) => img.url) || [],
         isFeatured: p.is_featured,
         isBestSeller: p.is_best_seller,
         isNew: p.is_new,

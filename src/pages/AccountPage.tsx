@@ -26,10 +26,12 @@ import {
   Layers,
   BarChart3,
   XCircle,
-  FileSpreadsheet
+  FileSpreadsheet,
+  UploadCloud
 } from 'lucide-react';
 import { AddEditProductModal } from '../components/admin/AddEditProductModal';
 import { OrderInvoiceModal } from '../components/admin/OrderInvoiceModal';
+import { StorageMigrationModal } from '../components/admin/StorageMigrationModal';
 
 export const AccountPage: React.FC = () => {
   const {
@@ -91,6 +93,7 @@ export const AccountPage: React.FC = () => {
   const [selectedInvoiceOrder, setSelectedInvoiceOrder] = useState<Order | null>(null);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
+  const [isMigrationModalOpen, setIsMigrationModalOpen] = useState(false);
 
   // Inventory Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -279,6 +282,15 @@ export const AccountPage: React.FC = () => {
               >
                 <Plus className="w-4 h-4" />
                 <span>Add Fragrance</span>
+              </button>
+
+              <button
+                onClick={() => setIsMigrationModalOpen(true)}
+                className="px-4 py-2.5 rounded-full bg-[#1A1610] hover:bg-[#251F16] border border-[#C9A45C]/50 text-xs font-bold text-[#E3C27A] flex items-center gap-2 transition-all cursor-pointer shadow-md hover:border-[#E3C27A]"
+                title="Migrate Base64 images to Supabase Storage"
+              >
+                <UploadCloud className="w-4 h-4 text-[#C9A45C]" />
+                <span>Migrate Images to Storage</span>
               </button>
             </div>
           </div>
@@ -836,25 +848,38 @@ export const AccountPage: React.FC = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
                       {/* Items */}
                       <div className="lg:col-span-7 space-y-2">
-                        {order.items.map((it, i) => (
-                          <div key={i} className="flex items-center gap-3 p-2 rounded-xl bg-[#151310]/50 border border-white/5">
-                            <img
-                              src={it.image}
-                              alt={it.name}
-                              referrerPolicy="no-referrer"
-                              className="w-10 h-12 object-cover rounded-lg bg-black border border-[#C9A45C]/20 shrink-0"
-                            />
-                            <div className="flex-1 min-w-0">
-                              <div className="text-xs font-bold text-[#F5F2EA] truncate">{it.name}</div>
-                              <div className="text-[11px] text-[#A7A29A]">
-                                {it.size} • Qty: <span className="text-[#F5F2EA] font-semibold">{it.quantity}</span>
+                        {order.items.map((it, i) => {
+                          const matchedProduct = products.find(
+                            p => p.name.toLowerCase() === it.name.toLowerCase()
+                          );
+                          const itemImage = it.image || matchedProduct?.images?.[0];
+
+                          return (
+                            <div key={i} className="flex items-center gap-3 p-2 rounded-xl bg-[#151310]/50 border border-white/5">
+                              {itemImage ? (
+                                <img
+                                  src={itemImage}
+                                  alt={it.name}
+                                  referrerPolicy="no-referrer"
+                                  className="w-10 h-12 object-cover rounded-lg bg-black border border-[#C9A45C]/20 shrink-0"
+                                />
+                              ) : (
+                                <div className="w-10 h-12 rounded-lg bg-black border border-[#C9A45C]/20 flex items-center justify-center text-[#C9A45C] shrink-0">
+                                  <Package className="w-5 h-5" />
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="text-xs font-bold text-[#F5F2EA] truncate">{it.name}</div>
+                                <div className="text-[11px] text-[#A7A29A]">
+                                  {it.size} • Qty: <span className="text-[#F5F2EA] font-semibold">{it.quantity}</span>
+                                </div>
+                              </div>
+                              <div className="text-xs font-bold text-[#F0D9A4]">
+                                {formatPrice(it.price * it.quantity)}
                               </div>
                             </div>
-                            <div className="text-xs font-bold text-[#F0D9A4]">
-                              {formatPrice(it.price * it.quantity)}
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
 
                       {/* Customer & Address */}
@@ -1103,6 +1128,15 @@ export const AccountPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Storage Migration Modal */}
+      <StorageMigrationModal
+        isOpen={isMigrationModalOpen}
+        onClose={() => setIsMigrationModalOpen(false)}
+        onMigrationComplete={() => {
+          window.location.reload();
+        }}
+      />
     </div>
   );
 };

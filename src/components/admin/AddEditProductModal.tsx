@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Product, FragranceConcentration, FragranceFamily, FragranceGender } from '../../types';
-import { X, Sparkles, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
+import { X, Sparkles, Plus, Trash2, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { supabase } from '../../lib/supabaseClient';
 
 interface AddEditProductModalProps {
   isOpen: boolean;
@@ -63,9 +64,10 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
     '/src/assets/images/hero_oud_bottle_1787700482747.jpg'
   ]);
   const [customImageUrl, setCustomImageUrl] = useState('');
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   // Sizes
-  const [sizes, setSizes] = useState<{size: string, price: number, compareAtPrice?: number}[]>([
+  const [sizes, setSizes] = useState<{ size: string, price: number, compareAtPrice?: number }[]>([
     { size: '100ml / 3.4 fl.oz', price: 1950, compareAtPrice: undefined }
   ]);
 
@@ -341,13 +343,12 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
                 min="0"
                 value={stock}
                 onChange={e => setStock(Number(e.target.value))}
-                className={`w-full px-3 py-2 bg-[#070707] border rounded-lg text-sm font-bold focus:outline-none ${
-                  stock === 0
+                className={`w-full px-3 py-2 bg-[#070707] border rounded-lg text-sm font-bold focus:outline-none ${stock === 0
                     ? 'text-red-400 border-red-500/50'
                     : stock <= 5
-                    ? 'text-amber-400 border-amber-500/50'
-                    : 'text-emerald-400 border-[#C9A45C]/30'
-                }`}
+                      ? 'text-amber-400 border-amber-500/50'
+                      : 'text-emerald-400 border-[#C9A45C]/30'
+                  }`}
               />
             </div>
 
@@ -609,23 +610,52 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
 
             {/* Image Upload Input */}
             <div className="flex flex-col gap-2">
-              <label className="text-[11px] uppercase tracking-wider text-[#A7A29A]">Upload Image</label>
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] uppercase tracking-wider text-[#A7A29A]">Upload Image to Storage</label>
+                {isUploadingImage && (
+                  <span className="text-[10px] text-[#E3C27A] flex items-center gap-1 font-bold animate-pulse">
+                    <Loader2 className="w-3 h-3 animate-spin" /> Uploading to Storage...
+                  </span>
+                )}
+              </div>
               <input
                 type="file"
-                accept="image/*"
-                onChange={(e) => {
+                accept="image/webp,image/jpeg,image/png,image/avif"
+                disabled={isUploadingImage}
+                onChange={async (e) => {
                   const file = e.target.files?.[0];
                   if (file) {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                      const result = reader.result as string;
-                      handleAddImage(result);
-                    };
-                    reader.readAsDataURL(file);
+                    setIsUploadingImage(true);
+                    try {
+                      const fileExt = file.name.split('.').pop() || 'webp';
+                      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+                      const filePath = `uploads/${fileName}`;
+
+                      const { error: uploadErr } = await supabase.storage
+                        .from('product-images')
+                        .upload(filePath, file, {
+                          cacheControl: '3600',
+                          upsert: false
+                        });
+
+                      if (uploadErr) {
+                        alert(`Image upload failed: ${uploadErr.message}`);
+                      } else {
+                        const { data: { publicUrl } } = supabase.storage
+                          .from('product-images')
+                          .getPublicUrl(filePath);
+
+                        handleAddImage(publicUrl);
+                      }
+                    } catch (err: any) {
+                      alert(`Upload error: ${err.message}`);
+                    } finally {
+                      setIsUploadingImage(false);
+                    }
                   }
                   e.target.value = ''; // Reset input
                 }}
-                className="block w-full text-xs text-[#A7A29A] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#C9A45C]/20 file:text-[#E3C27A] hover:file:bg-[#C9A45C]/30"
+                className="block w-full text-xs text-[#A7A29A] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#C9A45C]/20 file:text-[#E3C27A] hover:file:bg-[#C9A45C]/30 disabled:opacity-50 cursor-pointer"
               />
             </div>
 

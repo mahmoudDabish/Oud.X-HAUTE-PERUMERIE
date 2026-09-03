@@ -143,8 +143,15 @@ CREATE POLICY "Admins can delete product images" ON product_images FOR DELETE US
 
 -- User isolated access
 CREATE POLICY "Users can view own orders" ON orders FOR SELECT USING (auth.uid() = user_id);
+-- Admin access for orders
+CREATE POLICY "Admins can view all orders" ON orders FOR SELECT USING ((SELECT role FROM profiles WHERE id = auth.uid()) = 'admin');
+CREATE POLICY "Admins can update orders" ON orders FOR UPDATE USING ((SELECT role FROM profiles WHERE id = auth.uid()) = 'admin');
+CREATE POLICY "Admins can delete orders" ON orders FOR DELETE USING ((SELECT role FROM profiles WHERE id = auth.uid()) = 'admin');
+
 -- order insertion is handled by the security definer function.
 CREATE POLICY "Users can view own order items" ON order_items FOR SELECT USING (EXISTS (SELECT 1 FROM orders WHERE orders.id = order_items.order_id AND orders.user_id = auth.uid()));
+-- Admin access for order items
+CREATE POLICY "Admins can view all order items" ON order_items FOR SELECT USING ((SELECT role FROM profiles WHERE id = auth.uid()) = 'admin');
 
 CREATE POLICY "Users can view own wishlist" ON wishlist_items FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "Users can insert own wishlist" ON wishlist_items FOR INSERT WITH CHECK (auth.uid() = user_id);
@@ -217,15 +224,11 @@ BEGIN
         v_discount := 500;
     END IF;
 
-    -- 3. Calculate Shipping (FREE_SHIPPING_THRESHOLD = 2500)
-    IF (v_subtotal - v_discount) >= 2500 OR v_subtotal = 0 THEN
-        v_shipping := 0;
-    ELSE
-        v_shipping := 150;
-    END IF;
+    -- 3. Calculate Shipping (Complimentary / Free Delivery)
+    v_shipping := 0;
     
     IF p_express_delivery THEN
-        v_shipping := v_shipping + 75;
+        v_shipping := 75;
     END IF;
 
     -- 4. Calculate Final Total
@@ -267,22 +270,65 @@ $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 REVOKE EXECUTE ON FUNCTION create_order FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION create_order TO anon, authenticated;
 
- - -   T r i g g e r   t o   a u t o m a t i c a l l y   c r e a t e   a   p r o f i l e   f o r   n e w   u s e r s 
- c r e a t e   o r   r e p l a c e   f u n c t i o n   p u b l i c . h a n d l e _ n e w _ u s e r ( ) 
- r e t u r n s   t r i g g e r 
- l a n g u a g e   p l p g s q l 
- s e c u r i t y   d e f i n e r   s e t   s e a r c h _ p a t h   =   ' ' 
- a s   \ $ \ $ 
- b e g i n 
-     i n s e r t   i n t o   p u b l i c . p r o f i l e s   ( i d ,   f u l l _ n a m e ,   r o l e ) 
-     v a l u e s   ( n e w . i d ,   n e w . r a w _ u s e r _ m e t a _ d a t a - > > ' f u l l _ n a m e ' ,   ' c u s t o m e r ' ) ; 
-     r e t u r n   n e w ; 
- e n d ; 
- \ $ \ $ ; 
- 
- d r o p   t r i g g e r   i f   e x i s t s   o n _ a u t h _ u s e r _ c r e a t e d   o n   a u t h . u s e r s ; 
- c r e a t e   t r i g g e r   o n _ a u t h _ u s e r _ c r e a t e d 
-     a f t e r   i n s e r t   o n   a u t h . u s e r s 
-     f o r   e a c h   r o w   e x e c u t e   p r o c e d u r e   p u b l i c . h a n d l e _ n e w _ u s e r ( ) ; 
-  
- 
+-- Trigger to automatically create a profile for new users
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = ''
+as $$
+begin
+  insert into public.profiles (id, full_name, role)
+  values (new.id, new.raw_user_meta_data->>'full_name', 'customer');
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
+
+-- ==========================================================
+-- Storage: 'product-images' Bucket & Access Policies
+-- ==========================================================
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'product-images',
+  'product-images',
+  true,
+  10485760,
+  ARRAY['image/webp', 'image/jpeg', 'image/png', 'image/avif']
+)
+ON CONFLICT (id) DO UPDATE SET 
+  public = true,
+  file_size_limit = 10485760,
+  allowed_mime_types = ARRAY['image/webp', 'image/jpeg', 'image/png', 'image/avif'];
+
+DROP POLICY IF EXISTS "Public users can view product images" ON storage.objects;
+CREATE POLICY "Public users can view product images"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'product-images');
+
+DROP POLICY IF EXISTS "Admins can upload product images" ON storage.objects;
+CREATE POLICY "Admins can upload product images"
+ON storage.objects FOR INSERT
+WITH CHECK (
+  bucket_id = 'product-images'
+  AND (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin'
+);
+
+DROP POLICY IF EXISTS "Admins can update product images" ON storage.objects;
+CREATE POLICY "Admins can update product images"
+ON storage.objects FOR UPDATE
+USING (
+  bucket_id = 'product-images'
+  AND (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin'
+);
+
+DROP POLICY IF EXISTS "Admins can delete product images" ON storage.objects;
+CREATE POLICY "Admins can delete product images"
+ON storage.objects FOR DELETE
+USING (
+  bucket_id = 'product-images'
+  AND (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin'
+);

@@ -97,8 +97,8 @@ export const CheckoutPage: React.FC = () => {
     if (orderResponse) {
       clearCart();
       
-      const message = `Hello OUD.X Privé, I would like to confirm my new order.\n\n*Order Number:* #${orderResponse.order_number}\n*Name:* ${fullName}\n*Total:* ${formatPrice(finalTotal)}`;
-      window.open(`https://wa.me/201127977819?text=${encodeURIComponent(message)}`, '_blank');
+      // Remove automatic window.open for WhatsApp here.
+      // We will handle it in the success screen.
       
       setPlacedOrder({
         ...orderResponse,
@@ -151,21 +151,37 @@ export const CheckoutPage: React.FC = () => {
             A confirmation receipt has been sent to <strong>{contactEmail}</strong>. Our white-glove courier will contact you via WhatsApp / SMS prior to delivery.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+          <div className="flex flex-col gap-3 justify-center pt-4">
             <Button
-              onClick={() => navigateTo('/account')}
+              onClick={() => {
+                const message = `Hello OUD.X Privé, I would like to confirm my new order.\n\n*Order Number:* #${placedOrder.orderNumber}\n*Name:* ${fullName}\n*Total:* ${formatPrice(placedOrder.total)}`;
+                window.open(`https://wa.me/201127977819?text=${encodeURIComponent(message)}`, '_blank');
+              }}
               variant="primary"
-              size="md"
+              size="lg"
+              className="bg-[#25D366] text-white hover:bg-[#25D366]/90 border-none font-bold"
             >
-              VIEW ORDER IN ACCOUNT
+              CONFIRM ORDER VIA WHATSAPP
             </Button>
-            <Button
-              onClick={() => navigateTo('/shop')}
-              variant="secondary"
-              size="md"
-            >
-              CONTINUE BROWSING
-            </Button>
+            
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button
+                onClick={() => navigateTo('/account')}
+                variant="primary"
+                size="md"
+                className="flex-1"
+              >
+                VIEW ORDER IN ACCOUNT
+              </Button>
+              <Button
+                onClick={() => navigateTo('/shop')}
+                variant="secondary"
+                size="md"
+                className="flex-1"
+              >
+                CONTINUE BROWSING
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -451,7 +467,7 @@ export const CheckoutPage: React.FC = () => {
                     ? 'PROCESSING...' 
                     : hasInsufficientStock 
                       ? 'INSUFFICIENT STOCK IN CART' 
-                      : `CONFIRM VIA WHATSAPP (${formatPrice(finalTotal)})`}
+                      : `PLACE ORDER (${formatPrice(finalTotal)})`}
                 </Button>
 
                 <div className="flex items-center justify-center gap-2 text-[10px] text-[#8E713D]">

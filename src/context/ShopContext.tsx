@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Product, CartItem, UserProfile, Order, UserAddress } from '../types';
 import { productService } from '../services/productService';
+import { orderService } from '../services/orderService';
 import { authService } from '../services/authService';
 import { wishlistService } from '../services/wishlistService';
 import { supabase } from '../lib/supabaseClient';
@@ -155,16 +156,16 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  // All Orders (Global Store & Admin Orders with LocalStorage Persistence)
+  // All Orders (Admin Orders)
   const [allOrders, setAllOrders] = useState<Order[]>([]);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem('oudx_admin_orders', JSON.stringify(allOrders));
-    } catch {
-      // ignore
+  // We will fetch all orders if the user is an admin
+  const loadAllOrders = useCallback(async () => {
+    const { data, error } = await orderService.getAllOrders();
+    if (!error && data) {
+      setAllOrders(data);
     }
-  }, [allOrders]);
+  }, []);
 
   const getProductBySlug = (slug: string) => {
     return products.find(p => p.slug === slug || p.id === slug);
@@ -301,14 +302,18 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     async function loadSession() {
       setIsAuthLoading(true);
       const { userProfile } = await authService.getSession();
-      if (userProfile) {
-        setUser(userProfile);
-        loadWishlist(userProfile.id);
-      }
-      setIsAuthLoading(false);
+        if (userProfile) {
+          setUser(userProfile);
+          loadWishlist(userProfile.id);
+          
+          if (userProfile.role === 'admin') {
+            loadAllOrders();
+          }
+        }
+        setIsAuthLoading(false);
     }
     loadSession();
-  }, [loadWishlist]);
+  }, [loadWishlist, loadAllOrders]);
 
   // Toast
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -459,6 +464,10 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { userProfile } = await authService.getSession();
     if (userProfile) {
       setUser(userProfile);
+      loadWishlist(userProfile.id);
+      if (userProfile.role === 'admin') {
+        loadAllOrders();
+      }
       showToast('Welcome to OUD-X Privé', `Signed in as ${userProfile.name}`, 'gold');
     }
   };
@@ -552,7 +561,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // Admin Orders Operations
-  const updateOrderStatus = (orderId: string, status: Order['status'], trackingNumber?: string) => {
+  const updateOrderStatus = async (orderId: string, status: Order['status'], trackingNumber?: string) => {
+    // Optimistic update in UI
     setAllOrders(prev =>
       prev.map(ord => {
         if (ord.id === orderId || ord.orderNumber === orderId) {
@@ -583,18 +593,36 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
     }
 
-    showToast('Order Status Updated', `Order marked as "${status}"`, 'gold');
+    // Backend update
+    const { error } = await orderService.updateOrderStatus(orderId, status, trackingNumber);
+    if (error) {
+      console.error('Failed to update order status:', error);
+      showToast('Error', 'Failed to update order status on the server.', 'info');
+      // Ideally revert the optimistic update here
+    } else {
+      showToast('Order Status Updated', `Order marked as "${status}"`, 'gold');
+    }
   };
 
-  const deleteOrder = (orderId: string) => {
+  const deleteOrder = async (orderId: string) => {
+    // Optimistic UI update
     setAllOrders(prev => prev.filter(ord => ord.id !== orderId && ord.orderNumber !== orderId));
+    
     if (user) {
       setUser({
         ...user,
         orders: (user.orders || []).filter(ord => ord.id !== orderId && ord.orderNumber !== orderId)
       });
     }
-    showToast('Order Record Removed', 'Order successfully deleted from archive', 'info');
+
+    // Backend update
+    const { error } = await orderService.deleteOrder(orderId);
+    if (error) {
+      console.error('Failed to delete order:', error);
+      showToast('Error', 'Failed to delete order on the server.', 'info');
+    } else {
+      showToast('Order Deleted', 'The order has been removed.', 'info');
+    }
   };
 
   return (
