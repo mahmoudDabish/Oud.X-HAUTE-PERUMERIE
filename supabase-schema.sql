@@ -224,12 +224,8 @@ BEGIN
         v_discount := 500;
     END IF;
 
-    -- 3. Calculate Shipping (Complimentary / Free Delivery)
+    -- 3. Calculate Shipping (Default is 0 EGP, complimentary delivery, admin adjusts manually)
     v_shipping := 0;
-    
-    IF p_express_delivery THEN
-        v_shipping := 75;
-    END IF;
 
     -- 4. Calculate Final Total
     v_total := GREATEST(0, v_subtotal - v_discount + v_shipping);

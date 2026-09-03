@@ -8,47 +8,58 @@ export interface CheckoutItem {
 }
 
 function mapDatabaseOrders(data: any[]): Order[] {
-  return (data || []).map((o: any) => ({
-    id: o.id,
-    orderNumber: o.order_number || o.id,
-    date: o.created_at
-      ? new Date(o.created_at).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric'
-        })
-      : new Date().toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric'
-        }),
-    status: (o.status || 'Processing') as Order['status'],
-    subtotal: Number(o.subtotal || 0),
-    shipping: Number(o.shipping || 0),
-    discount: Number(o.discount || 0),
-    total: Number(o.total || 0),
-    paymentMethod: (o.payment_method || 'Cash on Delivery') as Order['paymentMethod'],
-    shippingAddress: o.shipping_address || {
-      id: '',
-      fullName: 'Customer',
-      phone: '',
-      city: '',
-      area: '',
-      streetAddress: '',
-      building: '',
-      apartment: '',
-      isDefault: true
-    },
-    trackingNumber: o.tracking_number,
-    items: (o.order_items || []).map((it: any) => ({
-      id: it.id,
-      name: it.products?.name || 'Fragrance Flacon',
-      size: it.size || '100ml',
-      price: Number(it.price || 0),
-      quantity: Number(it.quantity || 1),
-      image: ''
-    }))
-  }));
+  return (data || []).map((o: any) => {
+    const shippingFee = Number(o.shipping_fee ?? o.shipping ?? 0);
+    return {
+      id: o.id,
+      orderNumber: o.order_number || o.id,
+      date: o.created_at
+        ? new Date(o.created_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          })
+        : new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          }),
+      status: (o.status || 'Processing') as Order['status'],
+      subtotal: Number(o.subtotal || 0),
+      shipping: shippingFee,
+      shippingFee: shippingFee,
+      discount: Number(o.discount || 0),
+      total: Number(o.total || 0),
+      paymentMethod: (o.payment_method || 'Cash on Delivery') as Order['paymentMethod'],
+      shippingAddress: o.shipping_address || {
+        id: '',
+        fullName: 'Customer',
+        phone: '',
+        city: '',
+        area: '',
+        streetAddress: '',
+        building: '',
+        apartment: '',
+        isDefault: true
+      },
+      trackingNumber: o.tracking_number,
+      items: (o.order_items || []).map((it: any) => {
+        const pImages = it.products?.product_images || [];
+        const mainImg = pImages.find((img: any) => img.is_main) || pImages[0];
+        const resolvedImageUrl = mainImg?.url || '';
+
+        return {
+          id: it.id,
+          name: it.products?.name || 'Fragrance Flacon',
+          size: it.size || '100ml',
+          price: Number(it.price || 0),
+          quantity: Number(it.quantity || 1),
+          image: resolvedImageUrl,
+          imageUrl: resolvedImageUrl
+        };
+      })
+    };
+  });
 }
 
 export const orderService = {
@@ -67,7 +78,7 @@ export const orderService = {
         p_items: items,
         p_shipping_address: shippingAddress,
         p_payment_method: paymentMethod,
-        p_express_delivery: expressDelivery,
+        p_express_delivery: false, // Standard delivery only, 0 shipping fee default
         p_promo_code: promoCode || ''
       });
 
@@ -89,7 +100,14 @@ export const orderService = {
             quantity,
             price,
             size,
-            products ( id, name )
+            products (
+              id,
+              name,
+              product_images (
+                url,
+                is_main
+              )
+            )
           )
         `)
         .eq('user_id', userId)
@@ -117,7 +135,14 @@ export const orderService = {
             quantity,
             price,
             size,
-            products ( id, name )
+            products (
+              id,
+              name,
+              product_images (
+                url,
+                is_main
+              )
+            )
           )
         `)
         .order('created_at', { ascending: false });
@@ -144,6 +169,41 @@ export const orderService = {
         .update(updateData)
         .eq('id', orderId);
         
+      return { error };
+    } catch (error) {
+      return { error };
+    }
+  },
+
+  async updateOrderShipping(orderId: string, shippingFee: number): Promise<{ error: any }> {
+    try {
+      const fee = Math.max(0, Number(shippingFee) || 0);
+
+      // Fetch current order subtotal and discount
+      const { data: order, error: fetchError } = await supabase
+        .from('orders')
+        .select('subtotal, discount')
+        .eq('id', orderId)
+        .single();
+
+      if (fetchError) {
+        return { error: fetchError };
+      }
+
+      const subtotal = Number(order?.subtotal || 0);
+      const discount = Number(order?.discount || 0);
+      const newTotal = Math.max(0, subtotal - discount + fee);
+
+      const updateData: any = {
+        shipping: fee,
+        total: newTotal
+      };
+
+      const { error } = await supabase
+        .from('orders')
+        .update(updateData)
+        .eq('id', orderId);
+
       return { error };
     } catch (error) {
       return { error };

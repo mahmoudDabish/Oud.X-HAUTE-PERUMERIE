@@ -15,6 +15,36 @@ import {
 } from 'lucide-react';
 import { Order } from '../types';
 
+const EGYPTIAN_GOVERNORATES = [
+  'Cairo',
+  'Giza',
+  'Alexandria',
+  'Qalyubia',
+  'Dakahlia',
+  'Sharqia',
+  'Gharbia',
+  'Monufia',
+  'Beheira',
+  'Kafr El Sheikh',
+  'Damietta',
+  'Port Said',
+  'Ismailia',
+  'Suez',
+  'North Sinai',
+  'South Sinai',
+  'Fayoum',
+  'Beni Suef',
+  'Minya',
+  'Assiut',
+  'Sohag',
+  'Qena',
+  'Luxor',
+  'Aswan',
+  'Red Sea',
+  'New Valley',
+  'Matrouh'
+];
+
 export const CheckoutPage: React.FC = () => {
   const {
     cart,
@@ -34,11 +64,12 @@ export const CheckoutPage: React.FC = () => {
   const [contactPhone, setContactPhone] = useState(user?.phone || '+20 100 123 4567');
   
   const [fullName, setFullName] = useState(user?.name || 'Karim El-Sayed');
-  const [city, setCity] = useState('Cairo');
-  const [area, setArea] = useState('New Cairo / 5th Settlement');
+  const [governorate, setGovernorate] = useState('Cairo');
+  const [cityArea, setCityArea] = useState('New Cairo');
   const [streetAddress, setStreetAddress] = useState('Road 90 North, Villa 42');
   const [building, setBuilding] = useState('Villa 42');
   const [apartment, setApartment] = useState('Suite 2');
+  const [additionalDetails, setAdditionalDetails] = useState('');
 
   const [paymentMethod, setPaymentMethod] = useState<'Card' | 'Instapay' | 'COD'>('Card');
 
@@ -64,11 +95,13 @@ export const CheckoutPage: React.FC = () => {
     const shippingAddress = {
       fullName,
       phone: contactPhone,
-      city,
-      area,
+      governorate,
+      city: governorate, // Preserves backward compatibility
+      area: cityArea,    // Manual text input
       streetAddress,
       building,
       apartment,
+      additionalDetails,
       isDefault: true
     };
 
@@ -263,82 +296,90 @@ export const CheckoutPage: React.FC = () => {
                   <h2 className="font-cinzel text-xs font-bold uppercase tracking-widest text-[#E3C27A]">
                     2. Shipping Address
                   </h2>
-                  <span className="text-[10px] text-[#A7A29A]">Egypt & GCC</span>
+                  <span className="text-[10px] text-[#A7A29A]">Egypt Wide Delivery</span>
                 </div>
 
                 <div className="space-y-4 text-xs">
                   <div>
-                    <label className="block text-[#A7A29A] mb-1 font-medium">Recipient Full Name *</label>
+                    <label className="block text-[#A7A29A] mb-1 font-medium">Full Name *</label>
                     <input
                       type="text"
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
+                      placeholder="e.g. Karim El-Sayed"
                       className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded px-3 py-2.5 text-[#F5F2EA] focus:outline-none"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[#A7A29A] mb-1 font-medium">Governorate / City *</label>
+                      <label className="block text-[#A7A29A] mb-1 font-medium">Governorate *</label>
                       <select
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
+                        value={governorate}
+                        onChange={(e) => setGovernorate(e.target.value)}
                         className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded px-3 py-2.5 text-[#F5F2EA] focus:outline-none cursor-pointer"
                       >
-                        <option value="Cairo">Cairo (القاهرة)</option>
-                        <option value="Giza">Giza (الجيزة)</option>
-                        <option value="Alexandria">Alexandria (الإسكندرية)</option>
-                        <option value="Red Sea / Hurghada">Red Sea / Hurghada</option>
-                        <option value="South Sinai / Sharm">South Sinai / Sharm</option>
+                        {EGYPTIAN_GOVERNORATES.map((gov) => (
+                          <option key={gov} value={gov} className="bg-[#11100E] text-[#F5F2EA]">
+                            {gov}
+                          </option>
+                        ))}
                       </select>
                     </div>
 
                     <div>
-                      <label className="block text-[#A7A29A] mb-1 font-medium">District / Area *</label>
+                      <label className="block text-[#A7A29A] mb-1 font-medium">City / Area *</label>
                       <input
                         type="text"
                         required
-                        value={area}
-                        onChange={(e) => setArea(e.target.value)}
-                        placeholder="e.g. New Cairo, Zamalek, Sheikh Zayed"
+                        value={cityArea}
+                        onChange={(e) => setCityArea(e.target.value)}
+                        placeholder="e.g. Smouha, 6th of October, New Cairo"
                         className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded px-3 py-2.5 text-[#F5F2EA] focus:outline-none"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[#A7A29A] mb-1 font-medium">Street Address & Compound *</label>
+                    <label className="block text-[#A7A29A] mb-1 font-medium">Street Address *</label>
                     <input
                       type="text"
                       required
                       value={streetAddress}
                       onChange={(e) => setStreetAddress(e.target.value)}
+                      placeholder="e.g. Example Street, Road 90 North"
                       className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded px-3 py-2.5 text-[#F5F2EA] focus:outline-none"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[#A7A29A] mb-1 font-medium">Building / Villa No.</label>
+                      <label className="block text-[#A7A29A] mb-1 font-medium">
+                        Building / Floor / Apartment <span className="text-[#8E713D] text-[10px]">(Optional)</span>
+                      </label>
                       <input
                         type="text"
                         value={building}
                         onChange={(e) => setBuilding(e.target.value)}
+                        placeholder="e.g. Villa 42, Floor 3, Apt 12"
                         className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded px-3 py-2.5 text-[#F5F2EA] focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-[#A7A29A] mb-1 font-medium">Apartment / Suite</label>
+                      <label className="block text-[#A7A29A] mb-1 font-medium">
+                        Additional Details <span className="text-[#8E713D] text-[10px]">(Optional)</span>
+                      </label>
                       <input
                         type="text"
-                        value={apartment}
-                        onChange={(e) => setApartment(e.target.value)}
+                        value={additionalDetails}
+                        onChange={(e) => setAdditionalDetails(e.target.value)}
+                        placeholder="e.g. Landmark, special delivery instructions"
                         className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded px-3 py-2.5 text-[#F5F2EA] focus:outline-none"
                       />
                     </div>
                   </div>
-                              {/* Removed Delivery Options */}      </div>
+                </div>
               </div>
 
               {/* Section 4: Payment Method */}

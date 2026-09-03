@@ -173,9 +173,11 @@ export const AccountPage: React.FC = () => {
         const matchesNum = order.orderNumber.toLowerCase().includes(q);
         const matchesCustomer = order.shippingAddress.fullName.toLowerCase().includes(q);
         const matchesPhone = order.shippingAddress.phone.toLowerCase().includes(q);
-        const matchesCity = order.shippingAddress.city.toLowerCase().includes(q);
+        const matchesGov = (order.shippingAddress.governorate || '').toLowerCase().includes(q);
+        const matchesCity = (order.shippingAddress.city || '').toLowerCase().includes(q);
+        const matchesArea = (order.shippingAddress.area || '').toLowerCase().includes(q);
         const matchesItems = order.items.some(it => it.name.toLowerCase().includes(q));
-        if (!matchesNum && !matchesCustomer && !matchesPhone && !matchesCity && !matchesItems) return false;
+        if (!matchesNum && !matchesCustomer && !matchesPhone && !matchesGov && !matchesCity && !matchesArea && !matchesItems) return false;
       }
 
       if (orderStatusFilter !== 'all' && order.status !== orderStatusFilter) return false;
@@ -890,7 +892,7 @@ export const AccountPage: React.FC = () => {
                         <div className="font-semibold text-[#F5F2EA]">{order.shippingAddress.fullName}</div>
                         <div className="text-[#A7A29A]">{order.shippingAddress.phone}</div>
                         <div className="text-[#A7A29A] text-[11px] truncate">
-                          {order.shippingAddress.streetAddress}, {order.shippingAddress.area}, {order.shippingAddress.city}
+                          {order.shippingAddress.streetAddress}, {order.shippingAddress.area ? `${order.shippingAddress.area}, ` : ''}{order.shippingAddress.governorate || order.shippingAddress.city}
                         </div>
                         <div className="pt-2 border-t border-white/5 flex justify-between items-center text-xs">
                           <span className="text-[#A7A29A]">Total Order Value:</span>
@@ -1068,7 +1070,7 @@ export const AccountPage: React.FC = () => {
       <OrderInvoiceModal
         isOpen={!!selectedInvoiceOrder}
         onClose={() => setSelectedInvoiceOrder(null)}
-        order={selectedInvoiceOrder}
+        order={allOrders.find(o => o.id === selectedInvoiceOrder?.id) || selectedInvoiceOrder}
       />
 
       {/* Delete Product Confirmation Modal */}

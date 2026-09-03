@@ -87,6 +87,7 @@ interface ShopContextType {
   // Admin & Order Fulfillment
   allOrders: Order[];
   updateOrderStatus: (orderId: string, status: Order['status'], trackingNumber?: string) => void;
+  updateOrderShipping: (orderId: string, shippingFee: number) => Promise<void>;
   deleteOrder: (orderId: string) => void;
   
   // Toast
@@ -625,6 +626,41 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const updateOrderShipping = async (orderId: string, shippingFee: number) => {
+    const fee = Math.max(0, Number(shippingFee) || 0);
+
+    // Optimistic UI update
+    const updater = (ord: Order) => {
+      if (ord.id === orderId || ord.orderNumber === orderId) {
+        const newTotal = Math.max(0, ord.subtotal - (ord.discount || 0) + fee);
+        return {
+          ...ord,
+          shipping: fee,
+          shippingFee: fee,
+          total: newTotal
+        };
+      }
+      return ord;
+    };
+
+    setAllOrders(prev => prev.map(updater));
+    if (user && user.orders) {
+      setUser({
+        ...user,
+        orders: user.orders.map(updater)
+      });
+    }
+
+    // Backend update
+    const { error } = await orderService.updateOrderShipping(orderId, fee);
+    if (error) {
+      console.error('Failed to update shipping fee on server:', error);
+      showToast('Error', 'Failed to update shipping fee on server.', 'info');
+    } else {
+      showToast('Shipping Fee Updated', `Shipping fee set to ${fee} EGP`, 'gold');
+    }
+  };
+
   return (
     <ShopContext.Provider
       value={{
@@ -682,6 +718,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         quickAdjustStock,
         resetProductsToDefault,
         updateOrderStatus,
+        updateOrderShipping,
         deleteOrder,
         toasts,
         showToast,

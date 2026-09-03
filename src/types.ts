@@ -90,6 +90,8 @@ export interface UserAddress {
   building: string;
   apartment: string;
   isDefault: boolean;
+  governorate?: string;
+  additionalDetails?: string;
 }
 
 export interface OrderItem {
@@ -99,6 +101,7 @@ export interface OrderItem {
   price: number;
   quantity: number;
   image: string;
+  imageUrl?: string;
 }
 
 export interface Order {
@@ -109,6 +112,7 @@ export interface Order {
   items: OrderItem[];
   subtotal: number;
   shipping: number;
+  shippingFee?: number;
   discount: number;
   total: number;
   paymentMethod: 'Cash on Delivery' | 'Credit / Debit Card' | 'Instapay';
