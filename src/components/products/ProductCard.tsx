@@ -44,7 +44,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
 
-  const displayImage = image || product.images[0];
+  const displayImage = image || product?.images?.[0] || '/images/hero-perfume.webp';
   const displayName = name || product.name;
   const displayBrand = brand || product.brand;
   const CATEGORY_MAP: Record<string, string> = {
@@ -118,6 +118,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           alt={displayName}
           referrerPolicy="no-referrer"
           loading="lazy"
+          onError={(e) => {
+            if (e.currentTarget.src !== window.location.origin + '/images/hero-perfume.webp') {
+              e.currentTarget.src = '/images/hero-perfume.webp';
+            }
+          }}
           className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
         />
 

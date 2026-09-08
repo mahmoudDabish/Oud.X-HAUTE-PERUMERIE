@@ -13,8 +13,13 @@ export const AuthPage: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  React.useEffect(() => {
+    if (user) {
+      navigateTo('/account');
+    }
+  }, [user, navigateTo]);
+
   if (user) {
-    navigateTo('/account');
     return null;
   }
 

@@ -153,8 +153,18 @@ export const CheckoutPage: React.FC = () => {
       
       setPlacedOrder({
         ...orderResponse,
-        orderNumber: orderResponse.order_number, // map backend key
-        items: [] // In a real app we might want to fetch full items for display, but empty is fine for confirmation
+        orderNumber: orderResponse.order_number,
+        paymentMethod: actualPaymentMethod,
+        shippingAddress,
+        items: cart.map(it => ({
+          id: it.product.id,
+          name: it.product.name,
+          size: it.selectedSize,
+          price: it.price,
+          quantity: it.quantity,
+          image: it.product.images?.[0] || '',
+          imageUrl: it.product.images?.[0] || ''
+        }))
       });
     }
   };

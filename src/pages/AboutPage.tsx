@@ -12,7 +12,7 @@ export const AboutPage: React.FC = () => {
       <div className="relative min-h-[420px] flex items-center bg-[#0D0C0A] overflow-hidden border-b border-[#C9A45C]/30">
         <div className="absolute inset-0">
           <img
-            src="/src/assets/images/hero_oud_bottle_1787700482747.jpg"
+            src="/images/hero_oud_bottle_1787700482747.jpg"
             alt="OUD_X Heritage"
             referrerPolicy="no-referrer"
             className="w-full h-full object-cover object-center"

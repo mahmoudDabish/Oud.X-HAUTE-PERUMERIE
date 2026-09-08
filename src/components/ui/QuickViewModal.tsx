@@ -24,7 +24,9 @@ export const QuickViewModal: React.FC = () => {
 
   if (!product) return null;
 
-  const productImages = product.images && product.images.length > 0 ? product.images : [product.image];
+  const productImages = product.images && product.images.length > 0 
+    ? product.images 
+    : (product.image ? [product.image] : ['/images/hero-perfume.webp']);
 
   const currentSizeObj = product.availableSizes?.[selectedSizeIndex] || {
     size: product.size,
@@ -87,6 +89,11 @@ export const QuickViewModal: React.FC = () => {
                 src={productImages[activeImageIndex] || productImages[0]}
                 alt={product.name}
                 referrerPolicy="no-referrer"
+                onError={(e) => {
+                  if (e.currentTarget.src !== window.location.origin + '/images/hero-perfume.webp') {
+                    e.currentTarget.src = '/images/hero-perfume.webp';
+                  }
+                }}
                 className="w-full h-full object-cover object-center"
               />
               {product.badge && (

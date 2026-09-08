@@ -21,7 +21,7 @@ export const PromoBanner: React.FC = () => {
           {/* Background Image with Frosted Dark Vignette */}
           <div className="absolute inset-0">
             <img
-              src="/src/assets/images/luxury_gift_box_1787700496704.jpg"
+              src="/images/luxury_gift_box_1787700496704.jpg"
               alt="Exclusive Offer Luxury Gift Set"
               referrerPolicy="no-referrer"
               loading="lazy"

@@ -14,7 +14,7 @@ export const OrderInvoiceModal: React.FC<OrderInvoiceModalProps> = ({
   isOpen,
   onClose
 }) => {
-  const { products, formatPrice, updateOrderStatus, updateOrderShipping, showToast } = useShop();
+  const { user, products, formatPrice, updateOrderStatus, updateOrderShipping, showToast } = useShop();
   const [trackingNumber, setTrackingNumber] = useState(order?.trackingNumber || '');
   const [shippingFeeInput, setShippingFeeInput] = useState<string>(
     order ? String(order.shipping ?? order.shippingFee ?? 0) : '0'
@@ -71,21 +71,24 @@ export const OrderInvoiceModal: React.FC<OrderInvoiceModalProps> = ({
     const existingFrame = document.getElementById('oudx-print-frame');
     if (existingFrame) existingFrame.remove();
 
-    // Create an isolated hidden iframe dedicated strictly to the invoice
+    // Create an isolated hidden iframe dedicated strictly to the invoice with exact page dimensions
     const iframe = document.createElement('iframe');
     iframe.id = 'oudx-print-frame';
     iframe.style.position = 'fixed';
-    iframe.style.right = '0';
-    iframe.style.bottom = '0';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
+    iframe.style.left = '-99999px';
+    iframe.style.top = '0';
+    iframe.style.width = '210mm';
+    iframe.style.height = '297mm';
     iframe.style.border = '0';
-    iframe.style.visibility = 'hidden';
+    iframe.style.zIndex = '-99999';
+    iframe.style.visibility = 'visible';
     document.body.appendChild(iframe);
 
     const doc = iframe.contentWindow?.document;
     if (!doc) {
+      document.body.classList.add('printing-receipt');
       window.print();
+      document.body.classList.remove('printing-receipt');
       return;
     }
 
@@ -151,7 +154,7 @@ export const OrderInvoiceModal: React.FC<OrderInvoiceModalProps> = ({
           <style>
             @page {
               size: A4 portrait;
-              margin: 8mm 12mm;
+              margin: 6mm 10mm;
             }
             * {
               box-sizing: border-box;
@@ -164,8 +167,8 @@ export const OrderInvoiceModal: React.FC<OrderInvoiceModalProps> = ({
               background: #ffffff !important;
               color: #111111 !important;
               font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
-              font-size: 12px;
-              line-height: 1.4;
+              font-size: 11.5px;
+              line-height: 1.35;
               height: auto !important;
               overflow: visible !important;
             }
@@ -173,7 +176,7 @@ export const OrderInvoiceModal: React.FC<OrderInvoiceModalProps> = ({
               width: 100%;
               max-width: 680px;
               margin: 0 auto;
-              padding: 22px 26px;
+              padding: 18px 22px;
               border: 2px solid #C9A45C;
               border-radius: 12px;
               background: #ffffff !important;
@@ -354,7 +357,7 @@ export const OrderInvoiceModal: React.FC<OrderInvoiceModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200 overflow-y-auto">
+    <div className="printable-receipt-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200 overflow-y-auto">
       <div className="relative w-full max-w-3xl max-h-[90vh] bg-[#0D0C0A] border border-[#C9A45C]/40 rounded-2xl shadow-2xl flex flex-col overflow-hidden my-auto">
         {/* Modal Bar - Hidden in Print */}
         <div className="no-print p-6 border-b border-[#C9A45C]/20 flex items-center justify-between bg-[#151310]/80 backdrop-blur-md shrink-0">
@@ -403,87 +406,89 @@ export const OrderInvoiceModal: React.FC<OrderInvoiceModalProps> = ({
 
         {/* Scrollable Content */}
         <div className="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
-          {/* Quick Status Control & Shipping Fee Bar for Admin - Hidden in Print */}
-          <div className="no-print p-4 rounded-xl bg-[#151310]/80 border border-[#C9A45C]/30 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <span className="text-[10px] uppercase tracking-[2px] font-bold text-[#8E713D] block">
-                  Change Order Status
-                </span>
-                <div className="flex flex-wrap gap-2 mt-1.5">
-                  {(['Processing', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'] as Order['status'][]).map(
-                    st => (
-                      <button
-                        key={st}
-                        onClick={() => handleStatusChange(st)}
-                        className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wider transition-all cursor-pointer ${
-                          order.status === st
-                            ? 'bg-[#C9A45C] text-[#070707] shadow-md shadow-[#C9A45C]/30 font-bold'
-                            : 'bg-[#070707] text-[#A7A29A] border border-white/10 hover:border-[#C9A45C]/50 hover:text-[#F5F2EA]'
-                        }`}
-                      >
-                        {st}
-                      </button>
-                    )
-                  )}
-                </div>
-              </div>
-
-              {/* Courier Tracking Form */}
-              <form onSubmit={handleUpdateTracking} className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={trackingNumber}
-                  onChange={e => setTrackingNumber(e.target.value)}
-                  placeholder="Courier Tracking #"
-                  className="px-3 py-1.5 bg-[#070707] border border-white/15 rounded-lg text-xs text-[#F5F2EA] focus:outline-none focus:border-[#C9A45C]"
-                />
-                <button
-                  type="submit"
-                  className="px-3 py-1.5 bg-[#C9A45C]/20 border border-[#C9A45C]/40 text-xs text-[#E3C27A] font-bold rounded-lg hover:bg-[#C9A45C]/30 transition-colors cursor-pointer"
-                >
-                  Save
-                </button>
-              </form>
-            </div>
-
-            {/* Editable Shipping Fee Form */}
-            <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <span className="text-[10px] uppercase tracking-[2px] font-bold text-[#8E713D] block">
-                  Manual Shipping Fee Control
-                </span>
-                <p className="text-[11px] text-[#A7A29A]">
-                  Default is 0 EGP (free delivery). Update fee anytime to recalculate order total.
-                </p>
-              </div>
-
-              <form onSubmit={handleUpdateShipping} className="flex items-center gap-2 self-start sm:self-auto">
-                <div className="flex items-center gap-1.5 bg-[#070707] border border-white/15 focus-within:border-[#C9A45C] rounded-lg px-2.5 py-1 text-xs">
-                  <span className="text-[#8E713D] font-bold text-[10px] uppercase tracking-wider whitespace-nowrap">
-                    Fee:
+          {/* Quick Status Control & Shipping Fee Bar for Admin - Hidden in Print & Only Visible to Admin */}
+          {user?.role === 'admin' && (
+            <div className="no-print p-4 rounded-xl bg-[#151310]/80 border border-[#C9A45C]/30 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <span className="text-[10px] uppercase tracking-[2px] font-bold text-[#8E713D] block">
+                    Change Order Status
                   </span>
-                  <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    value={shippingFeeInput}
-                    onChange={e => setShippingFeeInput(e.target.value)}
-                    className="w-16 bg-transparent text-[#F5F2EA] focus:outline-none text-right font-semibold text-xs"
-                    placeholder="0"
-                  />
-                  <span className="text-[10px] text-[#A7A29A]">EGP</span>
+                  <div className="flex flex-wrap gap-2 mt-1.5">
+                    {(['Processing', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'] as Order['status'][]).map(
+                      st => (
+                        <button
+                          key={st}
+                          onClick={() => handleStatusChange(st)}
+                          className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wider transition-all cursor-pointer ${
+                            order.status === st
+                              ? 'bg-[#C9A45C] text-[#070707] shadow-md shadow-[#C9A45C]/30 font-bold'
+                              : 'bg-[#070707] text-[#A7A29A] border border-white/10 hover:border-[#C9A45C]/50 hover:text-[#F5F2EA]'
+                          }`}
+                        >
+                          {st}
+                        </button>
+                      )
+                    )}
+                  </div>
                 </div>
-                <button
-                  type="submit"
-                  disabled={isSavingShipping}
-                  className="px-3 py-1.5 bg-[#C9A45C]/20 border border-[#C9A45C]/40 text-xs text-[#E3C27A] font-bold rounded-lg hover:bg-[#C9A45C]/30 transition-colors disabled:opacity-50 cursor-pointer"
-                >
-                  {isSavingShipping ? 'Saving...' : 'Save'}
-                </button>
-              </form>
+
+                {/* Courier Tracking Form */}
+                <form onSubmit={handleUpdateTracking} className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={trackingNumber}
+                    onChange={e => setTrackingNumber(e.target.value)}
+                    placeholder="Courier Tracking #"
+                    className="px-3 py-1.5 bg-[#070707] border border-white/15 rounded-lg text-xs text-[#F5F2EA] focus:outline-none focus:border-[#C9A45C]"
+                  />
+                  <button
+                    type="submit"
+                    className="px-3 py-1.5 bg-[#C9A45C]/20 border border-[#C9A45C]/40 text-xs text-[#E3C27A] font-bold rounded-lg hover:bg-[#C9A45C]/30 transition-colors cursor-pointer"
+                  >
+                    Save
+                  </button>
+                </form>
+              </div>
+
+              {/* Editable Shipping Fee Form */}
+              <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <span className="text-[10px] uppercase tracking-[2px] font-bold text-[#8E713D] block">
+                    Manual Shipping Fee Control
+                  </span>
+                  <p className="text-[11px] text-[#A7A29A]">
+                    Default is 0 EGP (free delivery). Update fee anytime to recalculate order total.
+                  </p>
+                </div>
+
+                <form onSubmit={handleUpdateShipping} className="flex items-center gap-2 self-start sm:self-auto">
+                  <div className="flex items-center gap-1.5 bg-[#070707] border border-white/15 focus-within:border-[#C9A45C] rounded-lg px-2.5 py-1 text-xs">
+                    <span className="text-[#8E713D] font-bold text-[10px] uppercase tracking-wider whitespace-nowrap">
+                      Fee:
+                    </span>
+                    <input
+                      type="number"
+                      min="0"
+                      step="any"
+                      value={shippingFeeInput}
+                      onChange={e => setShippingFeeInput(e.target.value)}
+                      className="w-16 bg-transparent text-[#F5F2EA] focus:outline-none text-right font-semibold text-xs"
+                      placeholder="0"
+                    />
+                    <span className="text-[10px] text-[#A7A29A]">EGP</span>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isSavingShipping}
+                    className="px-3 py-1.5 bg-[#C9A45C]/20 border border-[#C9A45C]/40 text-xs text-[#E3C27A] font-bold rounded-lg hover:bg-[#C9A45C]/30 transition-colors disabled:opacity-50 cursor-pointer"
+                  >
+                    {isSavingShipping ? 'Saving...' : 'Save'}
+                  </button>
+                </form>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* On-screen Luxury Invoice Display */}
           <div className="printable-receipt p-6 rounded-2xl bg-[#151310]/60 border border-[#C9A45C]/30 space-y-6">

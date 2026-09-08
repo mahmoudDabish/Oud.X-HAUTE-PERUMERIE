@@ -114,8 +114,8 @@ export const CartDrawer: React.FC = () => {
                     className="w-20 h-24 rounded-lg overflow-hidden bg-black shrink-0 border border-[#C9A45C]/20 cursor-pointer"
                   >
                     <img
-                      src={item.product.images[0]}
-                      alt={item.product.name}
+                      src={item.product?.images?.[0] || (item.product as any)?.image || '/images/hero_oud_bottle_1787700482747.jpg'}
+                      alt={item.product?.name || 'Fragrance'}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover"
                     />

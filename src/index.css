@@ -120,12 +120,12 @@
 }
 
 /* ==============================================================================
-   PRINT STYLES — Dedicated Clean White Canvas & Non-Print Elements Suppression
+   PRINT STYLES — Dedicated Clean Single-Page Invoice Isolation
    ============================================================================== */
 @media print {
   @page {
     size: A4 portrait;
-    margin: 10mm 12mm;
+    margin: 8mm 10mm;
   }
 
   html, body {
@@ -140,10 +140,26 @@
     print-color-adjust: exact !important;
   }
 
+  /* Suppress all background application elements when printing */
   .no-print,
-  .no-print * {
+  .no-print *,
+  header,
+  footer,
+  aside,
+  nav {
     display: none !important;
     visibility: hidden !important;
+  }
+
+  /* When printing from main document, isolate only the printable receipt */
+  body.printing-receipt #root > *:not(.printable-receipt-modal) {
+    display: none !important;
+  }
+
+  #oudx-print-target,
+  #oudx-print-target * {
+    display: block !important;
+    visibility: visible !important;
   }
 }
 

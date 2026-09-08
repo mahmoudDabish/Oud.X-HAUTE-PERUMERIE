@@ -10,7 +10,7 @@ export const NewArrivals: React.FC = () => {
   const perfumeName = newProduct?.name || 'Royal Oud Imperial Reserve';
   const slug = newProduct?.slug || 'royal-oud-imperial';
   const link = `/products/${slug}`;
-  const image = newProduct?.images?.[0] || '/src/assets/images/new_arrivals_perfume_1787700509279.jpg';
+  const image = newProduct?.images?.[0] || '/images/new_arrivals_perfume_1787700509279.jpg';
   const description = newProduct?.description || 'Be the first to discover our latest olfactory creations, distilled from aged Cambodian agarwoods, honeyed Turkish ambergris, and sun-drenched Taif roses.';
 
   return (

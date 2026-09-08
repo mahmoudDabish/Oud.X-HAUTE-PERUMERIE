@@ -105,9 +105,10 @@ const ShopContext = createContext<ShopContextType | undefined>(undefined);
 const FREE_SHIPPING_THRESHOLD = 2500; // EGP
 
 export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Navigation & Route state for SPA
+  // Navigation & Route state for SPA (including search query params)
   const [currentRoute, setCurrentRoute] = useState<string>(() => {
-    return window.location.pathname || '/';
+    if (typeof window === 'undefined') return '/';
+    return (window.location.pathname || '/') + (window.location.search || '');
   });
 
   const navigateTo = (route: string) => {
@@ -118,7 +119,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const handlePopState = () => {
-      setCurrentRoute(window.location.pathname || '/');
+      setCurrentRoute((window.location.pathname || '/') + (window.location.search || ''));
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -179,7 +180,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const saved = localStorage.getItem('oudx_cart');
       if (saved) {
         const parsed = JSON.parse(saved);
-        return Array.isArray(parsed) ? parsed : [];
+        if (Array.isArray(parsed)) {
+          return parsed.filter(item => item && item.product && typeof item.product === 'object' && item.product.id);
+        }
       }
       return [];
     } catch (e) {
@@ -194,19 +197,21 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       // Strip out massive base64 images to prevent localStorage QuotaExceededError
       // Safely handle cases where images might be undefined
-      const safeCart = cart.map(item => ({
-        ...item,
-        product: {
-          ...item.product,
-          images: Array.isArray(item.product.images) 
-            ? item.product.images.map(img => 
-                (typeof img === 'string' && img.startsWith('data:image') && img.length > 100000)
-                  ? 'https://images.unsplash.com/photo-1615631648086-325025c9e51e?q=80&w=600&auto=format&fit=crop' 
-                  : img
-              )
-            : []
-        }
-      }));
+      const safeCart = cart
+        .filter(item => item && item.product && item.product.id)
+        .map(item => ({
+          ...item,
+          product: {
+            ...item.product,
+            images: Array.isArray(item.product.images) 
+              ? item.product.images.map(img => 
+                  (typeof img === 'string' && img.startsWith('data:image') && img.length > 100000)
+                    ? 'https://images.unsplash.com/photo-1615631648086-325025c9e51e?q=80&w=600&auto=format&fit=crop' 
+                    : img
+                )
+              : []
+          }
+        }));
       localStorage.setItem('oudx_cart', JSON.stringify(safeCart));
     } catch (e) {
       console.error("Failed to save cart to localStorage:", e);
@@ -215,13 +220,15 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Compute live cart by syncing with live products data to fix stock/price sync issues
   const liveCart = React.useMemo(() => {
-    return cart.map(item => {
-      const liveProd = products.find(p => p.id === item.product.id);
-      if (liveProd) {
-        return { ...item, product: liveProd };
-      }
-      return item;
-    });
+    return cart
+      .filter(item => item && item.product && item.product.id)
+      .map(item => {
+        const liveProd = products.find(p => p.id === item.product.id);
+        if (liveProd) {
+          return { ...item, product: liveProd };
+        }
+        return item;
+      });
   }, [cart, products]);
 
   // Wishlist state
@@ -302,16 +309,23 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     async function loadSession() {
       setIsAuthLoading(true);
-      const { userProfile } = await authService.getSession();
+      try {
+        const { userProfile } = await authService.getSession();
         if (userProfile) {
-          setUser(userProfile);
-          loadWishlist(userProfile.id);
-          
           if (userProfile.role === 'admin') {
             loadAllOrders();
+          } else {
+            const { data: userOrders } = await orderService.getUserOrders(userProfile.id);
+            userProfile.orders = userOrders || [];
           }
+          setUser(userProfile);
+          loadWishlist(userProfile.id);
         }
+      } catch (err) {
+        console.error('Session loading error:', err);
+      } finally {
         setIsAuthLoading(false);
+      }
     }
     loadSession();
   }, [loadWishlist, loadAllOrders]);
@@ -457,18 +471,28 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password?: string) => {
     const { data, error } = await authService.login(email, password);
     if (error || !data?.user) {
-      showToast('Authentication Failed', error?.message || 'Invalid credentials', 'info');
+      const msg = error?.message?.toLowerCase() || '';
+      if (msg.includes('email not confirmed')) {
+        showToast('Verification Required', 'Please confirm your email address. Check your inbox for the activation link.', 'info');
+      } else if (msg.includes('invalid login credentials')) {
+        showToast('Authentication Failed', 'Invalid email or password. Please verify your credentials.', 'info');
+      } else {
+        showToast('Authentication Failed', error?.message || 'Invalid credentials', 'info');
+      }
       return;
     }
     
     // Refresh session to get profile
     const { userProfile } = await authService.getSession();
     if (userProfile) {
-      setUser(userProfile);
-      loadWishlist(userProfile.id);
       if (userProfile.role === 'admin') {
         loadAllOrders();
+      } else {
+        const { data: userOrders } = await orderService.getUserOrders(userProfile.id);
+        userProfile.orders = userOrders || [];
       }
+      setUser(userProfile);
+      loadWishlist(userProfile.id);
       showToast('Welcome to OUD-X Privé', `Signed in as ${userProfile.name}`, 'gold');
     }
   };
@@ -479,7 +503,16 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       showToast('Registration Failed', error?.message || 'Unable to create account', 'info');
       return;
     }
-    showToast('Account Created', 'Welcome to OUD-X Private Club. Please sign in.', 'gold');
+    if (data.session) {
+      const { userProfile } = await authService.getSession();
+      if (userProfile) {
+        setUser(userProfile);
+        loadWishlist(userProfile.id);
+      }
+      showToast('Account Created', `Welcome to OUD-X Privé, ${name}`, 'gold');
+    } else {
+      showToast('Account Created', 'If required by your provider, please verify your email before signing in.', 'gold');
+    }
   };
 
   const logout = async () => {

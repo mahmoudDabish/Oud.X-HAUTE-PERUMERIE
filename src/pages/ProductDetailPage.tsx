@@ -36,7 +36,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
     isLoadingProducts
   } = useShop();
 
-  const product = getProductBySlug(slug) || products[0];
+  const product = getProductBySlug(slug);
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
@@ -66,7 +66,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
     );
   }
 
-  const productImages = product.images && product.images.length > 0 ? product.images : [product.image];
+  const productImages = Array.isArray(product?.images) && product.images.length > 0 
+    ? product.images 
+    : [(product as any)?.image || '/images/hero_oud_bottle_1787700482747.jpg'];
   const currentSizeObj = product.availableSizes?.[selectedSizeIndex] || {
     size: product.size,
     price: product.price,

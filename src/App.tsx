@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShopProvider, useShop } from './context/ShopContext';
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { MobileMenu } from './components/layout/MobileMenu';
@@ -19,58 +20,71 @@ import { AuthPage } from './pages/AuthPage';
 import { AccountPage } from './pages/AccountPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 
 const AppContent: React.FC = () => {
   const { currentRoute } = useShop();
 
   const renderCurrentView = () => {
-    // Exact routes
-    if (currentRoute === '/' || currentRoute === '') {
+    // Clean route path without query parameters or trailing slash
+    const cleanPath = (currentRoute.split('?')[0] || '/').toLowerCase().replace(/\/+$/, '') || '/';
+
+    // Exact and prefix matching
+    if (cleanPath === '/' || cleanPath === '') {
       return <HomePage />;
     }
-    if (currentRoute.startsWith('/shop')) {
+    if (cleanPath === '/shop' || cleanPath.startsWith('/shop/')) {
       return <ShopPage />;
     }
-    if (currentRoute === '/collections/men') {
+    if (
+      cleanPath === '/collections' ||
+      cleanPath === '/collections/all' ||
+      cleanPath.startsWith('/collections/perfumes') ||
+      cleanPath.startsWith('/collections/body-splash') ||
+      cleanPath.startsWith('/collections/body-care')
+    ) {
+      return <ShopPage />;
+    }
+    if (cleanPath === '/collections/men') {
       return <CollectionPage collectionId="men" />;
     }
-    if (currentRoute === '/collections/women') {
+    if (cleanPath === '/collections/women') {
       return <CollectionPage collectionId="women" />;
     }
-    if (currentRoute === '/collections/unisex') {
+    if (cleanPath === '/collections/unisex') {
       return <CollectionPage collectionId="unisex" />;
     }
-    if (currentRoute === '/collections/oud' || currentRoute.startsWith('/collections/oud')) {
+    if (cleanPath === '/collections/oud' || cleanPath.startsWith('/collections/oud/')) {
       return <CollectionPage collectionId="oud" />;
     }
-    if (currentRoute.startsWith('/products/')) {
-      const slug = currentRoute.replace('/products/', '').split('?')[0];
+    if (cleanPath.startsWith('/products/')) {
+      const slug = currentRoute.replace(/^\/products\//i, '').split('?')[0];
       return <ProductDetailPage slug={slug} />;
     }
-    if (currentRoute.startsWith('/cart')) {
+    if (cleanPath === '/cart' || cleanPath.startsWith('/cart/')) {
       return <CartPage />;
     }
-    if (currentRoute.startsWith('/checkout')) {
+    if (cleanPath === '/checkout' || cleanPath.startsWith('/checkout/')) {
       return <CheckoutPage />;
     }
-    if (currentRoute.startsWith('/wishlist')) {
+    if (cleanPath === '/wishlist' || cleanPath.startsWith('/wishlist/')) {
       return <WishlistPage />;
     }
-    if (currentRoute.startsWith('/auth') || currentRoute.startsWith('/login') || currentRoute.startsWith('/register')) {
+    if (cleanPath === '/auth' || cleanPath === '/login' || cleanPath === '/register') {
       return <AuthPage />;
     }
-    if (currentRoute.startsWith('/account') || currentRoute.startsWith('/admin')) {
+    if (cleanPath === '/account' || cleanPath.startsWith('/account/') || cleanPath === '/admin' || cleanPath.startsWith('/admin/')) {
       return <AccountPage />;
     }
-    if (currentRoute.startsWith('/about')) {
+    if (cleanPath === '/about' || cleanPath.startsWith('/about/')) {
       return <AboutPage />;
     }
-    if (currentRoute.startsWith('/contact')) {
+    if (cleanPath === '/contact' || cleanPath.startsWith('/contact/')) {
       return <ContactPage />;
     }
 
-    // Fallback default
-    return <HomePage />;
+    // High-end fallback 404
+    return <NotFoundPage />;
   };
 
   return (
@@ -86,20 +100,24 @@ const AppContent: React.FC = () => {
       {/* 3. Global Luxury Footer */}
       <Footer />
 
-      {/* 4. Interactive Drawers & Overlays */}
-      <CartDrawer />
-      <MobileMenu />
-      <SearchModal />
-      <QuickViewModal />
-      <Toast />
+      {/* 4. Interactive Drawers & Overlays - Hidden during print */}
+      <div className="no-print">
+        <CartDrawer />
+        <MobileMenu />
+        <SearchModal />
+        <QuickViewModal />
+        <Toast />
+      </div>
     </div>
   );
 };
 
 export default function App() {
   return (
-    <ShopProvider>
-      <AppContent />
-    </ShopProvider>
+    <ErrorBoundary>
+      <ShopProvider>
+        <AppContent />
+      </ShopProvider>
+    </ErrorBoundary>
   );
 }

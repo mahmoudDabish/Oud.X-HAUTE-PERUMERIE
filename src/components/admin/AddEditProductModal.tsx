@@ -11,7 +11,7 @@ interface AddEditProductModalProps {
 }
 
 const PRESET_IMAGES = [
-  { label: 'Royal Black & Gold Flacon', url: '/src/assets/images/hero_oud_bottle_1787700482747.jpg' },
+  { label: 'Royal Black & Gold Flacon', url: '/images/hero_oud_bottle_1787700482747.jpg' },
   { label: 'Amber Crystal Bottle', url: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1000&auto=format&fit=crop' },
   { label: 'Smoky Dark Elixir', url: 'https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=1000&auto=format&fit=crop' },
   { label: 'Golden Honey Flacon', url: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=1000&auto=format&fit=crop' },
@@ -61,7 +61,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
 
   // Images
   const [imageUrls, setImageUrls] = useState<string[]>([
-    '/src/assets/images/hero_oud_bottle_1787700482747.jpg'
+    '/images/hero_oud_bottle_1787700482747.jpg'
   ]);
   const [customImageUrl, setCustomImageUrl] = useState('');
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -99,7 +99,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
       if (productToEdit.images && productToEdit.images.length > 0) {
         setImageUrls(productToEdit.images);
       } else {
-        setImageUrls(['/src/assets/images/hero_oud_bottle_1787700482747.jpg']);
+        setImageUrls(['/images/hero_oud_bottle_1787700482747.jpg']);
       }
 
       if (productToEdit.availableSizes && productToEdit.availableSizes.length > 0) {
@@ -126,7 +126,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
       setTopNotes('Saffron, Bergamot, Pink Pepper');
       setHeartNotes('Royal Cambodian Oud, Bulgarian Rose, Patchouli');
       setBaseNotes('Aged Ambergris, Dark Incense, Bourbon Vanilla');
-      setImageUrls(['/src/assets/images/hero_oud_bottle_1787700482747.jpg']);
+      setImageUrls(['/images/hero_oud_bottle_1787700482747.jpg']);
       setSizes([
         { size: '100ml / 3.4 fl.oz', price: 1950, compareAtPrice: undefined }
       ]);
@@ -625,6 +625,19 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
                 onChange={async (e) => {
                   const file = e.target.files?.[0];
                   if (file) {
+                    const allowedTypes = ['image/webp', 'image/jpeg', 'image/png', 'image/avif'];
+                    if (!allowedTypes.includes(file.type)) {
+                      alert('Please select a valid image file (WebP, JPEG, PNG, or AVIF).');
+                      e.target.value = '';
+                      return;
+                    }
+                    const maxSizeBytes = 10 * 1024 * 1024; // 10MB
+                    if (file.size > maxSizeBytes) {
+                      alert('Image file size exceeds the 10MB limit. Please select an optimized file.');
+                      e.target.value = '';
+                      return;
+                    }
+
                     setIsUploadingImage(true);
                     try {
                       const fileExt = file.name.split('.').pop() || 'webp';

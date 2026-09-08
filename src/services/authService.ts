@@ -51,16 +51,14 @@ export const authService = {
         .eq('id', session.user.id)
         .single();
 
-      if (!profileData) return { session, userProfile: null, error: null };
-
       const userProfile: UserProfile = {
-        id: profileData.id,
+        id: session.user.id,
         email: session.user.email || '',
-        name: profileData.full_name || session.user.email?.split('@')[0] || '',
-        phone: profileData.phone || '',
-        tier: profileData.tier || 'Oud Privé Member',
-        points: profileData.points || 0,
-        role: profileData.role || 'customer',
+        name: profileData?.full_name || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Privé Patron',
+        phone: profileData?.phone || '',
+        tier: profileData?.tier || 'Oud Privé Member',
+        points: profileData?.points || 0,
+        role: profileData?.role || 'customer',
         addresses: [],
         orders: []
       };

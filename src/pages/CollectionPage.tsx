@@ -39,7 +39,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({ collectionId }) 
       title: 'OUD COLLECTION',
       subtitle: 'Wild Assamese agarwood, aged Cambodian resin, and royal elixirs.',
       narrative: 'The beating heart of Arabian perfumery. Sourced from century-old trees, steam-distilled and maturely rested in charred French oak barrels for hypnotic beast-mode longevity.',
-      image: '/src/assets/images/hero_oud_bottle_1787700482747.jpg',
+      image: '/images/hero_oud_bottle_1787700482747.jpg',
       icon: <Crown className="w-5 h-5 text-[#E3C27A]" />
     }
   };

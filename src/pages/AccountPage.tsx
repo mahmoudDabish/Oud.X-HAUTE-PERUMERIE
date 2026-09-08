@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
 import { Product, Order } from '../types';
+import { orderService } from '../services/orderService';
 import {
   Package,
   Boxes,
@@ -27,7 +28,15 @@ import {
   BarChart3,
   XCircle,
   FileSpreadsheet,
-  UploadCloud
+  UploadCloud,
+  LogOut,
+  Calendar,
+  MapPin,
+  Phone,
+  CreditCard,
+  ChevronRight,
+  User as UserIcon,
+  Crown
 } from 'lucide-react';
 import { AddEditProductModal } from '../components/admin/AddEditProductModal';
 import { OrderInvoiceModal } from '../components/admin/OrderInvoiceModal';
@@ -48,38 +57,311 @@ export const AccountPage: React.FC = () => {
     formatPrice,
     navigateTo,
     showToast,
-    user
+    user,
+    logout
   } = useShop();
 
-  if (user?.role !== 'admin') {
+  // Customer state
+  const [customerOrders, setCustomerOrders] = useState<Order[]>(user?.orders || []);
+  const [isLoadingCustomerOrders, setIsLoadingCustomerOrders] = useState(false);
+  const [customerActiveTab, setCustomerActiveTab] = useState<'orders' | 'privileges'>('orders');
+  const [customerInvoiceOrder, setCustomerInvoiceOrder] = useState<Order | null>(null);
+
+  useEffect(() => {
+    if (user && user.role !== 'admin') {
+      setIsLoadingCustomerOrders(true);
+      orderService.getUserOrders(user.id).then(({ data, error }) => {
+        if (!error && data) {
+          setCustomerOrders(data);
+        }
+        setIsLoadingCustomerOrders(false);
+      });
+    }
+  }, [user]);
+
+  // Guest State: Not logged in
+  if (!user) {
     return (
       <div className="min-h-screen bg-[#070707] text-[#F5F2EA] py-24 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
-        <div className="max-w-xl mx-auto space-y-6 text-center">
-          <ShieldCheck className="w-16 h-16 text-[#C9A45C] mx-auto opacity-50 mb-6" />
-          <h1 className="font-cinzel text-3xl sm:text-4xl font-bold text-[#F5F2EA]">
-            Welcome to OUD.X Privé
-          </h1>
-          <p className="text-[#A7A29A] leading-relaxed">
-            Welcome back, {user ? user.name : 'Guest'}. Your exclusive client portal is currently undergoing scheduled maintenance to bring you a more personalized luxury experience.
-          </p>
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="max-w-md w-full p-8 sm:p-10 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/35 shadow-2xl text-center space-y-6 relative overflow-hidden">
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-[#C9A45C] to-transparent" />
+          <div className="w-16 h-16 rounded-full bg-[#151310] border border-[#C9A45C]/40 mx-auto flex items-center justify-center text-[#E3C27A]">
+            <Crown className="w-8 h-8 text-[#C9A45C]" />
+          </div>
+          <div className="space-y-2">
+            <span className="font-cinzel text-xs uppercase tracking-[3px] text-[#C9A45C] font-semibold">
+              OUD_X PRIVÉ ATELIER
+            </span>
+            <h1 className="font-serif-luxury text-2xl sm:text-3xl text-[#F5F2EA]">
+              Client Authentication
+            </h1>
+            <p className="text-xs text-[#A7A29A] leading-relaxed">
+              Sign in to view your orders, tracking status, private acquisitions, and member privileges.
+            </p>
+          </div>
+          <div className="pt-4 flex flex-col gap-3">
+            <button
+              onClick={() => navigateTo('/auth')}
+              className="w-full py-3 rounded-full bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-xs uppercase tracking-[2px] transition-colors cursor-pointer"
+            >
+              Sign In / Register
+            </button>
             <button
               onClick={() => navigateTo('/shop')}
-              className="px-8 py-3 rounded-full bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-sm uppercase tracking-[2px] transition-colors w-full sm:w-auto"
+              className="w-full py-3 rounded-full bg-transparent border border-white/15 hover:border-[#C9A45C]/50 text-[#A7A29A] hover:text-[#F5F2EA] font-semibold text-xs uppercase tracking-[2px] transition-colors cursor-pointer"
             >
-              Continue Shopping
+              Return to Boutique
             </button>
-            
-            {!user && (
-              <button
-                onClick={() => navigateTo('/auth')}
-                className="px-8 py-3 rounded-full bg-transparent border border-[#C9A45C] hover:bg-[#C9A45C]/10 text-[#C9A45C] font-bold text-sm uppercase tracking-[2px] transition-colors w-full sm:w-auto"
-              >
-                Sign In / Register
-              </button>
-            )}
           </div>
         </div>
+      </div>
+    );
+  }
+
+  // Customer Account Portal (Non-Admin View)
+  if (user.role !== 'admin') {
+    return (
+      <div className="min-h-screen bg-[#070707] text-[#F5F2EA] pb-24">
+        {/* Breadcrumb */}
+        <div className="bg-[#0D0C0A] border-b border-white/5 py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+            <nav className="flex items-center gap-2 text-xs text-[#A7A29A] uppercase tracking-wider">
+              <button onClick={() => navigateTo('/')} className="hover:text-[#F5F2EA]">Home</button>
+              <ChevronRight className="w-3 h-3 text-[#8E713D]" />
+              <span className="text-[#C9A45C]">Client Portal</span>
+            </nav>
+            <button
+              onClick={logout}
+              className="flex items-center gap-1.5 text-xs text-[#A7A29A] hover:text-red-400 transition-colors uppercase tracking-wider"
+            >
+              <LogOut className="w-3.5 h-3.5" /> Sign Out
+            </button>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 space-y-8">
+          {/* Profile Overview Card */}
+          <div className="p-6 sm:p-8 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/30 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-[#C9A45C]/5 rounded-full blur-[100px] pointer-events-none" />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#C9A45C]/30 to-[#151310] border border-[#C9A45C] flex items-center justify-center text-[#E3C27A] font-cinzel text-2xl font-bold">
+                  {user.name ? user.name.charAt(0).toUpperCase() : 'P'}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#C9A45C]/15 border border-[#C9A45C]/40 text-[10px] font-bold tracking-wider text-[#E3C27A] uppercase flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" /> {user.tier || 'Oud Privé Member'}
+                    </span>
+                  </div>
+                  <h1 className="font-serif-luxury text-2xl sm:text-3xl text-[#F5F2EA] mt-1">
+                    {user.name}
+                  </h1>
+                  <p className="text-xs text-[#A7A29A]">{user.email}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 border-t sm:border-t-0 sm:border-l border-white/10 pt-4 sm:pt-0 sm:pl-6">
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider text-[#A7A29A] block">Privilege Points</span>
+                  <span className="font-cinzel text-2xl font-bold text-[#E3C27A]">{user.points || 250}</span>
+                </div>
+                <button
+                  onClick={() => navigateTo('/shop')}
+                  className="px-5 py-2.5 rounded-full bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shrink-0"
+                >
+                  Explore Boutique
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation Tabs */}
+          <div className="flex border-b border-white/10 gap-6 text-xs uppercase font-semibold tracking-wider">
+            <button
+              onClick={() => setCustomerActiveTab('orders')}
+              className={`pb-3 transition-colors relative flex items-center gap-2 ${
+                customerActiveTab === 'orders'
+                  ? 'text-[#E3C27A] border-b-2 border-[#C9A45C]'
+                  : 'text-[#A7A29A] hover:text-[#F5F2EA]'
+              }`}
+            >
+              <Package className="w-4 h-4" />
+              <span>Acquisition History</span>
+              <span className="px-2 py-0.5 rounded-full bg-[#151310] border border-white/10 text-[10px] font-mono">
+                {customerOrders.length}
+              </span>
+            </button>
+            <button
+              onClick={() => setCustomerActiveTab('privileges')}
+              className={`pb-3 transition-colors relative flex items-center gap-2 ${
+                customerActiveTab === 'privileges'
+                  ? 'text-[#E3C27A] border-b-2 border-[#C9A45C]'
+                  : 'text-[#A7A29A] hover:text-[#F5F2EA]'
+              }`}
+            >
+              <Crown className="w-4 h-4" />
+              <span>Privé Concierge & Benefits</span>
+            </button>
+          </div>
+
+          {/* Orders Tab */}
+          {customerActiveTab === 'orders' && (
+            <div className="space-y-6">
+              {isLoadingCustomerOrders ? (
+                <div className="py-20 flex flex-col items-center justify-center space-y-4">
+                  <div className="w-10 h-10 border-4 border-[#C9A45C]/30 border-t-[#C9A45C] rounded-full animate-spin" />
+                  <p className="text-xs text-[#A7A29A]">Retrieving your private order vault...</p>
+                </div>
+              ) : customerOrders.length === 0 ? (
+                <div className="py-16 text-center rounded-2xl bg-[#0D0C0A] border border-white/5 p-8 space-y-4 max-w-lg mx-auto">
+                  <div className="w-16 h-16 rounded-full bg-[#151310] border border-[#C9A45C]/20 mx-auto flex items-center justify-center text-[#C9A45C]">
+                    <ShoppingBag className="w-8 h-8" />
+                  </div>
+                  <h3 className="font-serif-luxury text-xl text-[#F5F2EA]">No Past Acquisitions</h3>
+                  <p className="text-xs text-[#A7A29A] leading-relaxed">
+                    You have not placed any orders yet. Experience our mastercrafted French-Arabian fragrances.
+                  </p>
+                  <button
+                    onClick={() => navigateTo('/shop')}
+                    className="px-6 py-2.5 rounded-full bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                  >
+                    Browse Collections
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {customerOrders.map((ord) => (
+                    <div
+                      key={ord.id}
+                      className="p-6 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/20 hover:border-[#C9A45C]/40 transition-colors shadow-lg space-y-5"
+                    >
+                      {/* Order Header */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 pb-4 gap-3">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-3 flex-wrap">
+                            <span className="font-mono text-sm font-bold text-[#E3C27A]">
+                              {ord.orderNumber}
+                            </span>
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider border bg-[#C9A45C]/10 border-[#C9A45C]/30 text-[#E3C27A]">
+                              {ord.status}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-[#A7A29A]">Acquired on {ord.date}</p>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <span className="font-cinzel text-lg font-bold text-[#F5F2EA]">
+                            {formatPrice(ord.total)}
+                          </span>
+                          <button
+                            onClick={() => setCustomerInvoiceOrder(ord)}
+                            className="px-3.5 py-1.5 rounded-lg bg-[#151310] border border-[#C9A45C]/30 hover:border-[#C9A45C] text-xs text-[#E3C27A] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>Invoice</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Items */}
+                      <div className="divide-y divide-white/5">
+                        {ord.items.map((it, idx) => (
+                          <div key={idx} className="py-3 flex items-center justify-between text-xs gap-4">
+                            <div className="flex items-center gap-3 min-w-0">
+                              {it.imageUrl || it.image ? (
+                                <img
+                                  src={it.imageUrl || it.image}
+                                  alt={it.name}
+                                  className="w-12 h-14 object-contain rounded bg-black border border-white/10 shrink-0"
+                                />
+                              ) : (
+                                <div className="w-12 h-14 rounded bg-black border border-white/10 flex items-center justify-center text-[#C9A45C]/50 shrink-0 font-cinzel text-xs font-bold">
+                                  OUD
+                                </div>
+                              )}
+                              <div className="min-w-0">
+                                <h4 className="font-semibold text-[#F5F2EA] truncate">{it.name}</h4>
+                                <p className="text-[11px] text-[#A7A29A]">
+                                  {it.size} • Qty: {it.quantity}
+                                </p>
+                              </div>
+                            </div>
+                            <span className="font-cinzel font-bold text-[#E3C27A] shrink-0">
+                              {formatPrice(it.price * it.quantity)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Details & Destination */}
+                      <div className="pt-3 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-[#A7A29A] gap-3">
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 text-[#C9A45C] shrink-0" />
+                          <span className="truncate">
+                            {ord.shippingAddress?.streetAddress || ''}
+                            {ord.shippingAddress?.area ? `, ${ord.shippingAddress.area}` : ''}
+                            {ord.shippingAddress?.governorate ? `, ${ord.shippingAddress.governorate}` : ''}
+                          </span>
+                        </div>
+
+                        {ord.trackingNumber && (
+                          <div className="flex items-center gap-1.5 text-xs text-[#E3C27A]">
+                            <Truck className="w-3.5 h-3.5" />
+                            <span>Tracking: <strong className="font-mono text-[#F5F2EA]">{ord.trackingNumber}</strong></span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Privileges Tab */}
+          {customerActiveTab === 'privileges' && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/30 space-y-3">
+                <ShieldCheck className="w-8 h-8 text-[#C9A45C]" />
+                <h3 className="font-cinzel text-base font-bold text-[#F5F2EA]">100% Certified Authentic</h3>
+                <p className="text-xs text-[#A7A29A] leading-relaxed">
+                  Every flacon is bottled from private reserve distillations in Grasse and Dubai, certified with individual batch serialization.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/30 space-y-3">
+                <Truck className="w-8 h-8 text-[#C9A45C]" />
+                <h3 className="font-cinzel text-base font-bold text-[#F5F2EA]">White-Glove VIP Delivery</h3>
+                <p className="text-xs text-[#A7A29A] leading-relaxed">
+                  Complimentary secure courier delivery across all 27 Egyptian governorates on orders above 2,500 EGP.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/30 space-y-3">
+                <Sparkles className="w-8 h-8 text-[#C9A45C]" />
+                <h3 className="font-cinzel text-base font-bold text-[#F5F2EA]">Private WhatsApp Concierge</h3>
+                <p className="text-xs text-[#A7A29A] leading-relaxed">
+                  Direct access to our olfactory sommelier for bespoke fragrance consultations and early access to vintage casks.
+                </p>
+                <button
+                  onClick={() => window.open('https://wa.me/201127977819?text=Hello%20OUD.X%20Sommelier,%20I%20would%20like%20a%20private%20fragrance%20consultation.', '_blank')}
+                  className="pt-2 text-xs font-bold text-[#C9A45C] hover:text-[#E3C27A] flex items-center gap-1 cursor-pointer"
+                >
+                  Contact Concierge →
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Customer Invoice Modal */}
+        {customerInvoiceOrder && (
+          <OrderInvoiceModal
+            order={customerInvoiceOrder}
+            onClose={() => setCustomerInvoiceOrder(null)}
+          />
+        )}
       </div>
     );
   }

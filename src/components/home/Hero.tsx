@@ -19,7 +19,7 @@ export const Hero: React.FC = () => {
       primaryLink: '/products/badee-al-oud-oud-for-glory',
       secondaryCta: 'EXPLORE COLLECTIONS',
       secondaryLink: '/shop',
-      image: '/src/assets/images/hero_oud_bottle_1787700482747.jpg',
+      image: '/images/hero_oud_bottle_1787700482747.jpg',
       badge: 'FEATURED MASTERPIECE',
       perfumeName: "Bade'e Al Oud (Oud For Glory)",
       notes: 'Smoked Agarwood • Saffron • Royal Amber'
@@ -34,7 +34,7 @@ export const Hero: React.FC = () => {
       primaryLink: '/products/khamrah-qahwa',
       secondaryCta: 'EXPLORE COLLECTIONS',
       secondaryLink: '/shop',
-      image: '/src/assets/images/new_arrivals_perfume_1787700509279.jpg',
+      image: '/images/new_arrivals_perfume_1787700509279.jpg',
       badge: 'GOURMAND FAVORITE',
       perfumeName: 'Khamrah Qahwa Sublime',
       notes: 'Qahwa Coffee • Candied Dates • Bourbon Vanilla'

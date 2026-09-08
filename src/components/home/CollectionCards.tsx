@@ -3,23 +3,31 @@ import { useShop } from '../../context/ShopContext';
 import { Sparkles, ArrowRight, Shield, Crown, Flame, Gem } from 'lucide-react';
 import { collectionService, HomeCollection } from '../../services/collectionService';
 
+const DEFAULT_HOME_COLLECTIONS: HomeCollection[] = [
+  { id: 'men', title: 'MEN COLLECTION', subtitle: 'Powerful woods, smoky birch, and bold spiced resins.', image_url: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1000&auto=format&fit=crop', href: '/collections/men', icon_type: 'men', display_order: 1, is_active: true },
+  { id: 'women', title: 'WOMEN COLLECTION', subtitle: 'Velvety Damask roses, radiant florals, and sweet amber nectar.', image_url: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=1000&auto=format&fit=crop', href: '/collections/women', icon_type: 'women', display_order: 2, is_active: true },
+  { id: 'unisex', title: 'UNISEX COLLECTION', subtitle: 'Masterfully balanced gourmand amber, coffee, and golden spices.', image_url: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=1000&auto=format&fit=crop', href: '/collections/unisex', icon_type: 'unisex', display_order: 3, is_active: true },
+  { id: 'oud', title: 'OUD COLLECTION', subtitle: 'Pure aged agarwood, rare resin extracts, and imperial elixirs.', image_url: '/images/hero_oud_bottle_1787700482747.jpg', href: '/collections/oud', icon_type: 'oud', display_order: 4, is_active: true }
+];
+
 export const CollectionCards: React.FC = () => {
   const { navigateTo, products } = useShop();
-  const [collections, setCollections] = useState<HomeCollection[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [collections, setCollections] = useState<HomeCollection[]>(DEFAULT_HOME_COLLECTIONS);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     async function loadCollections() {
-      setIsLoading(true);
       setError(null);
       const { data, error: err } = await collectionService.getHomeCollections();
       if (err) {
         setError(err);
-      } else if (data) {
+        setCollections(DEFAULT_HOME_COLLECTIONS);
+      } else if (data && data.length > 0) {
         setCollections(data);
+      } else {
+        setCollections(DEFAULT_HOME_COLLECTIONS);
       }
-      setIsLoading(false);
     }
     loadCollections();
   }, []);

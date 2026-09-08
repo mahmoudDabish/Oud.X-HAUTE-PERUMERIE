@@ -359,7 +359,7 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
                 </div>
                 <ul className="list-disc list-inside text-[#A7A29A] space-y-1 leading-relaxed">
                   <li><strong>Non-destructive:</strong> Base64 data is NEVER touched until the Storage upload passes an HTTP 200 GET verification and browser render check.</li>
-                  <li><strong>Zero credential exposure:</strong> Uses your active authenticated Admin session directly. No service_role key required.</li>
+                  <li><strong>Zero credential exposure:</strong> Uses your active authenticated Admin session directly. No administrative secret keys required.</li>
                   <li><strong>High visual quality:</strong> Converted to 90% quality WebP via client-side Canvas. No aggressive lossy degradation.</li>
                   <li><strong>Fail-safe isolation:</strong> If an individual image fails verification, its database row is untouched and the migration continues.</li>
                 </ul>

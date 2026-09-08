@@ -196,6 +196,7 @@ export const orderService = {
 
       const updateData: any = {
         shipping: fee,
+        shipping_fee: fee,
         total: newTotal
       };
 

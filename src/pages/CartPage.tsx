@@ -118,8 +118,8 @@ export const CartPage: React.FC = () => {
                         className="w-20 h-24 rounded-lg bg-black overflow-hidden border border-white/10 shrink-0 cursor-pointer"
                       >
                         <img
-                          src={item.product.images[0]}
-                          alt={item.product.name}
+                          src={item.product?.images?.[0] || (item.product as any)?.image || '/images/hero_oud_bottle_1787700482747.jpg'}
+                          alt={item.product?.name || 'Fragrance'}
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover"
                         />
