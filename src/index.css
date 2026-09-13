@@ -16,24 +16,87 @@
     --border-gold-strong: rgba(201, 164, 92, 0.35);
   }
 
+  html {
+    font-size: 16.8px;
+  }
+
+  @media (min-width: 1280px) {
+    html {
+      font-size: 17.2px;
+    }
+  }
+
+  @media (min-width: 1536px) {
+    html {
+      font-size: 17.8px;
+    }
+  }
+
   body {
     background-color: #070707;
     color: #F5F2EA;
-    font-family: 'Montserrat', 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Montserrat', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 1rem;
+    line-height: 1.62;
     overflow-x: hidden;
   }
 
+  .max-w-7xl {
+    max-width: 88rem;
+  }
+
   h1, h2, h3, .font-serif-luxury {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif;
   }
 
   .font-cinzel {
-    font-family: 'Cinzel', serif;
+    font-family: 'Cinzel', 'Trajan Pro', 'Georgia', serif;
   }
 
   .font-sans-clean {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
   }
+
+  /* Arabic Luxury Typography with Graceful System Fallbacks */
+  [dir="rtl"], html[lang="ar"], .rtl-mode {
+    font-family: 'Alexandria', 'Tajawal', 'Segoe UI', Tahoma, -apple-system, BlinkMacSystemFont, 'Arabic Typesetting', sans-serif;
+  }
+
+  [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] .font-serif-luxury,
+  html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3, html[lang="ar"] .font-serif-luxury {
+    font-family: 'Amiri', 'Traditional Arabic', 'Al Bayan', 'Geeza Pro', 'Times New Roman', serif;
+    letter-spacing: 0;
+  }
+
+  [dir="rtl"] .font-cinzel,
+  html[lang="ar"] .font-cinzel {
+    font-family: 'Amiri', 'Traditional Arabic', 'Cinzel', serif;
+    letter-spacing: 0;
+  }
+
+  [dir="rtl"] .font-sans-clean,
+  html[lang="ar"] .font-sans-clean {
+    font-family: 'Alexandria', 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+    letter-spacing: 0;
+  }
+
+  /* RTL Form text alignment */
+  [dir="rtl"] input:not([type="email"]):not([type="tel"]):not([type="password"]):not([dir="ltr"]),
+  [dir="rtl"] textarea:not([dir="ltr"]),
+  [dir="rtl"] select:not([dir="ltr"]) {
+    text-align: right;
+  }
+
+  [dir="rtl"] input[type="email"],
+  [dir="rtl"] input[type="tel"] {
+    direction: ltr;
+    text-align: right;
+  }
+}
+
+/* RTL Directional flip helper */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
 }
 
 /* Custom subtle scrollbars */
@@ -53,6 +116,32 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #C9A45C;
+}
+
+/* Custom luxury scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(13, 12, 10, 0.6);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(201, 164, 92, 0.35);
+  border-radius: 4px;
+  border: 1px solid rgba(201, 164, 92, 0.15);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 164, 92, 0.7);
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 164, 92, 0.35) rgba(13, 12, 10, 0.6);
 }
 
 /* Frosted Glass Theme Utilities */

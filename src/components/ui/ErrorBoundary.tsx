@@ -1,5 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { ShieldAlert, RotateCcw, Home } from 'lucide-react';
+import i18n from '../../i18n';
 
 interface Props {
   children: ReactNode;
@@ -59,13 +60,13 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
             <div className="space-y-2">
               <span className="font-cinzel text-xs uppercase tracking-[3px] text-[#C9A45C] font-semibold">
-                OUD_X PRIVÉ
+                {i18n.t('errorBoundary.prive', 'OUD_X PRIVÉ')}
               </span>
               <h2 className="font-serif-luxury text-2xl sm:text-3xl text-[#F5F2EA]">
-                An Unexpected Exception Occurred
+                {i18n.t('errorBoundary.title', 'An Unexpected Exception Occurred')}
               </h2>
               <p className="text-xs text-[#A7A29A] leading-relaxed">
-                Our atelier encountered an unexpected state. Your shopping cart and preferences remain safely stored.
+                {i18n.t('errorBoundary.desc', 'Our atelier encountered an unexpected state. Your shopping cart and preferences remain safely stored.')}
               </p>
             </div>
 
@@ -74,13 +75,13 @@ export class ErrorBoundary extends React.Component<Props, State> {
                 onClick={this.handleReload}
                 className="flex-1 py-3 px-4 rounded-full bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-xs uppercase tracking-[2px] transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
-                <RotateCcw className="w-3.5 h-3.5" /> Reload
+                <RotateCcw className="w-3.5 h-3.5 rtl-flip" /> {i18n.t('errorBoundary.reload', 'Reload')}
               </button>
               <button
                 onClick={this.handleReset}
                 className="flex-1 py-3 px-4 rounded-full bg-transparent border border-[#C9A45C]/40 hover:bg-[#C9A45C]/10 text-[#C9A45C] font-semibold text-xs uppercase tracking-[2px] transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Home className="w-3.5 h-3.5" /> Boutique
+                <Home className="w-3.5 h-3.5" /> {i18n.t('errorBoundary.boutique', 'Boutique')}
               </button>
             </div>
           </div>

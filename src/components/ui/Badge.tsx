@@ -1,13 +1,14 @@
 import React from 'react';
+import { getLocalizedBadge } from '../../i18n/presentation';
 
 interface BadgeProps {
-  variant?: 'BEST SELLER' | 'NEW' | 'LIMITED' | 'SALE' | 'EXCLUSIVE' | 'DEFAULT';
+  variant?: 'BEST SELLER' | 'NEW' | 'LIMITED' | 'SALE' | 'EXCLUSIVE' | 'DEFAULT' | string;
   children?: React.ReactNode;
   className?: string;
 }
 
 export const Badge: React.FC<BadgeProps> = ({ variant = 'DEFAULT', children, className = '' }) => {
-  const content = children || variant;
+  const content = children || getLocalizedBadge(variant);
 
   const styles = {
     'BEST SELLER': 'bg-[#151310]/80 text-[#F0D9A4] border-[#C9A45C]/50 shadow-sm shadow-[#C9A45C]/15',

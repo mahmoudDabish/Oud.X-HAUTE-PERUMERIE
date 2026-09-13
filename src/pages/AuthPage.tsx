@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useShop } from '../context/ShopContext';
 import { Button } from '../components/ui/Button';
-import { Lock, Mail, User, Phone, Sparkles, ChevronRight, ShieldCheck } from 'lucide-react';
+import { Lock, Mail, User, Phone, ShieldCheck } from 'lucide-react';
 
 export const AuthPage: React.FC = () => {
+  const { t } = useTranslation();
   const { login, register, user, navigateTo } = useShop();
 
   const [mode, setMode] = useState<'login' | 'register'>('login');
@@ -38,8 +40,6 @@ export const AuthPage: React.FC = () => {
     }
     
     setIsLoading(false);
-    // Note: navigateTo('/account') is handled safely if login was successful
-    // because `user` state will update and trigger the redirection at the top.
   };
 
   return (
@@ -56,10 +56,10 @@ export const AuthPage: React.FC = () => {
             OUD<span className="text-[#C9A45C]">_</span>X
           </span>
           <h1 className="font-serif-luxury text-2xl sm:text-3xl text-[#F5F2EA]">
-            {mode === 'login' ? 'Privé Client Sign In' : 'Create Privé Account'}
+            {mode === 'login' ? t('auth.signInTitle', 'Privé Client Sign In') : t('auth.registerTitle', 'Create Privé Account')}
           </h1>
           <p className="text-xs text-[#A7A29A]">
-            Access your personalized fragrance vault, private releases & order history.
+            {t('auth.subtitle', 'Access your personalized fragrance vault, private releases & order history.')}
           </p>
         </div>
 
@@ -73,7 +73,7 @@ export const AuthPage: React.FC = () => {
                 : 'text-[#A7A29A] hover:text-[#F5F2EA]'
             }`}
           >
-            Sign In
+            {t('auth.signInTab', 'Sign In')}
           </button>
           <button
             onClick={() => setMode('register')}
@@ -83,7 +83,7 @@ export const AuthPage: React.FC = () => {
                 : 'text-[#A7A29A] hover:text-[#F5F2EA]'
             }`}
           >
-            Register
+            {t('auth.registerTab', 'Register')}
           </button>
         </div>
 
@@ -92,30 +92,30 @@ export const AuthPage: React.FC = () => {
           {mode === 'register' && (
             <>
               <div>
-                <label className="block text-[#A7A29A] mb-1 font-medium">Full Name</label>
+                <label className="block text-[#A7A29A] mb-1 font-medium">{t('auth.fullName', 'Full Name')}</label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C9A45C]" />
+                  <User className="absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C9A45C]" />
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Karim El-Sayed"
-                    className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded py-2.5 pl-9 pr-3 text-[#F5F2EA] focus:outline-none"
+                    placeholder={t('auth.fullNamePlaceholder', 'Karim El-Sayed')}
+                    className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded py-2.5 pl-9 pr-3 rtl:pl-3 rtl:pr-9 text-[#F5F2EA] focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[#A7A29A] mb-1 font-medium">Phone Number</label>
+                <label className="block text-[#A7A29A] mb-1 font-medium">{t('auth.phone', 'Phone Number')}</label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C9A45C]" />
+                  <Phone className="absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C9A45C]" />
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+20 100 123 4567"
-                    className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded py-2.5 pl-9 pr-3 text-[#F5F2EA] focus:outline-none"
+                    placeholder={t('auth.phonePlaceholder', '+20 100 123 4567')}
+                    className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded py-2.5 pl-9 pr-3 rtl:pl-3 rtl:pr-9 text-[#F5F2EA] focus:outline-none"
                   />
                 </div>
               </div>
@@ -123,31 +123,31 @@ export const AuthPage: React.FC = () => {
           )}
 
           <div>
-            <label className="block text-[#A7A29A] mb-1 font-medium">Email Address</label>
+            <label className="block text-[#A7A29A] mb-1 font-medium">{t('auth.email', 'Email Address')}</label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C9A45C]" />
+              <Mail className="absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C9A45C]" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@domain.com"
-                className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded py-2.5 pl-9 pr-3 text-[#F5F2EA] focus:outline-none"
+                placeholder={t('auth.emailPlaceholder', 'name@domain.com')}
+                className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded py-2.5 pl-9 pr-3 rtl:pl-3 rtl:pr-9 text-[#F5F2EA] focus:outline-none"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[#A7A29A] mb-1 font-medium">Password</label>
+            <label className="block text-[#A7A29A] mb-1 font-medium">{t('auth.password', 'Password')}</label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C9A45C]" />
+              <Lock className="absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C9A45C]" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded py-2.5 pl-9 pr-3 text-[#F5F2EA] focus:outline-none"
+                placeholder={t('auth.passwordPlaceholder', '••••••••')}
+                className="w-full bg-[#11100E] border border-white/15 focus:border-[#C9A45C] rounded py-2.5 pl-9 pr-3 rtl:pl-3 rtl:pr-9 text-[#F5F2EA] focus:outline-none"
               />
             </div>
           </div>
@@ -159,14 +159,14 @@ export const AuthPage: React.FC = () => {
             fullWidth
             isLoading={isLoading}
           >
-            {mode === 'login' ? 'ENTER PRIVÉ ATELIER' : 'CREATE PRIVILEGE ACCOUNT'}
+            {isLoading ? t('auth.submitting', 'Authenticating...') : (mode === 'login' ? t('auth.signInButton', 'ENTER PRIVÉ ATELIER') : t('auth.registerButton', 'CREATE PRIVILEGE ACCOUNT'))}
           </Button>
 
         </form>
 
         <div className="flex items-center justify-center gap-2 text-[10px] text-[#8E713D]">
           <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Encrypted with OUD_X Privé Security Standards</span>
+          <span>{t('auth.securityStandards', 'Encrypted with OUD_X Privé Security Standards')}</span>
         </div>
 
       </div>

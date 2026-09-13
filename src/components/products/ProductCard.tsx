@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Product } from '../../types';
 import { useShop } from '../../context/ShopContext';
 import { Heart, ShoppingBag, Eye } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
+import { getLocalizedCategory, getLocalizedProductName, getLocalizedProductSubtitle } from '../../i18n/presentation';
 
 export interface ProductCardProps {
   product: Product;
@@ -40,23 +42,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
   className = ''
 }) => {
+  const { t } = useTranslation();
   const { isInWishlist, toggleWishlist, addToCart, formatPrice, navigateTo, setQuickViewProduct } = useShop();
   const [isHovered, setIsHovered] = useState(false);
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
 
   const displayImage = image || product?.images?.[0] || '/images/hero-perfume.webp';
-  const displayName = name || product.name;
+  const displayName = getLocalizedProductName(product, name);
+  const displaySubtitle = getLocalizedProductSubtitle(product);
   const displayBrand = brand || product.brand;
-  const CATEGORY_MAP: Record<string, string> = {
-    'all': 'All Collections',
-    '11111111-1111-1111-1111-111111111111': 'Perfumes',
-    '22222222-2222-2222-2222-222222222222': 'Body Splash',
-    '33333333-3333-3333-3333-333333333333': 'Oud',
-    '44444444-4444-4444-4444-444444444444': 'Body Care',
-    '55555555-5555-5555-5555-555555555555': 'Gift Sets'
-  };
-  
-  const displayCategory = CATEGORY_MAP[category || product.category] || category || product.category;
+  const displayCategory = getLocalizedCategory(category || product.category);
   
   const currentSizeObj = product.availableSizes?.[selectedSizeIndex];
   const displaySize = size || currentSizeObj?.size || product.size;
@@ -134,7 +129,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <div className="flex flex-col gap-1.5 pointer-events-none">
             {product.stock <= 0 ? (
               <span className="px-2 py-1 text-[9px] font-bold tracking-widest text-[#A7A29A] uppercase bg-[#151310]/90 border border-white/20 rounded shadow-md backdrop-blur-md">
-                OUT OF STOCK
+                {t('products.outOfStock')}
               </span>
             ) : displayBadge ? (
               <Badge variant={displayBadge as any} />
@@ -150,7 +145,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   ? 'bg-[#C9A45C] text-[#070707] shadow-md shadow-[#C9A45C]/30'
                   : 'bg-[#070707]/75 text-[#A7A29A] hover:text-[#F5F2EA] hover:bg-[#070707] border border-[#C9A45C]/20'
               }`}
-              aria-label={isFav ? "Remove from wishlist" : "Add to wishlist"}
+              aria-label={isFav ? t('wishlist.remove') : t('wishlist.add')}
             >
               <Heart className={`w-3.5 h-3.5 ${isFav ? 'fill-current' : ''}`} />
             </button>
@@ -159,7 +154,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <button
               onClick={handleQuickView}
               className="p-2 rounded-full bg-[#070707]/75 text-[#A7A29A] hover:text-[#F5F2EA] hover:bg-[#070707] border border-[#C9A45C]/20 backdrop-blur-md transition-all duration-200 opacity-0 group-hover:opacity-100 hidden sm:flex items-center justify-center"
-              aria-label="Quick view product"
+              aria-label={t('products.quickView')}
             >
               <Eye className="w-3.5 h-3.5" />
             </button>
@@ -177,7 +172,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             leftIcon={product.stock > 0 ? <ShoppingBag className="w-3.5 h-3.5" /> : undefined}
             className="shadow-xl shadow-black/80 text-[10px] tracking-[2px] font-bold"
           >
-            {product.stock <= 0 ? 'OUT OF STOCK' : 'QUICK ADD'}
+            {product.stock <= 0 ? t('products.outOfStock') : t('products.quickAdd')}
           </Button>
         </div>
       </div>
@@ -196,15 +191,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </h3>
 
         {/* Subtitle / Key Scent Note */}
-        {product.subtitle && (
+        {displaySubtitle && (
           <p className="text-[11px] text-[#8E713D] truncate mb-2">
-            {product.subtitle}
+            {displaySubtitle}
           </p>
         )}
 
         {/* No Rating Display for Dev Data */}
         <div className="mb-3 flex items-center h-4">
-          <span className="text-[10px] text-[#A7A29A] italic">No reviews yet</span>
+          <span className="text-[10px] text-[#A7A29A] italic">{t('products.noReviewsYet')}</span>
         </div>
 
         {/* Available Size Pills if multiple */}
@@ -251,7 +246,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 ? 'bg-[#C9A45C] text-[#070707] active:bg-[#E3C27A]' 
                 : 'bg-stone-800 text-stone-500 cursor-not-allowed'
             }`}
-            aria-label="Add to cart"
+            aria-label={t('cart.addToCart')}
           >
             <ShoppingBag className="w-4 h-4" />
           </button>

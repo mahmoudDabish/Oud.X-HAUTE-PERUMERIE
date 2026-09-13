@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useShop } from '../context/ShopContext';
 import { Button } from '../components/ui/Button';
 import { Trash2, ShoppingBag, ArrowRight, Sparkles, Tag, ChevronRight, ShieldCheck } from 'lucide-react';
+import { getLocalizedProductName } from '../i18n/presentation';
 
 export const CartPage: React.FC = () => {
+  const { t } = useTranslation();
   const {
     cart,
     removeFromCart,
@@ -12,31 +15,13 @@ export const CartPage: React.FC = () => {
     shipping,
     discount,
     appliedPromo,
-    applyPromoCode,
-    removePromoCode,
     total,
-    freeShippingThreshold,
     amountToFreeShipping,
     formatPrice,
     navigateTo
   } = useShop();
 
-  const [promoInput, setPromoInput] = useState('');
-  const [promoError, setPromoError] = useState('');
-
-  const progressPercent = Math.min(100, Math.round(((freeShippingThreshold - amountToFreeShipping) / freeShippingThreshold) * 100));
-
-  const handleApplyPromo = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!promoInput.trim()) return;
-    const res = applyPromoCode(promoInput);
-    if (!res.success) {
-      setPromoError(res.message);
-    } else {
-      setPromoError('');
-      setPromoInput('');
-    }
-  };
+  const progressPercent = Math.min(100, Math.round(((3000 - amountToFreeShipping) / 3000) * 100));
 
   return (
     <div className="min-h-screen bg-[#070707] text-[#F5F2EA] pb-24">
@@ -44,11 +29,11 @@ export const CartPage: React.FC = () => {
       <div className="bg-[#0D0C0A] border-b border-white/5 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center gap-2 text-xs text-[#A7A29A] uppercase tracking-wider">
-            <button onClick={() => navigateTo('/')} className="hover:text-[#F5F2EA]">Home</button>
-            <ChevronRight className="w-3 h-3 text-[#8E713D]" />
-            <button onClick={() => navigateTo('/shop')} className="hover:text-[#F5F2EA]">Shop</button>
-            <ChevronRight className="w-3 h-3 text-[#8E713D]" />
-            <span className="text-[#C9A45C]">Shopping Bag</span>
+            <button onClick={() => navigateTo('/')} className="hover:text-[#F5F2EA]">{t('shop.breadcrumbHome')}</button>
+            <ChevronRight className="w-3 h-3 text-[#8E713D] rtl-flip" />
+            <button onClick={() => navigateTo('/shop')} className="hover:text-[#F5F2EA]">{t('shop.breadcrumbShop')}</button>
+            <ChevronRight className="w-3 h-3 text-[#8E713D] rtl-flip" />
+            <span className="text-[#C9A45C]">{t('cart.breadcrumb')}</span>
           </nav>
         </div>
       </div>
@@ -56,10 +41,10 @@ export const CartPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         <div className="space-y-2 mb-8">
           <span className="text-[10px] uppercase tracking-[0.25em] text-[#8E713D] font-semibold flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" /> Your Curated Selection
+            <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" /> {t('cart.curatedSelection')}
           </span>
           <h1 className="font-serif-luxury text-3xl sm:text-4xl lg:text-5xl font-normal text-[#F5F2EA]">
-            SHOPPING BAG ({cart.reduce((a, b) => a + b.quantity, 0)})
+            {t('cart.title', { count: cart.reduce((a, b) => a + b.quantity, 0) })}
           </h1>
         </div>
 
@@ -68,16 +53,16 @@ export const CartPage: React.FC = () => {
             <div className="w-20 h-20 rounded-full bg-[#11100E] border border-[#C9A45C]/30 mx-auto flex items-center justify-center text-[#C9A45C]">
               <ShoppingBag className="w-10 h-10" />
             </div>
-            <h2 className="font-serif-luxury text-2xl text-[#F5F2EA]">Your shopping bag is empty</h2>
+            <h2 className="font-serif-luxury text-2xl text-[#F5F2EA]">{t('cart.emptyTitle')}</h2>
             <p className="text-xs sm:text-sm text-[#A7A29A] max-w-sm mx-auto">
-              Indulge in our collection of precious oud wood, smoky leathers, and royal vanilla elixirs.
+              {t('cart.emptyDesc')}
             </p>
             <Button
               onClick={() => navigateTo('/shop')}
               variant="primary"
               size="lg"
             >
-              EXPLORE BOUTIQUE
+              {t('cart.continueShopping')}
             </Button>
           </div>
         ) : (
@@ -90,9 +75,9 @@ export const CartPage: React.FC = () => {
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-[#A7A29A]">
                     {amountToFreeShipping === 0 ? (
-                      <strong className="text-emerald-400">Complimentary VIP Delivery Unlocked!</strong>
+                      <strong className="text-emerald-400">{t('cart.freeShippingUnlocked')}</strong>
                     ) : (
-                      <span>Add <strong className="text-[#E3C27A]">{formatPrice(amountToFreeShipping)}</strong> more to receive free shipping</span>
+                      <span>{t('cart.addMoreForFreeShipping', { amount: formatPrice(amountToFreeShipping) })}</span>
                     )}
                   </span>
                   <span className="text-[11px] font-mono text-[#8E713D]">{progressPercent}%</span>
@@ -119,7 +104,7 @@ export const CartPage: React.FC = () => {
                       >
                         <img
                           src={item.product?.images?.[0] || (item.product as any)?.image || '/images/hero_oud_bottle_1787700482747.jpg'}
-                          alt={item.product?.name || 'Fragrance'}
+                          alt={getLocalizedProductName(item.product, item.product?.name || 'Fragrance')}
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover"
                         />
@@ -132,13 +117,13 @@ export const CartPage: React.FC = () => {
                           onClick={() => navigateTo(`/products/${item.product.slug}`)}
                           className="font-serif-luxury text-base sm:text-lg text-[#F5F2EA] truncate cursor-pointer hover:text-[#E3C27A]"
                         >
-                          {item.product.name}
+                          {getLocalizedProductName(item.product, item.product.name)}
                         </h3>
                         <p className="text-xs text-[#A7A29A]">
-                          Flacon Size: <strong className="text-[#F5F2EA]">{item.selectedSize}</strong>
+                          {t('product.selectSize')}: <strong className="text-[#F5F2EA]">{item.selectedSize}</strong>
                         </p>
                         <span className="font-cinzel text-xs text-[#E3C27A] block sm:hidden">
-                          {formatPrice(item.price)} each
+                          {formatPrice(item.price)}
                         </span>
                       </div>
                     </div>
@@ -162,7 +147,7 @@ export const CartPage: React.FC = () => {
                       </div>
 
                       {/* Line Item Total */}
-                      <div className="text-right">
+                      <div className="text-right rtl:text-left">
                         <span className="font-cinzel text-sm sm:text-base font-bold text-[#E3C27A]">
                           {formatPrice(item.price * item.quantity)}
                         </span>
@@ -171,8 +156,8 @@ export const CartPage: React.FC = () => {
                       {/* Remove */}
                       <button
                         onClick={() => removeFromCart(item.product.id, item.selectedSize)}
-                        className="text-[#A7A29A] hover:text-red-400 p-2"
-                        aria-label="Remove item"
+                        className="text-[#A7A29A] hover:text-red-400 p-2 transition-colors"
+                        aria-label={t('common.remove')}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -186,29 +171,29 @@ export const CartPage: React.FC = () => {
             <div className="lg:col-span-4 space-y-6">
               <div className="p-6 rounded-xl bg-[#0D0C0A] border border-[#C9A45C]/30 shadow-xl space-y-5">
                 <h2 className="font-cinzel text-sm font-bold uppercase tracking-widest text-[#F5F2EA] border-b border-white/10 pb-3">
-                  Order Summary
+                  {t('checkout.orderSummary')}
                 </h2>
 
                 <div className="space-y-2.5 text-xs">
                   <div className="flex justify-between text-[#A7A29A]">
-                    <span>Subtotal</span>
+                    <span>{t('cart.subtotal')}</span>
                     <span className="font-cinzel text-[#F5F2EA]">{formatPrice(subtotal)}</span>
                   </div>
 
                   {discount > 0 && (
                     <div className="flex justify-between text-emerald-400 font-semibold">
                       <span className="flex items-center gap-1">
-                        <Tag className="w-3 h-3" /> Privilege Discount ({appliedPromo})
+                        <Tag className="w-3 h-3" /> {t('cart.privilegeDiscount')} ({appliedPromo})
                       </span>
                       <span className="font-cinzel">-{formatPrice(discount)}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between text-[#A7A29A]">
-                    <span>VIP Shipping & Delivery</span>
+                    <span>{t('cart.shipping')}</span>
                     <span>
                       {shipping === 0 ? (
-                        <span className="text-emerald-400 font-semibold uppercase">Complimentary</span>
+                        <span className="text-emerald-400 font-semibold uppercase">{t('cart.complimentary')}</span>
                       ) : (
                         <span className="font-cinzel text-[#F5F2EA]">{formatPrice(shipping)}</span>
                       )}
@@ -216,7 +201,7 @@ export const CartPage: React.FC = () => {
                   </div>
 
                   <div className="pt-3 border-t border-white/10 flex justify-between text-base font-bold text-[#F5F2EA]">
-                    <span>Total Amount</span>
+                    <span>{t('cart.total')}</span>
                     <span className="font-cinzel text-lg text-[#E3C27A]">{formatPrice(total)}</span>
                   </div>
                 </div>
@@ -227,14 +212,14 @@ export const CartPage: React.FC = () => {
                   variant="primary"
                   size="lg"
                   fullWidth
-                  rightIcon={<ArrowRight className="w-4 h-4" />}
+                  rightIcon={<ArrowRight className="w-4 h-4 rtl-flip" />}
                 >
-                  PROCEED TO CHECKOUT
+                  {t('cart.proceedToCheckout')}
                 </Button>
 
                 <div className="flex items-center justify-center gap-2 text-[10px] text-[#8E713D] pt-2">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Safe & Encrypted 256-bit Checkout</span>
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#C9A45C]" />
+                  <span>{t('checkout.safeEncrypted')}</span>
                 </div>
               </div>
             </div>

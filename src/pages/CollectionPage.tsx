@@ -1,44 +1,46 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from '../components/products/ProductCard';
-import { ChevronRight, Sparkles, SlidersHorizontal, Shield, Crown, Flame, Gem } from 'lucide-react';
-import { Button } from '../components/ui/Button';
+import { ChevronRight, Shield, Crown, Flame, Gem } from 'lucide-react';
+import { getLocalizedFragranceFamily } from '../i18n/presentation';
 
 interface CollectionPageProps {
   collectionId: 'men' | 'women' | 'unisex' | 'oud';
 }
 
 export const CollectionPage: React.FC<CollectionPageProps> = ({ collectionId }) => {
+  const { t } = useTranslation();
   const { products, navigateTo } = useShop();
   const [sortBy, setSortBy] = useState<'featured' | 'price-low' | 'price-high' | 'rating'>('featured');
   const [selectedFamily, setSelectedFamily] = useState<string>('all');
 
   const metaMap = {
     men: {
-      title: 'MEN COLLECTION',
-      subtitle: 'Smoky woods, noble birch, and spiced midnight leathers.',
-      narrative: 'Commanding, magnetic fragrances formulated with dark woody accords, smoked birch trees, Italian bergamot, and rich ambergris for the modern aristocrat.',
+      title: t('home.collections.menTitle', 'MEN COLLECTION'),
+      subtitle: t('home.collections.menSub', 'Smoky woods, noble birch, and spiced midnight leathers.'),
+      narrative: t('collectionNarrative.men', 'Commanding, magnetic fragrances formulated with dark woody accords, smoked birch trees, Italian bergamot, and rich ambergris for the modern aristocrat.'),
       image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1400&auto=format&fit=crop',
       icon: <Shield className="w-5 h-5 text-[#C9A45C]" />
     },
     women: {
-      title: 'WOMEN COLLECTION',
-      subtitle: 'Velvety Damask roses, radiant white florals, and sweet amber nectar.',
-      narrative: 'Ethereal yet profound feminine compositions balancing blooming Grasse peonies, raspberry nectar, and warm cashmere musks for effortless majesty.',
+      title: t('home.collections.womenTitle', 'WOMEN COLLECTION'),
+      subtitle: t('home.collections.womenSub', 'Velvety Damask roses, radiant white florals, and sweet amber nectar.'),
+      narrative: t('collectionNarrative.women', 'Ethereal yet profound feminine compositions balancing blooming Grasse peonies, raspberry nectar, and warm cashmere musks for effortless majesty.'),
       image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=1400&auto=format&fit=crop',
       icon: <Gem className="w-5 h-5 text-[#C9A45C]" />
     },
     unisex: {
-      title: 'UNISEX ELIXIRS',
-      subtitle: 'Roasted coffee, dark praline, bourbon vanilla, and golden spices.',
-      narrative: 'Fluid olfactory masterworks designed without boundaries. Blending roasted Arabic Qahwa, spicy cardamom, and honeyed amber for unforgettable chemistry on all skin.',
+      title: t('home.collections.unisexTitle', 'UNISEX ELIXIRS'),
+      subtitle: t('home.collections.unisexSub', 'Roasted coffee, dark praline, bourbon vanilla, and golden spices.'),
+      narrative: t('collectionNarrative.unisex', 'Fluid olfactory masterworks designed without boundaries. Blending roasted Arabic Qahwa, spicy cardamom, and honeyed amber for unforgettable chemistry on all skin.'),
       image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=1400&auto=format&fit=crop',
       icon: <Flame className="w-5 h-5 text-[#C9A45C]" />
     },
     oud: {
-      title: 'OUD COLLECTION',
-      subtitle: 'Wild Assamese agarwood, aged Cambodian resin, and royal elixirs.',
-      narrative: 'The beating heart of Arabian perfumery. Sourced from century-old trees, steam-distilled and maturely rested in charred French oak barrels for hypnotic beast-mode longevity.',
+      title: t('home.collections.oudTitle', 'OUD COLLECTION'),
+      subtitle: t('home.collections.oudSub', 'Wild Assamese agarwood, aged Cambodian resin, and royal elixirs.'),
+      narrative: t('collectionNarrative.oud', 'The beating heart of Arabian perfumery. Sourced from century-old trees, steam-distilled and maturely rested in charred French oak barrels for hypnotic beast-mode longevity.'),
       image: '/images/hero_oud_bottle_1787700482747.jpg',
       icon: <Crown className="w-5 h-5 text-[#E3C27A]" />
     }
@@ -49,7 +51,16 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({ collectionId }) 
   const collectionProducts = useMemo(() => {
     return products.filter(p => {
       if (collectionId === 'oud') {
-        return p.category === 'oud' || p.fragranceFamily === 'Smoky Oud';
+        return p.category === 'oud' || p.fragranceFamily === 'Smoky Oud' || p.name.toLowerCase().includes('oud');
+      }
+      if (collectionId === 'men') {
+        return p.gender === 'men' || p.gender === 'unisex' || p.category === 'men';
+      }
+      if (collectionId === 'women') {
+        return p.gender === 'women' || p.gender === 'unisex' || p.category === 'women';
+      }
+      if (collectionId === 'unisex') {
+        return p.gender === 'unisex' || p.category === 'unisex';
       }
       return p.gender === collectionId || p.category === collectionId;
     });
@@ -93,10 +104,10 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({ collectionId }) 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10 w-full">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-xs text-[#A7A29A] uppercase tracking-wider mb-6">
-            <button onClick={() => navigateTo('/')} className="hover:text-[#F5F2EA]">Home</button>
-            <ChevronRight className="w-3 h-3 text-[#8E713D]" />
-            <button onClick={() => navigateTo('/shop')} className="hover:text-[#F5F2EA]">Collections</button>
-            <ChevronRight className="w-3 h-3 text-[#8E713D]" />
+            <button onClick={() => navigateTo('/')} className="hover:text-[#F5F2EA]">{t('shop.breadcrumbHome')}</button>
+            <ChevronRight className="w-3 h-3 text-[#8E713D] rtl-flip" />
+            <button onClick={() => navigateTo('/shop')} className="hover:text-[#F5F2EA]">{t('nav.collections')}</button>
+            <ChevronRight className="w-3 h-3 text-[#8E713D] rtl-flip" />
             <span className="text-[#C9A45C]">{meta.title}</span>
           </nav>
 
@@ -104,7 +115,7 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({ collectionId }) 
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#11100E]/80 border border-[#C9A45C]/40 backdrop-blur-md">
               {meta.icon}
               <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#E3C27A]">
-                Curated Chapter
+                {t('home.collections.subtitle')}
               </span>
             </div>
 
@@ -135,23 +146,23 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({ collectionId }) 
                     : 'border-white/10 text-[#A7A29A] hover:border-white/20'
                 }`}
               >
-                {fam === 'all' ? 'All Notes' : fam}
+                {fam === 'all' ? t('shop.filters.allProducts', 'All Notes') : getLocalizedFragranceFamily(fam, t)}
               </button>
             ))}
           </div>
 
           {/* Sort By */}
           <div className="flex items-center gap-2 self-end sm:self-auto text-xs">
-            <span className="text-[#8E713D] uppercase tracking-wider text-[11px]">SORT:</span>
+            <span className="text-[#8E713D] uppercase tracking-wider text-[11px]">{t('shop.sortBy')}:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
               className="bg-[#151310] text-[#F5F2EA] border border-white/10 rounded px-3 py-1.5 text-xs focus:outline-none focus:border-[#C9A45C]"
             >
-              <option value="featured">Featured Curations</option>
-              <option value="rating">Top Sillage & Reviews</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
+              <option value="featured">{t('shop.sortOptions.featured')}</option>
+              <option value="rating">{t('shop.sortOptions.rating')}</option>
+              <option value="price-low">{t('shop.sortOptions.priceLow')}</option>
+              <option value="price-high">{t('shop.sortOptions.priceHigh')}</option>
             </select>
           </div>
         </div>

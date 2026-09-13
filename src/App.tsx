@@ -41,7 +41,8 @@ const AppContent: React.FC = () => {
       cleanPath === '/collections/all' ||
       cleanPath.startsWith('/collections/perfumes') ||
       cleanPath.startsWith('/collections/body-splash') ||
-      cleanPath.startsWith('/collections/body-care')
+      cleanPath.startsWith('/collections/body-care') ||
+      cleanPath.startsWith('/collections/body-spray')
     ) {
       return <ShopPage />;
     }

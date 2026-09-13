@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const LUXURY_BRANDS = [
   { name: 'CREED', tag: 'PARIS' },
@@ -10,12 +11,14 @@ const LUXURY_BRANDS = [
 ];
 
 export const BrandLogos: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <section className="py-14 bg-[#070707] border-t border-[#C9A45C]/15">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
           <span className="text-[10px] uppercase tracking-[4px] text-[#C9A45C] font-semibold">
-            ESTEEMED HOUSES & ATELIERS WE CURATE
+            {t('home.brandLogos.title')}
           </span>
         </div>
 

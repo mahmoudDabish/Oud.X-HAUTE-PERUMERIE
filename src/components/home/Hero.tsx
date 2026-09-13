@@ -1,78 +1,91 @@
 import React, { useState, useEffect } from 'react';
 import { useShop } from '../../context/ShopContext';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/Button';
-import { Sparkles, ArrowRight, ChevronLeft, ChevronRight, ShieldCheck } from 'lucide-react';
+import { Sparkles, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import {
+  getLocalizedProductName,
+  getLocalizedProductDescription,
+  getLocalizedProductSubtitle,
+  getLocalizedNotesList
+} from '../../i18n/presentation';
 
 export const Hero: React.FC = () => {
   const { navigateTo, products, isLoadingProducts } = useShop();
+  const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const defaultSlides = [
     {
       id: '01',
-      eyebrow: 'HAUTE PARFUMERIE & RARE EXTRACTS',
-      titleLine1: 'SCENT OF LUXURY,',
-      titleLine2: 'ESSENCE OF YOU',
-      description: 'Discover mastercrafted fragrances inspired by timeless Arabian elegance and aged Assamese agarwood.',
-      primaryCta: 'SHOP PRODUCT',
+      eyebrow: t('home.hero.eyebrow1'),
+      titleLine1: t('home.hero.title1Line1'),
+      titleLine2: t('home.hero.title1Line2'),
+      description: t('home.hero.desc1'),
+      primaryCta: t('home.hero.shopProduct'),
       primaryLink: '/products/badee-al-oud-oud-for-glory',
-      secondaryCta: 'EXPLORE COLLECTIONS',
+      secondaryCta: t('home.hero.exploreCollections'),
       secondaryLink: '/shop',
       image: '/images/hero_oud_bottle_1787700482747.jpg',
-      badge: 'FEATURED MASTERPIECE',
+      badge: t('home.hero.featuredMasterpiece'),
       perfumeName: "Bade'e Al Oud (Oud For Glory)",
-      notes: 'Smoked Agarwood • Saffron • Royal Amber'
+      notes: getLocalizedNotesList(['Smoked Agarwood', 'Saffron', 'Royal Amber']).join(' • ')
     },
     {
       id: '02',
-      eyebrow: 'GOURMAND ORIENTAL EXTRAIT',
-      titleLine1: 'WARM EMBERS,',
-      titleLine2: 'SUBLIME SPICES',
-      description: 'Intoxicating roasted Arabic coffee, dark dates, and Madagascar bourbon vanilla in an imperial crystal flacon.',
-      primaryCta: 'SHOP PRODUCT',
+      eyebrow: t('home.hero.eyebrow2'),
+      titleLine1: t('home.hero.title2Line1'),
+      titleLine2: t('home.hero.title2Line2'),
+      description: t('home.hero.desc2'),
+      primaryCta: t('home.hero.shopProduct'),
       primaryLink: '/products/khamrah-qahwa',
-      secondaryCta: 'EXPLORE COLLECTIONS',
+      secondaryCta: t('home.hero.exploreCollections'),
       secondaryLink: '/shop',
       image: '/images/new_arrivals_perfume_1787700509279.jpg',
-      badge: 'GOURMAND FAVORITE',
+      badge: t('home.hero.gourmandFavorite'),
       perfumeName: 'Khamrah Qahwa Sublime',
-      notes: 'Qahwa Coffee • Candied Dates • Bourbon Vanilla'
+      notes: getLocalizedNotesList(['Qahwa Coffee', 'Candied Dates', 'Bourbon Vanilla']).join(' • ')
     },
     {
       id: '03',
-      eyebrow: 'ROYAL RESERVE COLLECTION',
-      titleLine1: 'TIMELESS HERITAGE,',
-      titleLine2: 'PURE AGED OUD',
-      description: 'Handcrafted in numbered batches of 500 bottles. Wild Assam agarwood married with morning-picked Taif rose.',
-      primaryCta: 'SHOP PRODUCT',
+      eyebrow: t('home.hero.eyebrow3'),
+      titleLine1: t('home.hero.title3Line1'),
+      titleLine2: t('home.hero.title3Line2'),
+      description: t('home.hero.desc3'),
+      primaryCta: t('home.hero.shopProduct'),
       primaryLink: '/products/royal-oud-imperial',
-      secondaryCta: 'EXPLORE COLLECTIONS',
+      secondaryCta: t('home.hero.exploreCollections'),
       secondaryLink: '/shop',
       image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1400&auto=format&fit=crop',
-      badge: 'LIMITED TO 500 FLACONS',
+      badge: t('home.hero.limited500'),
       perfumeName: 'Royal Oud Imperial Reserve',
-      notes: 'Assam Oud • Taif Rose • Omani Frankincense'
+      notes: getLocalizedNotesList(['Assam Oud', 'Taif Rose', 'Omani Frankincense']).join(' • ')
     }
   ];
 
   const featuredProducts = products?.filter(p => p.isFeatured) || [];
 
   const presetTitles = [
-    { line1: 'TIMELESS HERITAGE,', line2: 'PURE AGED OUD', eyebrow: 'ROYAL RESERVE COLLECTION' },
-    { line1: 'SCENT OF LUXURY,', line2: 'ESSENCE OF YOU', eyebrow: 'HAUTE PARFUMERIE & RARE EXTRACTS' },
-    { line1: 'WARM EMBERS,', line2: 'SUBLIME SPICES', eyebrow: 'GOURMAND ORIENTAL EXTRAIT' },
+    { line1: t('home.hero.title3Line1'), line2: t('home.hero.title3Line2'), eyebrow: t('home.hero.eyebrow3') },
+    { line1: t('home.hero.title1Line1'), line2: t('home.hero.title1Line2'), eyebrow: t('home.hero.eyebrow1') },
+    { line1: t('home.hero.title2Line1'), line2: t('home.hero.title2Line2'), eyebrow: t('home.hero.eyebrow2') },
   ];
 
   const dynamicSlides = featuredProducts.length > 0 
     ? featuredProducts.map((p, index) => {
         const preset = presetTitles[index % presetTitles.length];
         
-        let notesDisplay = 'Smoked Agarwood • Saffron • Royal Amber';
+        let notesDisplay = '';
         if (p.notes && p.notes.top && p.notes.heart && p.notes.base) {
-          notesDisplay = [p.notes.top[0], p.notes.heart[0], p.notes.base[0]].filter(Boolean).join(' • ');
-        } else if (p.subtitle) {
-          notesDisplay = p.subtitle;
+          const topN = getLocalizedNotesList(p.notes.top, p.notesAr?.top);
+          const heartN = getLocalizedNotesList(p.notes.heart, p.notesAr?.heart);
+          const baseN = getLocalizedNotesList(p.notes.base, p.notesAr?.base);
+          notesDisplay = [topN[0], heartN[0], baseN[0]].filter(Boolean).join(' • ');
+        } else if (p.subtitle || p.subtitleAr) {
+          notesDisplay = getLocalizedProductSubtitle(p);
+        } else {
+          notesDisplay = getLocalizedNotesList(['Smoked Agarwood', 'Saffron', 'Royal Amber']).join(' • ');
         }
 
         return {
@@ -80,14 +93,14 @@ export const Hero: React.FC = () => {
           eyebrow: preset.eyebrow,
           titleLine1: preset.line1,
           titleLine2: preset.line2,
-          description: p.description || p.subtitle || 'Discover mastercrafted fragrances inspired by timeless Arabian elegance.',
-          primaryCta: 'SHOP PRODUCT',
+          description: getLocalizedProductDescription(p, p.subtitle ? getLocalizedProductSubtitle(p) : t('home.hero.desc1')),
+          primaryCta: t('home.hero.shopProduct'),
           primaryLink: `/products/${p.slug}`,
-          secondaryCta: 'EXPLORE COLLECTIONS',
+          secondaryCta: t('home.hero.exploreCollections'),
           secondaryLink: '/shop',
           image: p.images[0] || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1400&auto=format&fit=crop',
-          badge: p.badge || 'FEATURED MASTERPIECE',
-          perfumeName: p.name,
+          badge: p.badge || t('home.hero.featuredMasterpiece'),
+          perfumeName: getLocalizedProductName(p, p.name),
           notes: notesDisplay
         };
       })
@@ -138,7 +151,7 @@ export const Hero: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* Left Hero Content (7 Cols) */}
-          <div className="lg:col-span-7 space-y-6 sm:space-y-8 text-left">
+          <div className="lg:col-span-7 space-y-6 sm:space-y-8 text-left rtl:text-right">
             {/* Small Eyebrow with Frosted Glass Pill */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C9A45C]/30 bg-[#151310]/60 backdrop-blur-md">
               <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" />
@@ -167,7 +180,7 @@ export const Hero: React.FC = () => {
                 onClick={() => navigateTo(active.primaryLink)}
                 variant="primary"
                 size="lg"
-                rightIcon={<ArrowRight className="w-4 h-4" />}
+                rightIcon={<ArrowRight className="w-4 h-4 rtl-flip" />}
                 className="shadow-xl shadow-[#C9A45C]/15 tracking-[2px] font-bold"
               >
                 {active.primaryCta}
@@ -202,15 +215,15 @@ export const Hero: React.FC = () => {
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setCurrentSlide(prev => (prev === 0 ? slides.length - 1 : prev - 1))}
-                  className="p-1.5 rounded border border-[#C9A45C]/20 hover:border-[#C9A45C] bg-[#151310]/50 backdrop-blur-sm text-[#A7A29A] hover:text-[#F5F2EA] transition-colors"
-                  aria-label="Previous slide"
+                  className="p-1.5 rounded border border-[#C9A45C]/20 hover:border-[#C9A45C] bg-[#151310]/50 backdrop-blur-sm text-[#A7A29A] hover:text-[#F5F2EA] transition-colors rtl-flip"
+                  aria-label={t('home.hero.prevSlide')}
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setCurrentSlide(prev => (prev + 1) % slides.length)}
-                  className="p-1.5 rounded border border-[#C9A45C]/20 hover:border-[#C9A45C] bg-[#151310]/50 backdrop-blur-sm text-[#A7A29A] hover:text-[#F5F2EA] transition-colors"
-                  aria-label="Next slide"
+                  className="p-1.5 rounded border border-[#C9A45C]/20 hover:border-[#C9A45C] bg-[#151310]/50 backdrop-blur-sm text-[#A7A29A] hover:text-[#F5F2EA] transition-colors rtl-flip"
+                  aria-label={t('home.hero.nextSlide')}
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>

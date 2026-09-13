@@ -5,6 +5,7 @@ import { orderService } from '../services/orderService';
 import { authService } from '../services/authService';
 import { wishlistService } from '../services/wishlistService';
 import { supabase } from '../lib/supabaseClient';
+import i18n from '../i18n';
 
 interface ToastMessage {
   id: string;
@@ -279,19 +280,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [currency, setCurrency] = useState<'EGP' | 'USD' | 'AED'>('EGP');
 
   const formatPrice = (amountInEGP: number) => {
-    switch (currency) {
-      case 'USD': {
-        const usd = (amountInEGP / 50).toFixed(0);
-        return `$${usd}`;
-      }
-      case 'AED': {
-        const aed = (amountInEGP / 13.6).toFixed(0);
-        return `${aed} AED`;
-      }
-      case 'EGP':
-      default:
-        return `${amountInEGP.toLocaleString('en-US')} EGP`;
-    }
+    const isAr = i18n.language === 'ar';
+    const num = (amountInEGP || 0).toLocaleString(isAr ? 'ar-EG' : 'en-EG');
+    return isAr ? `${num} ج.م` : `${num} EGP`;
   };
 
   // User state
@@ -350,7 +341,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const liveProd = products.find(p => p.id === product.id) || product;
     
     if (liveProd.stock <= 0) {
-      showToast('Out of Stock', 'This item is currently unavailable.', 'info');
+      showToast(i18n.t('toast.outOfStock', 'Out of Stock'), i18n.t('toast.outOfStockMsg', 'This item is currently unavailable.'), 'info');
       return;
     }
 
@@ -369,7 +360,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    showToast('Added to Shopping Bag', `${product.name} (${selectedSize})`, 'gold');
+    showToast(i18n.t('toast.productAdded', 'Added to Shopping Bag'), `${product.name} (${selectedSize})`, 'gold');
     if (openDrawer) {
       setIsCartDrawerOpen(true);
     }
@@ -377,7 +368,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const removeFromCart = (productId: string, size: string) => {
     setCart(prev => prev.filter(item => !(item.product.id === productId && item.selectedSize === size)));
-    showToast('Item Removed', 'Removed fragrance from bag', 'info');
+    showToast(i18n.t('toast.itemRemoved', 'Item Removed'), i18n.t('toast.fragranceRemovedMsg', 'Removed fragrance from bag'), 'info');
   };
 
   const updateQuantity = (productId: string, size: string, quantity: number) => {
@@ -388,7 +379,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     const liveProd = products.find(p => p.id === productId);
     if (liveProd && quantity > liveProd.stock) {
-      showToast('Insufficient Stock', `Only ${liveProd.stock} units available.`, 'info');
+      showToast(i18n.t('toast.insufficientStock', 'Insufficient Stock'), i18n.t('toast.insufficientStockMsg', { stock: liveProd.stock, defaultValue: `Only ${liveProd.stock} units available.` }), 'info');
       return;
     }
 
@@ -415,12 +406,12 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const total = Math.max(0, subtotal);
 
   const applyPromoCode = (code: string) => {
-    return { success: false, message: 'Promotional codes are currently disabled.' };
+    return { success: false, message: i18n.t('toast.promoDisabled', 'Promotional codes are currently disabled.') };
   };
 
   const removePromoCode = () => {
     setAppliedPromo(null);
-    showToast('Promo Code Removed', '', 'info');
+    showToast(i18n.t('toast.promoRemoved', 'Promo Code Removed'), '', 'info');
   };
 
   // Wishlist operations
@@ -438,7 +429,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (error) {
           // Revert on error
           setWishlist(prev => [...prev, productId]);
-          showToast('Error', 'Could not update wishlist', 'info');
+          showToast(i18n.t('common.error', 'Error'), i18n.t('toast.wishlistError', 'Could not update wishlist'), 'info');
           return;
         }
       } else {
@@ -446,22 +437,22 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (error) {
           // Revert on error
           setWishlist(prev => prev.filter(id => id !== productId));
-          showToast('Error', 'Could not update wishlist', 'info');
+          showToast(i18n.t('common.error', 'Error'), i18n.t('toast.wishlistError', 'Could not update wishlist'), 'info');
           return;
         }
       }
     }
 
     if (isSaved) {
-      showToast('Removed from Wishlist', 'Item removed from saved fragrances', 'info');
+      showToast(i18n.t('toast.wishlistRemoved', 'Removed from Wishlist'), i18n.t('toast.wishlistRemovedMsg', 'Item removed from saved fragrances'), 'info');
     } else {
-      showToast('Saved to Wishlist', 'Added to favorites', 'gold');
+      showToast(i18n.t('toast.wishlistAdded', 'Saved to Wishlist'), i18n.t('toast.wishlistAddedMsg', 'Added to favorites'), 'gold');
     }
   };
 
   const clearWishlist = () => {
     setWishlist([]);
-    showToast('Wishlist Cleared', 'All saved items removed', 'info');
+    showToast(i18n.t('toast.wishlistCleared', 'Wishlist Cleared'), i18n.t('toast.wishlistClearedMsg', 'All saved items removed'), 'info');
   };
 
   const isInWishlist = (productId: string) => wishlist.includes(productId);
@@ -473,11 +464,11 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error || !data?.user) {
       const msg = error?.message?.toLowerCase() || '';
       if (msg.includes('email not confirmed')) {
-        showToast('Verification Required', 'Please confirm your email address. Check your inbox for the activation link.', 'info');
+        showToast(i18n.t('toast.verificationRequired', 'Verification Required'), i18n.t('toast.verificationRequiredMsg', 'Please confirm your email address. Check your inbox for the activation link.'), 'info');
       } else if (msg.includes('invalid login credentials')) {
-        showToast('Authentication Failed', 'Invalid email or password. Please verify your credentials.', 'info');
+        showToast(i18n.t('toast.authFailed', 'Authentication Failed'), i18n.t('toast.authFailedMsg', 'Invalid email or password. Please verify your credentials.'), 'info');
       } else {
-        showToast('Authentication Failed', error?.message || 'Invalid credentials', 'info');
+        showToast(i18n.t('toast.authFailed', 'Authentication Failed'), error?.message || i18n.t('toast.authFailedMsg', 'Invalid credentials'), 'info');
       }
       return;
     }
@@ -493,14 +484,14 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       setUser(userProfile);
       loadWishlist(userProfile.id);
-      showToast('Welcome to OUD-X Privé', `Signed in as ${userProfile.name}`, 'gold');
+      showToast(i18n.t('toast.welcomePrive', 'Welcome to OUD-X Privé'), i18n.t('toast.signedInAs', { name: userProfile.name, defaultValue: `Signed in as ${userProfile.name}` }), 'gold');
     }
   };
 
   const register = async (name: string, email: string, password?: string) => {
     const { data, error } = await authService.register(email, password, name);
     if (error || !data?.user) {
-      showToast('Registration Failed', error?.message || 'Unable to create account', 'info');
+      showToast(i18n.t('toast.regFailed', 'Registration Failed'), error?.message || i18n.t('toast.regFailedMsg', 'Unable to create account'), 'info');
       return;
     }
     if (data.session) {
@@ -509,9 +500,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(userProfile);
         loadWishlist(userProfile.id);
       }
-      showToast('Account Created', `Welcome to OUD-X Privé, ${name}`, 'gold');
+      showToast(i18n.t('toast.accountCreated', 'Account Created'), i18n.t('toast.welcomePriveUser', { name, defaultValue: `Welcome to OUD-X Privé, ${name}` }), 'gold');
     } else {
-      showToast('Account Created', 'If required by your provider, please verify your email before signing in.', 'gold');
+      showToast(i18n.t('toast.accountCreated', 'Account Created'), i18n.t('toast.accountCreatedVerify', 'If required by your provider, please verify your email before signing in.'), 'gold');
     }
   };
 
@@ -519,7 +510,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await authService.logout();
     setUser(null);
     setWishlist([]);
-    showToast('Signed Out', 'You have been safely signed out', 'info');
+    showToast(i18n.t('toast.signedOut', 'Signed Out'), i18n.t('toast.signedOutMsg', 'You have been safely signed out'), 'info');
   };
 
   const addOrder = () => {
@@ -531,52 +522,52 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addProduct = async (productData: Partial<Product>) => {
     const { data, error } = await productService.createProduct(productData);
     if (error) {
-      showToast('Error', error.message || 'Failed to add product', 'info');
+      showToast(i18n.t('common.error', 'Error'), error.message || i18n.t('toast.failedAddProduct', 'Failed to add product'), 'info');
       return null;
     }
     
     // Append to local state
     setProducts(prev => [data, ...prev]);
-    showToast('Product Added to Boutique', `${data.name} added to live stock`, 'gold');
+    showToast(i18n.t('toast.productAddedBoutique', 'Product Added to Boutique'), i18n.t('toast.productAddedBoutiqueMsg', { name: data.name, defaultValue: `${data.name} added to live stock` }), 'gold');
     return data;
   };
 
   const updateProduct = async (id: string, updatedFields: Partial<Product>) => {
     const { error } = await productService.updateProduct(id, updatedFields);
     if (error) {
-      showToast('Error', error.message || 'Failed to update product', 'info');
+      showToast(i18n.t('common.error', 'Error'), error.message || i18n.t('toast.failedUpdateProduct', 'Failed to update product'), 'info');
       return;
     }
 
     setProducts(prev =>
       prev.map(p => (p.id === id ? { ...p, ...updatedFields } : p))
     );
-    showToast('Product Catalog Updated', 'Changes saved successfully', 'gold');
+    showToast(i18n.t('toast.productCatalogUpdated', 'Product Catalog Updated'), i18n.t('toast.productCatalogUpdatedMsg', 'Changes saved successfully'), 'gold');
   };
 
   const deleteProduct = async (id: string) => {
     const { error } = await productService.deleteProduct(id);
     if (error) {
-      showToast('Error', error.message || 'Failed to delete product', 'info');
+      showToast(i18n.t('common.error', 'Error'), error.message || i18n.t('toast.failedDeleteProduct', 'Failed to delete product'), 'info');
       return;
     }
 
     setProducts(prev => prev.filter(p => p.id !== id));
-    showToast('Product Removed', 'Product removed from catalog', 'info');
+    showToast(i18n.t('toast.productRemoved', 'Product Removed'), i18n.t('toast.productRemovedMsg', 'Product removed from catalog'), 'info');
   };
 
   const adjustStock = async (id: string, newStock: number) => {
     const clamped = Math.max(0, Math.floor(newStock));
     const { error } = await productService.adjustStock(id, clamped);
     if (error) {
-      showToast('Error', error.message || 'Failed to update stock', 'info');
+      showToast(i18n.t('common.error', 'Error'), error.message || i18n.t('toast.failedUpdateStock', 'Failed to update stock'), 'info');
       return;
     }
 
     setProducts(prev =>
       prev.map(p => (p.id === id ? { ...p, stock: clamped } : p))
     );
-    showToast('Inventory Updated', `Stock set to ${clamped} units`, 'gold');
+    showToast(i18n.t('toast.inventoryUpdated', 'Inventory Updated'), i18n.t('toast.inventoryUpdatedMsg', { stock: clamped, defaultValue: `Stock set to ${clamped} units` }), 'gold');
   };
 
   const quickAdjustStock = async (id: string, delta: number) => {
@@ -591,7 +582,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Cannot reset to mock data anymore. Only fetch from Supabase.
     const { data } = await productService.getProducts();
     if (data) setProducts(data);
-    showToast('Catalog Sync', 'Synced latest products from database', 'info');
+    showToast(i18n.t('toast.catalogSync', 'Catalog Sync'), i18n.t('toast.catalogSyncMsg', 'Synced latest products from database'), 'info');
   };
 
   // Admin Orders Operations
@@ -631,10 +622,10 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { error } = await orderService.updateOrderStatus(orderId, status, trackingNumber);
     if (error) {
       console.error('Failed to update order status:', error);
-      showToast('Error', 'Failed to update order status on the server.', 'info');
+      showToast(i18n.t('common.error', 'Error'), i18n.t('toast.failedUpdateOrder', 'Failed to update order status on the server.'), 'info');
       // Ideally revert the optimistic update here
     } else {
-      showToast('Order Status Updated', `Order marked as "${status}"`, 'gold');
+      showToast(i18n.t('toast.statusUpdated', 'Order Status Updated'), i18n.t('toast.statusUpdatedMsgSimple', { status, defaultValue: `Order marked as "${status}"` }), 'gold');
     }
   };
 
@@ -653,9 +644,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { error } = await orderService.deleteOrder(orderId);
     if (error) {
       console.error('Failed to delete order:', error);
-      showToast('Error', 'Failed to delete order on the server.', 'info');
+      showToast(i18n.t('common.error', 'Error'), i18n.t('toast.failedDeleteOrder', 'Failed to delete order on the server.'), 'info');
     } else {
-      showToast('Order Deleted', 'The order has been removed.', 'info');
+      showToast(i18n.t('toast.orderDeleted', 'Order Deleted'), i18n.t('toast.orderDeletedMsg', 'The order has been removed.'), 'info');
     }
   };
 
@@ -688,9 +679,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { error } = await orderService.updateOrderShipping(orderId, fee);
     if (error) {
       console.error('Failed to update shipping fee on server:', error);
-      showToast('Error', 'Failed to update shipping fee on server.', 'info');
+      showToast(i18n.t('common.error', 'Error'), i18n.t('toast.failedUpdateShipping', 'Failed to update shipping fee on server.'), 'info');
     } else {
-      showToast('Shipping Fee Updated', `Shipping fee set to ${fee} EGP`, 'gold');
+      showToast(i18n.t('toast.shippingUpdated', 'Shipping Fee Updated'), i18n.t('toast.shippingUpdatedMsgSimple', { fee, defaultValue: `Shipping fee set to ${fee} EGP` }), 'gold');
     }
   };
 

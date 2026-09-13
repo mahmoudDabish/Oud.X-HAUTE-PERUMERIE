@@ -1,10 +1,14 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useShop } from '../../context/ShopContext';
-import { X, Trash2, ShoppingBag, ArrowRight, Sparkles, ShieldCheck } from 'lucide-react';
+import { X, Trash2, ShoppingBag, ArrowRight, ShieldCheck } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { AnimatePresence, motion } from 'motion/react';
+import { getLocalizedProductName } from '../../i18n/presentation';
 
 export const CartDrawer: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === 'ar';
   const {
     cart,
     isCartDrawerOpen,
@@ -12,15 +16,11 @@ export const CartDrawer: React.FC = () => {
     removeFromCart,
     updateQuantity,
     subtotal,
-    freeShippingThreshold,
-    amountToFreeShipping,
     formatPrice,
     navigateTo
   } = useShop();
 
   if (!isCartDrawerOpen) return null;
-
-  const progressPercent = Math.min(100, Math.round(((freeShippingThreshold - amountToFreeShipping) / freeShippingThreshold) * 100));
 
   const hasInsufficientStock = cart.some(item => item.quantity > item.product.stock);
 
@@ -48,11 +48,11 @@ export const CartDrawer: React.FC = () => {
 
         {/* Drawer panel with Frosted Glass */}
         <motion.div
-          initial={{ x: '100%' }}
+          initial={{ x: isRtl ? '-100%' : '100%' }}
           animate={{ x: 0 }}
-          exit={{ x: '100%' }}
+          exit={{ x: isRtl ? '-100%' : '100%' }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="fixed inset-y-0 right-0 w-full max-w-md bg-[#0D0C0A]/90 border-l border-[#C9A45C]/25 backdrop-blur-2xl shadow-2xl flex flex-col justify-between"
+          className={`fixed inset-y-0 ${isRtl ? 'left-0 border-r' : 'right-0 border-l'} w-full max-w-md bg-[#0D0C0A]/90 border-[#C9A45C]/25 backdrop-blur-2xl shadow-2xl flex flex-col justify-between`}
         >
           {/* Header */}
           <div className="p-5 border-b border-[#C9A45C]/15 flex items-center justify-between bg-[#151310]/80 backdrop-blur-md">
@@ -61,13 +61,13 @@ export const CartDrawer: React.FC = () => {
                 <ShoppingBag className="w-4 h-4 text-[#C9A45C]" />
               </div>
               <h2 className="font-serif-luxury text-xl font-medium tracking-wide text-[#F5F2EA]">
-                Your Shopping Bag ({cart.reduce((a, b) => a + b.quantity, 0)})
+                {t('cart.title', { count: cart.reduce((a, b) => a + b.quantity, 0) })}
               </h2>
             </div>
             <button
               onClick={() => setIsCartDrawerOpen(false)}
               className="p-2 text-[#A7A29A] hover:text-[#F5F2EA] rounded-full hover:bg-white/5 transition-colors border border-transparent hover:border-white/10"
-              aria-label="Close bag"
+              aria-label={t('common.close')}
             >
               <X className="w-5 h-5" />
             </button>
@@ -82,9 +82,9 @@ export const CartDrawer: React.FC = () => {
                   <ShoppingBag className="w-8 h-8" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="font-serif-luxury text-xl text-[#F5F2EA]">Your bag is empty</h3>
+                  <h3 className="font-serif-luxury text-xl text-[#F5F2EA]">{t('cart.emptyTitle')}</h3>
                   <p className="text-xs text-[#A7A29A] max-w-xs leading-relaxed">
-                    Discover our collection of rare aged agarwoods, spiced extracts, and royal perfumes.
+                    {t('cart.emptyDesc')}
                   </p>
                 </div>
                 <Button
@@ -96,7 +96,7 @@ export const CartDrawer: React.FC = () => {
                   size="sm"
                   className="tracking-[2px]"
                 >
-                  EXPLORE FRAGRANCES
+                  {t('cart.exploreFragrances')}
                 </Button>
               </div>
             ) : (
@@ -115,7 +115,7 @@ export const CartDrawer: React.FC = () => {
                   >
                     <img
                       src={item.product?.images?.[0] || (item.product as any)?.image || '/images/hero_oud_bottle_1787700482747.jpg'}
-                      alt={item.product?.name || 'Fragrance'}
+                      alt={getLocalizedProductName(item.product, item.product?.name || 'Fragrance')}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover"
                     />
@@ -134,14 +134,14 @@ export const CartDrawer: React.FC = () => {
                         }}
                         className="font-serif-luxury text-sm text-[#F5F2EA] truncate cursor-pointer hover:text-[#F0D9A4] transition-colors"
                       >
-                        {item.product.name}
+                        {getLocalizedProductName(item.product, item.product.name)}
                       </h4>
                       <p className="text-[10px] text-[#A7A29A] mt-0.5">
-                        Size: <span className="text-[#F5F2EA]">{item.selectedSize}</span>
+                        {t('product.selectSize')}: <span className="text-[#F5F2EA]">{item.selectedSize}</span>
                       </p>
                       {item.quantity > item.product.stock && (
                         <p className="text-[10px] text-red-400 mt-0.5 font-bold">
-                          {item.product.stock === 0 ? 'Out of stock' : `Only ${item.product.stock} available`}
+                          {item.product.stock === 0 ? t('products.outOfStock') : t('product.unitsRemaining', { count: item.product.stock })}
                         </p>
                       )}
                     </div>
@@ -165,7 +165,7 @@ export const CartDrawer: React.FC = () => {
                       </div>
 
                       {/* Item Total Price */}
-                      <div className="text-right">
+                      <div className="text-right rtl:text-left">
                         <span className="font-cinzel text-xs font-bold text-[#F0D9A4]">
                           {formatPrice(item.price * item.quantity)}
                         </span>
@@ -175,7 +175,7 @@ export const CartDrawer: React.FC = () => {
                       <button
                         onClick={() => removeFromCart(item.product.id, item.selectedSize)}
                         className="text-[#A7A29A] hover:text-red-400 p-1.5 transition-colors"
-                        aria-label="Remove item"
+                        aria-label={t('common.remove')}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -191,11 +191,11 @@ export const CartDrawer: React.FC = () => {
             <div className="p-5 border-t border-[#C9A45C]/15 bg-[#151310]/80 backdrop-blur-md space-y-4">
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs text-[#A7A29A]">
-                  <span>Subtotal</span>
+                  <span>{t('cart.subtotal')}</span>
                   <span className="font-cinzel font-semibold text-[#F5F2EA]">{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm font-semibold pt-2 border-t border-[#C9A45C]/15 text-[#F5F2EA]">
-                  <span>Total Amount</span>
+                  <span>{t('cart.total')}</span>
                   <span className="font-cinzel text-base text-[#F0D9A4]">
                     {formatPrice(subtotal)}
                   </span>
@@ -209,9 +209,9 @@ export const CartDrawer: React.FC = () => {
                   variant="primary"
                   fullWidth
                   disabled={hasInsufficientStock}
-                  rightIcon={<ArrowRight className="w-4 h-4" />}
+                  rightIcon={<ArrowRight className="w-4 h-4 rtl-flip" />}
                 >
-                  {hasInsufficientStock ? 'PLEASE UPDATE QUANTITIES' : 'PROCEED TO CHECKOUT'}
+                  {hasInsufficientStock ? t('cart.updateQuantities') : t('cart.proceedToCheckout')}
                 </Button>
 
                 <Button
@@ -219,13 +219,13 @@ export const CartDrawer: React.FC = () => {
                   variant="secondary"
                   fullWidth
                 >
-                  VIEW FULL BAG
+                  {t('cart.viewBag')}
                 </Button>
               </div>
 
               <div className="flex items-center justify-center gap-2 text-[10px] text-[#8E713D] pt-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#C9A45C]" />
-                <span>100% Guaranteed Authentic & Secured Checkout</span>
+                <span>{t('product.authenticityGuaranteed')}</span>
               </div>
             </div>
           )}

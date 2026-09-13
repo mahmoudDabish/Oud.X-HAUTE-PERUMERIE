@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useShop } from '../context/ShopContext';
 import { Product, Order } from '../types';
 import { orderService } from '../services/orderService';
@@ -41,8 +42,22 @@ import {
 import { AddEditProductModal } from '../components/admin/AddEditProductModal';
 import { OrderInvoiceModal } from '../components/admin/OrderInvoiceModal';
 import { StorageMigrationModal } from '../components/admin/StorageMigrationModal';
+import {
+  getLocalizedCategory,
+  getLocalizedGender,
+  getLocalizedBadge,
+  getLocalizedOrderStatus,
+  getLocalizedPaymentMethod,
+  getLocalizedGovernorate,
+  formatDateLocalized,
+  formatPriceLocalized,
+  getLocalizedProductName,
+  getLocalizedProductSubtitle
+} from '../i18n/presentation';
 
 export const AccountPage: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === 'ar';
   const {
     products,
     addProduct,
@@ -90,13 +105,13 @@ export const AccountPage: React.FC = () => {
           </div>
           <div className="space-y-2">
             <span className="font-cinzel text-xs uppercase tracking-[3px] text-[#C9A45C] font-semibold">
-              OUD_X PRIVÉ ATELIER
+              {t('account.memberAtelier', 'OUD_X PRIVÉ ATELIER')}
             </span>
             <h1 className="font-serif-luxury text-2xl sm:text-3xl text-[#F5F2EA]">
-              Client Authentication
+              {t('account.clientAuth', 'Client Authentication')}
             </h1>
             <p className="text-xs text-[#A7A29A] leading-relaxed">
-              Sign in to view your orders, tracking status, private acquisitions, and member privileges.
+              {t('account.clientAuthDesc', 'Sign in to view your orders, tracking status, private acquisitions, and member privileges.')}
             </p>
           </div>
           <div className="pt-4 flex flex-col gap-3">
@@ -104,13 +119,13 @@ export const AccountPage: React.FC = () => {
               onClick={() => navigateTo('/auth')}
               className="w-full py-3 rounded-full bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-xs uppercase tracking-[2px] transition-colors cursor-pointer"
             >
-              Sign In / Register
+              {t('account.signInRegister', 'Sign In / Register')}
             </button>
             <button
               onClick={() => navigateTo('/shop')}
               className="w-full py-3 rounded-full bg-transparent border border-white/15 hover:border-[#C9A45C]/50 text-[#A7A29A] hover:text-[#F5F2EA] font-semibold text-xs uppercase tracking-[2px] transition-colors cursor-pointer"
             >
-              Return to Boutique
+              {t('cart.exploreFragrances', 'Return to Boutique')}
             </button>
           </div>
         </div>
@@ -126,15 +141,15 @@ export const AccountPage: React.FC = () => {
         <div className="bg-[#0D0C0A] border-b border-white/5 py-4">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <nav className="flex items-center gap-2 text-xs text-[#A7A29A] uppercase tracking-wider">
-              <button onClick={() => navigateTo('/')} className="hover:text-[#F5F2EA]">Home</button>
-              <ChevronRight className="w-3 h-3 text-[#8E713D]" />
-              <span className="text-[#C9A45C]">Client Portal</span>
+              <button onClick={() => navigateTo('/')} className="hover:text-[#F5F2EA]">{t('nav.home', 'Home')}</button>
+              <ChevronRight className="w-3 h-3 text-[#8E713D] rtl-flip" />
+              <span className="text-[#C9A45C]">{t('account.clientProfile', 'Client Portal')}</span>
             </nav>
             <button
               onClick={logout}
-              className="flex items-center gap-1.5 text-xs text-[#A7A29A] hover:text-red-400 transition-colors uppercase tracking-wider"
+              className="flex items-center gap-1.5 text-xs text-[#A7A29A] hover:text-red-400 transition-colors uppercase tracking-wider cursor-pointer"
             >
-              <LogOut className="w-3.5 h-3.5" /> Sign Out
+              <LogOut className="w-3.5 h-3.5 rtl-flip" /> {t('account.signOut', 'Sign Out')}
             </button>
           </div>
         </div>
@@ -151,7 +166,7 @@ export const AccountPage: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="px-2.5 py-0.5 rounded-full bg-[#C9A45C]/15 border border-[#C9A45C]/40 text-[10px] font-bold tracking-wider text-[#E3C27A] uppercase flex items-center gap-1">
-                      <Sparkles className="w-3 h-3" /> {user.tier || 'Oud Privé Member'}
+                      <Sparkles className="w-3 h-3" /> {user.tier || t('account.privileges.tier', 'Oud Privé Member')}
                     </span>
                   </div>
                   <h1 className="font-serif-luxury text-2xl sm:text-3xl text-[#F5F2EA] mt-1">
@@ -161,16 +176,16 @@ export const AccountPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 border-t sm:border-t-0 sm:border-l border-white/10 pt-4 sm:pt-0 sm:pl-6">
+              <div className="flex items-center gap-4 border-t sm:border-t-0 sm:border-l rtl:sm:border-l-0 rtl:sm:border-r border-white/10 pt-4 sm:pt-0 sm:pl-6 rtl:sm:pl-0 rtl:sm:pr-6">
                 <div>
-                  <span className="text-[10px] uppercase tracking-wider text-[#A7A29A] block">Privilege Points</span>
+                  <span className="text-[10px] uppercase tracking-wider text-[#A7A29A] block">{t('account.privileges.points', 'Privilege Points')}</span>
                   <span className="font-cinzel text-2xl font-bold text-[#E3C27A]">{user.points || 250}</span>
                 </div>
                 <button
                   onClick={() => navigateTo('/shop')}
                   className="px-5 py-2.5 rounded-full bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shrink-0"
                 >
-                  Explore Boutique
+                  {t('nav.shop', 'Explore Boutique')}
                 </button>
               </div>
             </div>
@@ -180,28 +195,28 @@ export const AccountPage: React.FC = () => {
           <div className="flex border-b border-white/10 gap-6 text-xs uppercase font-semibold tracking-wider">
             <button
               onClick={() => setCustomerActiveTab('orders')}
-              className={`pb-3 transition-colors relative flex items-center gap-2 ${
+              className={`pb-3 transition-colors relative flex items-center gap-2 cursor-pointer ${
                 customerActiveTab === 'orders'
                   ? 'text-[#E3C27A] border-b-2 border-[#C9A45C]'
                   : 'text-[#A7A29A] hover:text-[#F5F2EA]'
               }`}
             >
               <Package className="w-4 h-4" />
-              <span>Acquisition History</span>
+              <span>{t('account.tabs.orders', 'Acquisition History')}</span>
               <span className="px-2 py-0.5 rounded-full bg-[#151310] border border-white/10 text-[10px] font-mono">
                 {customerOrders.length}
               </span>
             </button>
             <button
               onClick={() => setCustomerActiveTab('privileges')}
-              className={`pb-3 transition-colors relative flex items-center gap-2 ${
+              className={`pb-3 transition-colors relative flex items-center gap-2 cursor-pointer ${
                 customerActiveTab === 'privileges'
                   ? 'text-[#E3C27A] border-b-2 border-[#C9A45C]'
                   : 'text-[#A7A29A] hover:text-[#F5F2EA]'
               }`}
             >
               <Crown className="w-4 h-4" />
-              <span>Privé Concierge & Benefits</span>
+              <span>{t('account.tabs.privileges', 'Privé Concierge & Benefits')}</span>
             </button>
           </div>
 
@@ -211,22 +226,22 @@ export const AccountPage: React.FC = () => {
               {isLoadingCustomerOrders ? (
                 <div className="py-20 flex flex-col items-center justify-center space-y-4">
                   <div className="w-10 h-10 border-4 border-[#C9A45C]/30 border-t-[#C9A45C] rounded-full animate-spin" />
-                  <p className="text-xs text-[#A7A29A]">Retrieving your private order vault...</p>
+                  <p className="text-xs text-[#A7A29A]">{t('account.loadingOrders', 'Retrieving your private order vault...')}</p>
                 </div>
               ) : customerOrders.length === 0 ? (
                 <div className="py-16 text-center rounded-2xl bg-[#0D0C0A] border border-white/5 p-8 space-y-4 max-w-lg mx-auto">
                   <div className="w-16 h-16 rounded-full bg-[#151310] border border-[#C9A45C]/20 mx-auto flex items-center justify-center text-[#C9A45C]">
                     <ShoppingBag className="w-8 h-8" />
                   </div>
-                  <h3 className="font-serif-luxury text-xl text-[#F5F2EA]">No Past Acquisitions</h3>
+                  <h3 className="font-serif-luxury text-xl text-[#F5F2EA]">{t('account.ordersEmpty', 'No Past Acquisitions')}</h3>
                   <p className="text-xs text-[#A7A29A] leading-relaxed">
-                    You have not placed any orders yet. Experience our mastercrafted French-Arabian fragrances.
+                    {t('account.ordersEmptyDesc', 'You have not placed any orders yet. Experience our mastercrafted French-Arabian fragrances.')}
                   </p>
                   <button
                     onClick={() => navigateTo('/shop')}
                     className="px-6 py-2.5 rounded-full bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
                   >
-                    Browse Collections
+                    {t('cart.exploreFragrances', 'Browse Collections')}
                   </button>
                 </div>
               ) : (
@@ -244,10 +259,12 @@ export const AccountPage: React.FC = () => {
                               {ord.orderNumber}
                             </span>
                             <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider border bg-[#C9A45C]/10 border-[#C9A45C]/30 text-[#E3C27A]">
-                              {ord.status}
+                              {getLocalizedOrderStatus(ord.status, t)}
                             </span>
                           </div>
-                          <p className="text-[11px] text-[#A7A29A]">Acquired on {ord.date}</p>
+                          <p className="text-[11px] text-[#A7A29A]">
+                            {t('account.date', { date: formatDateLocalized(ord.date, i18n.language), defaultValue: `Acquired on ${ord.date}` })}
+                          </p>
                         </div>
 
                         <div className="flex items-center gap-3">
@@ -259,39 +276,46 @@ export const AccountPage: React.FC = () => {
                             className="px-3.5 py-1.5 rounded-lg bg-[#151310] border border-[#C9A45C]/30 hover:border-[#C9A45C] text-xs text-[#E3C27A] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                           >
                             <Eye className="w-3.5 h-3.5" />
-                            <span>Invoice</span>
+                            <span>{t('account.viewInvoice', 'Invoice')}</span>
                           </button>
                         </div>
                       </div>
 
                       {/* Items */}
                       <div className="divide-y divide-white/5">
-                        {ord.items.map((it, idx) => (
-                          <div key={idx} className="py-3 flex items-center justify-between text-xs gap-4">
-                            <div className="flex items-center gap-3 min-w-0">
-                              {it.imageUrl || it.image ? (
-                                <img
-                                  src={it.imageUrl || it.image}
-                                  alt={it.name}
-                                  className="w-12 h-14 object-contain rounded bg-black border border-white/10 shrink-0"
-                                />
-                              ) : (
-                                <div className="w-12 h-14 rounded bg-black border border-white/10 flex items-center justify-center text-[#C9A45C]/50 shrink-0 font-cinzel text-xs font-bold">
-                                  OUD
+                        {ord.items.map((it, idx) => {
+                          const matched = products.find(
+                            p => p.name.toLowerCase() === it.name.toLowerCase() || p.id === (it as any).product_id
+                          );
+                          const resolvedName = getLocalizedProductName(matched, it.name);
+
+                          return (
+                            <div key={idx} className="py-3 flex items-center justify-between text-xs gap-4">
+                              <div className="flex items-center gap-3 min-w-0">
+                                {it.imageUrl || it.image ? (
+                                  <img
+                                    src={it.imageUrl || it.image}
+                                    alt={resolvedName}
+                                    className="w-12 h-14 object-contain rounded bg-black border border-white/10 shrink-0"
+                                  />
+                                ) : (
+                                  <div className="w-12 h-14 rounded bg-black border border-white/10 flex items-center justify-center text-[#C9A45C]/50 shrink-0 font-cinzel text-xs font-bold">
+                                    OUD
+                                  </div>
+                                )}
+                                <div className="min-w-0">
+                                  <h4 className="font-semibold text-[#F5F2EA] truncate">{resolvedName}</h4>
+                                  <p className="text-[11px] text-[#A7A29A]">
+                                    {it.size} • {t('admin.orders.tableHeaders.items', 'Qty')}: {it.quantity}
+                                  </p>
                                 </div>
-                              )}
-                              <div className="min-w-0">
-                                <h4 className="font-semibold text-[#F5F2EA] truncate">{it.name}</h4>
-                                <p className="text-[11px] text-[#A7A29A]">
-                                  {it.size} • Qty: {it.quantity}
-                                </p>
                               </div>
+                              <span className="font-cinzel font-bold text-[#E3C27A] shrink-0">
+                                {formatPrice(it.price * it.quantity)}
+                              </span>
                             </div>
-                            <span className="font-cinzel font-bold text-[#E3C27A] shrink-0">
-                              {formatPrice(it.price * it.quantity)}
-                            </span>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
 
                       {/* Details & Destination */}
@@ -301,14 +325,14 @@ export const AccountPage: React.FC = () => {
                           <span className="truncate">
                             {ord.shippingAddress?.streetAddress || ''}
                             {ord.shippingAddress?.area ? `, ${ord.shippingAddress.area}` : ''}
-                            {ord.shippingAddress?.governorate ? `, ${ord.shippingAddress.governorate}` : ''}
+                            {ord.shippingAddress?.governorate ? `, ${getLocalizedGovernorate(ord.shippingAddress.governorate, t)}` : ''}
                           </span>
                         </div>
 
                         {ord.trackingNumber && (
                           <div className="flex items-center gap-1.5 text-xs text-[#E3C27A]">
-                            <Truck className="w-3.5 h-3.5" />
-                            <span>Tracking: <strong className="font-mono text-[#F5F2EA]">{ord.trackingNumber}</strong></span>
+                            <Truck className="w-3.5 h-3.5 rtl-flip" />
+                            <span>{t('account.tracking', { number: ord.trackingNumber, defaultValue: `Tracking: ${ord.trackingNumber}` })}</span>
                           </div>
                         )}
                       </div>
@@ -324,31 +348,31 @@ export const AccountPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/30 space-y-3">
                 <ShieldCheck className="w-8 h-8 text-[#C9A45C]" />
-                <h3 className="font-cinzel text-base font-bold text-[#F5F2EA]">100% Certified Authentic</h3>
+                <h3 className="font-cinzel text-base font-bold text-[#F5F2EA]">{t('account.privileges.benefit1Title', '100% Certified Authentic')}</h3>
                 <p className="text-xs text-[#A7A29A] leading-relaxed">
-                  Every flacon is bottled from private reserve distillations in Grasse and Dubai, certified with individual batch serialization.
+                  {t('account.privileges.benefit1Desc', 'Every flacon is bottled from private reserve distillations in Grasse and Dubai, certified with individual batch serialization.')}
                 </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/30 space-y-3">
-                <Truck className="w-8 h-8 text-[#C9A45C]" />
-                <h3 className="font-cinzel text-base font-bold text-[#F5F2EA]">White-Glove VIP Delivery</h3>
+                <Truck className="w-8 h-8 text-[#C9A45C] rtl-flip" />
+                <h3 className="font-cinzel text-base font-bold text-[#F5F2EA]">{t('account.privileges.benefit2Title', 'White-Glove VIP Delivery')}</h3>
                 <p className="text-xs text-[#A7A29A] leading-relaxed">
-                  Complimentary secure courier delivery across all 27 Egyptian governorates on orders above 2,500 EGP.
+                  {t('account.privileges.benefit2Desc', 'Complimentary secure courier delivery across all 27 Egyptian governorates on orders above 2,500 EGP.')}
                 </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/30 space-y-3">
                 <Sparkles className="w-8 h-8 text-[#C9A45C]" />
-                <h3 className="font-cinzel text-base font-bold text-[#F5F2EA]">Private WhatsApp Concierge</h3>
+                <h3 className="font-cinzel text-base font-bold text-[#F5F2EA]">{t('account.privileges.benefit3Title', 'Private WhatsApp Concierge')}</h3>
                 <p className="text-xs text-[#A7A29A] leading-relaxed">
-                  Direct access to our olfactory sommelier for bespoke fragrance consultations and early access to vintage casks.
+                  {t('account.privileges.benefit3Desc', 'Direct access to our olfactory sommelier for bespoke fragrance consultations and early access to vintage casks.')}
                 </p>
                 <button
                   onClick={() => window.open('https://wa.me/201127977819?text=Hello%20OUD.X%20Sommelier,%20I%20would%20like%20a%20private%20fragrance%20consultation.', '_blank')}
                   className="pt-2 text-xs font-bold text-[#C9A45C] hover:text-[#E3C27A] flex items-center gap-1 cursor-pointer"
                 >
-                  Contact Concierge →
+                  {t('account.privileges.contactConcierge', 'Contact Concierge →')}
                 </button>
               </div>
             </div>
@@ -358,6 +382,7 @@ export const AccountPage: React.FC = () => {
         {/* Customer Invoice Modal */}
         {customerInvoiceOrder && (
           <OrderInvoiceModal
+            isOpen={!!customerInvoiceOrder}
             order={customerInvoiceOrder}
             onClose={() => setCustomerInvoiceOrder(null)}
           />
@@ -497,12 +522,20 @@ export const AccountPage: React.FC = () => {
       badge: 'LIMITED'
     };
     addProduct(duplicated);
-    showToast('Product Duplicated', `Created reserve copy of ${product.name}`, 'gold');
+    showToast(
+      t('toast.productDuplicated', 'Product Duplicated'),
+      t('toast.productDuplicatedMsg', { name: product.name, defaultValue: `Created reserve copy of ${product.name}` }),
+      'gold'
+    );
   };
 
   const handleBatchRestockLow = () => {
     if (lowStockProducts.length === 0 && outOfStockProducts.length === 0) {
-      showToast('Inventory Optimal', 'No low stock products to restock at this time', 'info');
+      showToast(
+        t('toast.inventoryOptimal', 'Inventory Optimal'),
+        t('toast.inventoryOptimalMsg', 'No low stock products to restock at this time'),
+        'info'
+      );
       return;
     }
     products.forEach(p => {
@@ -510,7 +543,11 @@ export const AccountPage: React.FC = () => {
         adjustStock(p.id, (p.stock || 0) + 10);
       }
     });
-    showToast('Batch Restock Complete', 'Added +10 units to all low/depleted stock items', 'gold');
+    showToast(
+      t('toast.batchRestockComplete', 'Batch Restock Complete'),
+      t('toast.batchRestockCompleteMsg', 'Added +10 units to all low/depleted stock items'),
+      'gold'
+    );
   };
 
   const handleExportJSON = () => {
@@ -521,7 +558,11 @@ export const AccountPage: React.FC = () => {
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
-    showToast('Catalog Exported', 'Downloaded full inventory dataset as JSON', 'gold');
+    showToast(
+      t('toast.catalogExported', 'Catalog Exported'),
+      t('toast.catalogExportedMsg', 'Downloaded full inventory dataset as JSON'),
+      'gold'
+    );
   };
 
   return (
@@ -530,22 +571,22 @@ export const AccountPage: React.FC = () => {
         {/* Executive Header Banner */}
         <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-[#12100C] via-[#1A1610] to-[#0D0C0A] border border-[#C9A45C]/35 shadow-2xl overflow-hidden backdrop-blur-xl">
           {/* Subtle Ambient Glow */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#C9A45C]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#C9A45C]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20 rtl:right-auto rtl:left-0 rtl:-ml-20" />
 
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <span className="px-3 py-1 rounded-full bg-[#C9A45C]/20 border border-[#C9A45C]/50 text-[#E3C27A] text-[10px] uppercase font-bold tracking-[2px] flex items-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#C9A45C]" />
-                  Master Admin Dashboard
+                  {t('admin.badge', 'Master Admin Dashboard')}
                 </span>
-                <span className="text-xs text-[#8E713D] hidden sm:inline">• Live Store Inventory Control</span>
+                <span className="text-xs text-[#8E713D] hidden sm:inline">• {t('admin.liveControl', 'Live Store Inventory Control')}</span>
               </div>
               <h1 className="font-cinzel text-2xl sm:text-3xl lg:text-4xl font-bold text-[#F5F2EA] tracking-wide">
-                OUD_X Stock & Operations Hub
+                {t('admin.title', 'OUD_X Stock & Operations Hub')}
               </h1>
               <p className="text-xs sm:text-sm text-[#A7A29A] max-w-2xl leading-relaxed">
-                Direct stock level management, instant inventory replenishment, product additions, catalog modifications, and full customer order fulfillment.
+                {t('admin.desc', 'Direct stock level management, instant inventory replenishment, product additions, catalog modifications, and full customer order fulfillment.')}
               </p>
             </div>
 
@@ -553,11 +594,11 @@ export const AccountPage: React.FC = () => {
             <div className="flex flex-wrap items-center gap-3">
               <button
                 onClick={() => navigateTo('/shop')}
-                className="px-4 py-2.5 rounded-full bg-[#151310] hover:bg-[#1f1b16] border border-[#C9A45C]/30 text-xs font-semibold text-[#E3C27A] flex items-center gap-2 transition-colors"
-                title="Preview live customer storefront"
+                className="px-4 py-2.5 rounded-full bg-[#151310] hover:bg-[#1f1b16] border border-[#C9A45C]/30 text-xs font-semibold text-[#E3C27A] flex items-center gap-2 transition-colors cursor-pointer"
+                title={t('admin.actions.viewStoreTitle', 'Preview live customer storefront')}
               >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>View Store</span>
+                <ExternalLink className="w-3.5 h-3.5 rtl-flip" />
+                <span>{t('admin.actions.viewStore', 'View Store')}</span>
               </button>
 
               <button
@@ -565,16 +606,16 @@ export const AccountPage: React.FC = () => {
                 className="px-5 py-2.5 rounded-full bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-[#C9A45C]/20 transition-all cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
-                <span>Add Fragrance</span>
+                <span>{t('admin.actions.addProduct', 'Add Fragrance')}</span>
               </button>
 
               <button
                 onClick={() => setIsMigrationModalOpen(true)}
                 className="px-4 py-2.5 rounded-full bg-[#1A1610] hover:bg-[#251F16] border border-[#C9A45C]/50 text-xs font-bold text-[#E3C27A] flex items-center gap-2 transition-all cursor-pointer shadow-md hover:border-[#E3C27A]"
-                title="Migrate Base64 images to Supabase Storage"
+                title={t('admin.actions.storageMigrationTitle', 'Migrate Base64 images to Supabase Storage')}
               >
                 <UploadCloud className="w-4 h-4 text-[#C9A45C]" />
-                <span>Migrate Images to Storage</span>
+                <span>{t('admin.actions.storageMigration', 'Migrate Images to Storage')}</span>
               </button>
             </div>
           </div>
@@ -584,40 +625,46 @@ export const AccountPage: React.FC = () => {
             {/* Metric 1 */}
             <div className="p-4 rounded-2xl bg-[#070707]/60 border border-[#C9A45C]/20 space-y-1">
               <div className="flex items-center justify-between text-xs text-[#A7A29A]">
-                <span className="uppercase tracking-wider text-[10px] font-bold text-[#C9A45C]">Total Stock</span>
+                <span className="uppercase tracking-wider text-[10px] font-bold text-[#C9A45C]">
+                  {t('admin.metrics.totalUnits', 'Total Stock')}
+                </span>
                 <Boxes className="w-4 h-4 text-[#C9A45C]" />
               </div>
               <div className="font-cinzel text-xl sm:text-2xl font-bold text-[#F5F2EA]">
-                {totalStockUnits} <span className="text-xs font-normal text-[#A7A29A]">units</span>
+                {totalStockUnits} <span className="text-xs font-normal text-[#A7A29A]">{t('common.units', 'units')}</span>
               </div>
               <div className="text-[11px] text-[#8E713D]">
-                {products.length} Active Fragrance Products
+                {products.length} {t('admin.metrics.activeFragrances', 'Active Fragrance Products')}
               </div>
             </div>
 
             {/* Metric 2 */}
             <div className="p-4 rounded-2xl bg-[#070707]/60 border border-[#C9A45C]/20 space-y-1">
               <div className="flex items-center justify-between text-xs text-[#A7A29A]">
-                <span className="uppercase tracking-wider text-[10px] font-bold text-[#C9A45C]">Inventory Value</span>
+                <span className="uppercase tracking-wider text-[10px] font-bold text-[#C9A45C]">
+                  {t('admin.metrics.totalValue', 'Inventory Value')}
+                </span>
                 <TrendingUp className="w-4 h-4 text-[#C9A45C]" />
               </div>
               <div className="font-cinzel text-xl sm:text-2xl font-bold text-[#F0D9A4]">
                 {formatPrice(totalCatalogValue)}
               </div>
-              <div className="text-[11px] text-[#8E713D]">Asset evaluation (EGP)</div>
+              <div className="text-[11px] text-[#8E713D]">{t('admin.metrics.assetEvaluation', 'Asset evaluation (EGP)')}</div>
             </div>
 
             {/* Metric 3 */}
             <div className="p-4 rounded-2xl bg-[#070707]/60 border border-[#C9A45C]/20 space-y-1">
               <div className="flex items-center justify-between text-xs text-[#A7A29A]">
-                <span className="uppercase tracking-wider text-[10px] font-bold text-[#C9A45C]">Store Orders</span>
+                <span className="uppercase tracking-wider text-[10px] font-bold text-[#C9A45C]">
+                  {t('admin.metrics.storeOrders', 'Store Orders')}
+                </span>
                 <ShoppingBag className="w-4 h-4 text-[#C9A45C]" />
               </div>
               <div className="font-cinzel text-xl sm:text-2xl font-bold text-[#F5F2EA]">
-                {allOrders.length} <span className="text-xs font-normal text-[#A7A29A]">({pendingOrdersCount} pending)</span>
+                {allOrders.length} <span className="text-xs font-normal text-[#A7A29A]">({pendingOrdersCount} {t('admin.metrics.pending', 'pending')})</span>
               </div>
               <div className="text-[11px] text-[#8E713D]">
-                Revenue: {formatPrice(totalOrdersRevenue)}
+                {t('common.revenue', 'Revenue')}: {formatPrice(totalOrdersRevenue)}
               </div>
             </div>
 
@@ -628,14 +675,16 @@ export const AccountPage: React.FC = () => {
                 : 'border-[#C9A45C]/20'
             }`}>
               <div className="flex items-center justify-between text-xs text-[#A7A29A]">
-                <span className="uppercase tracking-wider text-[10px] font-bold text-amber-400">Stock Alerts</span>
+                <span className="uppercase tracking-wider text-[10px] font-bold text-amber-400">
+                  {t('admin.metrics.lowStock', 'Stock Alerts')}
+                </span>
                 <AlertTriangle className="w-4 h-4 text-amber-400" />
               </div>
               <div className="font-cinzel text-xl sm:text-2xl font-bold text-amber-300">
-                {lowStockProducts.length + outOfStockProducts.length} <span className="text-xs font-normal text-[#A7A29A]">items</span>
+                {lowStockProducts.length + outOfStockProducts.length} <span className="text-xs font-normal text-[#A7A29A]">{t('common.items', 'items')}</span>
               </div>
               <div className="text-[11px] text-amber-400/80">
-                {outOfStockProducts.length} Out of Stock • {lowStockProducts.length} Low Stock
+                {outOfStockProducts.length} {t('admin.inventory.outOfStockOnly', 'Out of Stock')} • {lowStockProducts.length} {t('admin.inventory.lowStockOnly', 'Low Stock')}
               </div>
             </div>
           </div>
@@ -653,7 +702,7 @@ export const AccountPage: React.FC = () => {
               }`}
             >
               <Boxes className="w-4 h-4" />
-              <span>Stock & Products ({products.length})</span>
+              <span>{t('admin.tabs.inventory', 'Stock & Products')} ({products.length})</span>
             </button>
 
             <button
@@ -665,7 +714,7 @@ export const AccountPage: React.FC = () => {
               }`}
             >
               <ShoppingBag className="w-4 h-4" />
-              <span>Customer Orders ({allOrders.length})</span>
+              <span>{t('admin.tabs.orders', 'Customer Orders')} ({allOrders.length})</span>
               {pendingOrdersCount > 0 && (
                 <span className="w-4 h-4 rounded-full bg-amber-400 text-black text-[9px] font-black flex items-center justify-center">
                   {pendingOrdersCount}
@@ -682,7 +731,7 @@ export const AccountPage: React.FC = () => {
               }`}
             >
               <AlertTriangle className="w-4 h-4" />
-              <span>Stock Alerts ({lowStockProducts.length + outOfStockProducts.length})</span>
+              <span>{t('admin.tabs.alerts', 'Stock Alerts')} ({lowStockProducts.length + outOfStockProducts.length})</span>
             </button>
 
             <button
@@ -694,26 +743,26 @@ export const AccountPage: React.FC = () => {
               }`}
             >
               <BarChart3 className="w-4 h-4" />
-              <span>Analytics & Catalog</span>
+              <span>{t('admin.tabs.analytics', 'Analytics & Catalog')}</span>
             </button>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={handleExportJSON}
-              className="p-2 rounded-lg bg-[#151310] border border-[#C9A45C]/20 text-[#A7A29A] hover:text-[#E3C27A] text-xs flex items-center gap-1.5 transition-colors"
-              title="Export catalog as JSON"
+              className="p-2 rounded-lg bg-[#151310] border border-[#C9A45C]/20 text-[#A7A29A] hover:text-[#E3C27A] text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              title={t('admin.actions.exportJsonTitle', 'Export catalog as JSON')}
             >
               <Download className="w-4 h-4" />
-              <span className="hidden md:inline">Export Catalog</span>
+              <span className="hidden md:inline">{t('admin.actions.exportJson', 'Export Catalog')}</span>
             </button>
             <button
               onClick={resetProductsToDefault}
-              className="p-2 rounded-lg bg-[#151310] border border-[#C9A45C]/20 text-[#A7A29A] hover:text-red-400 text-xs flex items-center gap-1.5 transition-colors"
-              title="Reset products to default factory collection"
+              className="p-2 rounded-lg bg-[#151310] border border-[#C9A45C]/20 text-[#A7A29A] hover:text-red-400 text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              title={t('admin.actions.resetDefaultsTitle', 'Reset products to default factory collection')}
             >
               <RotateCcw className="w-4 h-4" />
-              <span className="hidden md:inline">Reset Defaults</span>
+              <span className="hidden md:inline">{t('admin.actions.resetDefaults', 'Reset Defaults')}</span>
             </button>
           </div>
         </div>
@@ -725,20 +774,20 @@ export const AccountPage: React.FC = () => {
             <div className="p-4 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/25 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
               {/* Search Bar */}
               <div className="relative flex-1">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8E713D]" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8E713D] rtl:left-auto rtl:right-3.5" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  placeholder="Search by perfume name, brand, fragrance family, or notes..."
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-xs text-[#F5F2EA] placeholder-stone-500 focus:outline-none focus:border-[#C9A45C]"
+                  placeholder={t('admin.inventory.searchPlaceholder', 'Search by perfume name, brand, fragrance family, or notes...')}
+                  className="w-full pl-10 pr-4 rtl:pl-4 rtl:pr-10 py-2.5 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-xs text-[#F5F2EA] placeholder-stone-500 focus:outline-none focus:border-[#C9A45C]"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#A7A29A] hover:text-white"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 rtl:right-auto rtl:left-3 text-xs text-[#A7A29A] hover:text-white cursor-pointer"
                   >
-                    Clear
+                    {t('search.clear', 'Clear')}
                   </button>
                 )}
               </div>
@@ -751,10 +800,10 @@ export const AccountPage: React.FC = () => {
                   onChange={e => setStockFilter(e.target.value as any)}
                   className="px-3 py-2 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-xs text-[#F5F2EA] focus:outline-none focus:border-[#C9A45C]"
                 >
-                  <option value="all">All Stock Statuses</option>
-                  <option value="low">Low Stock (≤ 5 units)</option>
-                  <option value="out">Out of Stock (0 units)</option>
-                  <option value="healthy">In Stock (&gt; 5 units)</option>
+                  <option value="all">{t('admin.inventory.allStock', 'All Stock Statuses')}</option>
+                  <option value="low">{t('admin.inventory.lowStockOnly', 'Low Stock (≤ 5 units)')}</option>
+                  <option value="out">{t('admin.inventory.outOfStockOnly', 'Out of Stock (0 units)')}</option>
+                  <option value="healthy">{t('admin.inventory.healthyStock', 'In Stock (> 5 units)')}</option>
                 </select>
 
                 {/* Category Filter */}
@@ -763,13 +812,13 @@ export const AccountPage: React.FC = () => {
                   onChange={e => setCategoryFilter(e.target.value)}
                   className="px-3 py-2 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-xs text-[#F5F2EA] focus:outline-none focus:border-[#C9A45C]"
                 >
-                  <option value="all">All Fragrance Chapters</option>
-                  <option value="oud">Oud Collection</option>
-                  <option value="men">Men's Haute</option>
-                  <option value="women">Women's Niche</option>
-                  <option value="unisex">Unisex Privé</option>
-                  <option value="exclusive">VIP Exclusive</option>
-                  <option value="gift-set">Gift Sets</option>
+                  <option value="all">{t('categories.all', 'All Fragrance Chapters')}</option>
+                  <option value="oud">{t('categories.oud', 'Oud Collection')}</option>
+                  <option value="men">{t('categories.men', "Men's Haute")}</option>
+                  <option value="women">{t('categories.women', "Women's Niche")}</option>
+                  <option value="unisex">{t('categories.unisex', 'Unisex Privé')}</option>
+                  <option value="exclusive">{t('categories.exclusive', 'VIP Exclusive')}</option>
+                  <option value="gift-set">{t('categories.giftSets', 'Gift Sets')}</option>
                 </select>
 
                 {/* Sort By */}
@@ -778,18 +827,18 @@ export const AccountPage: React.FC = () => {
                   onChange={e => setSortBy(e.target.value as any)}
                   className="px-3 py-2 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-xs text-[#F5F2EA] focus:outline-none focus:border-[#C9A45C]"
                 >
-                  <option value="stock-asc">Stock: Low to High</option>
-                  <option value="stock-desc">Stock: High to Low</option>
-                  <option value="price-asc">Price: Low to High</option>
-                  <option value="price-desc">Price: High to Low</option>
-                  <option value="name">Product Name (A-Z)</option>
+                  <option value="stock-asc">{t('admin.inventory.sortStockAsc', 'Stock: Low to High')}</option>
+                  <option value="stock-desc">{t('admin.inventory.sortStockDesc', 'Stock: High to Low')}</option>
+                  <option value="price-asc">{t('admin.inventory.sortPriceAsc', 'Price: Low to High')}</option>
+                  <option value="price-desc">{t('admin.inventory.sortPriceDesc', 'Price: High to Low')}</option>
+                  <option value="name">{t('admin.inventory.sortName', 'Product Name (A-Z)')}</option>
                 </select>
 
                 <button
                   onClick={handleBatchRestockLow}
-                  className="px-3.5 py-2 rounded-xl bg-[#C9A45C]/20 border border-[#C9A45C]/40 text-xs font-bold text-[#E3C27A] hover:bg-[#C9A45C]/30 transition-colors"
+                  className="px-3.5 py-2 rounded-xl bg-[#C9A45C]/20 border border-[#C9A45C]/40 text-xs font-bold text-[#E3C27A] hover:bg-[#C9A45C]/30 transition-colors cursor-pointer"
                 >
-                  +10 Batch Restock Low Items
+                  {t('admin.actions.batchRestock', '+10 Batch Restock Low Items')}
                 </button>
               </div>
             </div>
@@ -798,32 +847,32 @@ export const AccountPage: React.FC = () => {
             {filteredProducts.length === 0 ? (
               <div className="p-16 text-center rounded-2xl bg-[#0D0C0A] border border-white/5 space-y-4">
                 <Boxes className="w-12 h-12 text-[#8E713D] mx-auto opacity-50" />
-                <h3 className="font-cinzel text-lg text-[#F5F2EA]">No Fragrances Found</h3>
-                <p className="text-xs text-[#A7A29A]">Try clearing search keywords or resetting filters.</p>
+                <h3 className="font-cinzel text-lg text-[#F5F2EA]">{t('admin.inventory.noFragrances', 'No Fragrances Found')}</h3>
+                <p className="text-xs text-[#A7A29A]">{t('admin.inventory.noFragrancesDesc', 'Try clearing search keywords or resetting filters.')}</p>
                 <button
                   onClick={() => {
                     setSearchQuery('');
                     setStockFilter('all');
                     setCategoryFilter('all');
                   }}
-                  className="px-4 py-2 rounded-full bg-[#C9A45C] text-[#070707] font-bold text-xs uppercase tracking-wider"
+                  className="px-4 py-2 rounded-full bg-[#C9A45C] text-[#070707] font-bold text-xs uppercase tracking-wider cursor-pointer"
                 >
-                  Clear Filters
+                  {t('admin.inventory.clearFilters', 'Clear Filters')}
                 </button>
               </div>
             ) : (
               <div className="rounded-2xl border border-[#C9A45C]/25 bg-[#0D0C0A] shadow-xl overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
+                  <table className="w-full text-left rtl:text-right text-xs">
                     {/* Table Header */}
                     <thead className="bg-[#151310] text-[#C9A45C] uppercase tracking-wider text-[10px] font-bold border-b border-[#C9A45C]/20">
                       <tr>
-                        <th className="py-4 px-4 sm:px-6">Fragrance & Details</th>
-                        <th className="py-4 px-4">Chapter & Class</th>
-                        <th className="py-4 px-4">Price (EGP)</th>
-                        <th className="py-4 px-4 text-center">Live Stock Control</th>
-                        <th className="py-4 px-4 text-center">Status</th>
-                        <th className="py-4 px-4 sm:px-6 text-right">Actions</th>
+                        <th className="py-4 px-4 sm:px-6">{t('admin.inventory.tableHeaders.fragranceDetails', 'Fragrance & Details')}</th>
+                        <th className="py-4 px-4">{t('admin.inventory.tableHeaders.chapterClass', 'Chapter & Class')}</th>
+                        <th className="py-4 px-4">{t('admin.inventory.tableHeaders.priceEgp', 'Price (EGP)')}</th>
+                        <th className="py-4 px-4 text-center">{t('admin.inventory.tableHeaders.stockControl', 'Live Stock Control')}</th>
+                        <th className="py-4 px-4 text-center">{t('admin.inventory.tableHeaders.status', 'Status')}</th>
+                        <th className="py-4 px-4 sm:px-6 text-right rtl:text-left">{t('admin.inventory.tableHeaders.actions', 'Actions')}</th>
                       </tr>
                     </thead>
 
@@ -846,26 +895,29 @@ export const AccountPage: React.FC = () => {
                                 <div className="relative w-12 h-14 rounded-lg overflow-hidden border border-[#C9A45C]/30 bg-black shrink-0">
                                   <img
                                     src={product.images?.[0] || product.image}
-                                    alt={product.name}
+                                    alt={getLocalizedProductName(product, product.name)}
                                     referrerPolicy="no-referrer"
                                     className="w-full h-full object-cover"
                                   />
                                 </div>
                                 <div className="space-y-0.5 max-w-xs">
                                   <div className="flex items-center gap-2">
-                                    <span className="font-cinzel font-bold text-sm text-[#F5F2EA] hover:text-[#C9A45C] transition-colors cursor-pointer"
+                                    <span
+                                      className="font-cinzel font-bold text-sm text-[#F5F2EA] hover:text-[#C9A45C] transition-colors cursor-pointer"
                                       onClick={() => navigateTo(`/products/${product.slug}`)}
                                     >
-                                      {product.name}
+                                      {getLocalizedProductName(product, product.name)}
                                     </span>
                                     {product.badge && (
                                       <span className="px-1.5 py-0.5 rounded bg-[#C9A45C]/20 border border-[#C9A45C]/40 text-[9px] font-bold text-[#E3C27A]">
-                                        {product.badge}
+                                        {getLocalizedBadge(product.badge, t)}
                                       </span>
                                     )}
                                   </div>
                                   <div className="text-[11px] text-[#8E713D]">{product.brand} • {product.size}</div>
-                                  <div className="text-[10px] text-[#A7A29A] truncate">{product.subtitle}</div>
+                                  <div className="text-[10px] text-[#A7A29A] truncate">
+                                    {getLocalizedProductSubtitle(product, product.subtitle)}
+                                  </div>
                                 </div>
                               </div>
                             </td>
@@ -874,7 +926,7 @@ export const AccountPage: React.FC = () => {
                             <td className="py-4 px-4">
                               <div className="space-y-0.5">
                                 <div className="text-xs font-semibold text-[#F5F2EA] capitalize">
-                                  {product.category} ({product.gender})
+                                  {getLocalizedCategory(product.category, t)} ({getLocalizedGender(product.gender, t)})
                                 </div>
                                 <div className="text-[11px] text-[#C9A45C]">{product.concentration}</div>
                                 <div className="text-[10px] text-[#A7A29A]">{product.fragranceFamily}</div>
@@ -902,8 +954,8 @@ export const AccountPage: React.FC = () => {
                                   {/* Decrement */}
                                   <button
                                     onClick={() => quickAdjustStock(product.id, -1)}
-                                    className="w-7 h-7 rounded-lg bg-[#070707] hover:bg-red-500/20 text-[#A7A29A] hover:text-red-400 font-black text-sm flex items-center justify-center transition-colors"
-                                    title="Decrease stock by 1"
+                                    className="w-7 h-7 rounded-lg bg-[#070707] hover:bg-red-500/20 text-[#A7A29A] hover:text-red-400 font-black text-sm flex items-center justify-center transition-colors cursor-pointer"
+                                    title={t('admin.inventory.decreaseStock', 'Decrease stock by 1')}
                                   >
                                     -
                                   </button>
@@ -926,8 +978,8 @@ export const AccountPage: React.FC = () => {
                                   {/* Increment */}
                                   <button
                                     onClick={() => quickAdjustStock(product.id, 1)}
-                                    className="w-7 h-7 rounded-lg bg-[#070707] hover:bg-[#C9A45C]/20 text-[#A7A29A] hover:text-[#E3C27A] font-black text-sm flex items-center justify-center transition-colors"
-                                    title="Increase stock by 1"
+                                    className="w-7 h-7 rounded-lg bg-[#070707] hover:bg-[#C9A45C]/20 text-[#A7A29A] hover:text-[#E3C27A] font-black text-sm flex items-center justify-center transition-colors cursor-pointer"
+                                    title={t('admin.inventory.increaseStock', 'Increase stock by 1')}
                                   >
                                     +
                                   </button>
@@ -937,13 +989,13 @@ export const AccountPage: React.FC = () => {
                                 <div className="flex items-center gap-1">
                                   <button
                                     onClick={() => quickAdjustStock(product.id, 5)}
-                                    className="px-2 py-0.5 rounded bg-white/5 hover:bg-[#C9A45C]/20 text-[10px] text-[#A7A29A] hover:text-[#E3C27A] border border-white/5 transition-colors"
+                                    className="px-2 py-0.5 rounded bg-white/5 hover:bg-[#C9A45C]/20 text-[10px] text-[#A7A29A] hover:text-[#E3C27A] border border-white/5 transition-colors cursor-pointer"
                                   >
                                     +5
                                   </button>
                                   <button
                                     onClick={() => quickAdjustStock(product.id, 10)}
-                                    className="px-2 py-0.5 rounded bg-white/5 hover:bg-[#C9A45C]/20 text-[10px] text-[#A7A29A] hover:text-[#E3C27A] border border-white/5 transition-colors"
+                                    className="px-2 py-0.5 rounded bg-white/5 hover:bg-[#C9A45C]/20 text-[10px] text-[#A7A29A] hover:text-[#E3C27A] border border-white/5 transition-colors cursor-pointer"
                                   >
                                     +10
                                   </button>
@@ -955,50 +1007,50 @@ export const AccountPage: React.FC = () => {
                             <td className="py-4 px-4 text-center">
                               {isOut ? (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-500/20 border border-red-500/40 text-red-400 font-bold text-[10px] uppercase tracking-wider">
-                                  <XCircle className="w-3 h-3" /> Out of Stock
+                                  <XCircle className="w-3 h-3" /> {t('admin.inventory.outOfStockOnly', 'Out of Stock')}
                                 </span>
                               ) : isLow ? (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold text-[10px] uppercase tracking-wider animate-pulse">
-                                  <AlertTriangle className="w-3 h-3" /> Low ({product.stock} left)
+                                  <AlertTriangle className="w-3 h-3" /> {t('admin.inventory.lowStock', 'Low')} ({product.stock} {t('common.left', 'left')})
                                 </span>
                               ) : (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold text-[10px] uppercase tracking-wider">
-                                  <CheckCircle2 className="w-3 h-3" /> In Stock ({product.stock})
+                                  <CheckCircle2 className="w-3 h-3" /> {t('admin.inventory.healthyStock', 'In Stock')} ({product.stock})
                                 </span>
                               )}
                             </td>
 
                             {/* Action Buttons */}
-                            <td className="py-4 px-4 sm:px-6 text-right">
-                              <div className="flex items-center justify-end gap-1.5">
+                            <td className="py-4 px-4 sm:px-6 text-right rtl:text-left">
+                              <div className="flex items-center justify-end rtl:justify-start gap-1.5">
                                 <button
                                   onClick={() => handleOpenEditModal(product)}
-                                  className="p-2 rounded-lg bg-[#151310] hover:bg-[#C9A45C]/20 border border-white/10 hover:border-[#C9A45C]/40 text-[#A7A29A] hover:text-[#E3C27A] transition-colors"
-                                  title="Edit full product details"
+                                  className="p-2 rounded-lg bg-[#151310] hover:bg-[#C9A45C]/20 border border-white/10 hover:border-[#C9A45C]/40 text-[#A7A29A] hover:text-[#E3C27A] transition-colors cursor-pointer"
+                                  title={t('admin.inventory.editProduct', 'Edit full product details')}
                                 >
                                   <Edit3 className="w-3.5 h-3.5" />
                                 </button>
 
                                 <button
                                   onClick={() => handleDuplicateProduct(product)}
-                                  className="p-2 rounded-lg bg-[#151310] hover:bg-white/10 border border-white/10 text-[#A7A29A] hover:text-[#F5F2EA] transition-colors"
-                                  title="Duplicate as new product variant"
+                                  className="p-2 rounded-lg bg-[#151310] hover:bg-white/10 border border-white/10 text-[#A7A29A] hover:text-[#F5F2EA] transition-colors cursor-pointer"
+                                  title={t('admin.inventory.duplicateProduct', 'Duplicate as new product variant')}
                                 >
                                   <Copy className="w-3.5 h-3.5" />
                                 </button>
 
                                 <button
                                   onClick={() => navigateTo(`/products/${product.slug}`)}
-                                  className="p-2 rounded-lg bg-[#151310] hover:bg-white/10 border border-white/10 text-[#A7A29A] hover:text-[#F5F2EA] transition-colors"
-                                  title="Preview product page"
+                                  className="p-2 rounded-lg bg-[#151310] hover:bg-white/10 border border-white/10 text-[#A7A29A] hover:text-[#F5F2EA] transition-colors cursor-pointer"
+                                  title={t('admin.inventory.previewProduct', 'Preview product page')}
                                 >
                                   <Eye className="w-3.5 h-3.5" />
                                 </button>
 
                                 <button
                                   onClick={() => setProductToDelete(product)}
-                                  className="p-2 rounded-lg bg-[#151310] hover:bg-red-500/20 border border-white/10 hover:border-red-500/40 text-[#A7A29A] hover:text-red-400 transition-colors"
-                                  title="Delete fragrance from catalog"
+                                  className="p-2 rounded-lg bg-[#151310] hover:bg-red-500/20 border border-white/10 hover:border-red-500/40 text-[#A7A29A] hover:text-red-400 transition-colors cursor-pointer"
+                                  title={t('admin.inventory.deleteProduct', 'Delete fragrance from catalog')}
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />
                                 </button>
@@ -1022,13 +1074,13 @@ export const AccountPage: React.FC = () => {
             <div className="p-4 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/25 flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center">
               {/* Search Orders */}
               <div className="relative flex-1">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8E713D]" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8E713D] rtl:left-auto rtl:right-3.5" />
                 <input
                   type="text"
                   value={orderSearchQuery}
                   onChange={e => setOrderSearchQuery(e.target.value)}
-                  placeholder="Search by order #, customer name, phone number, or city..."
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-xs text-[#F5F2EA] placeholder-stone-500 focus:outline-none focus:border-[#C9A45C]"
+                  placeholder={t('admin.orders.searchPlaceholder', 'Search by order #, customer name, phone number, or city...')}
+                  className="w-full pl-10 pr-4 rtl:pl-4 rtl:pr-10 py-2.5 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-xs text-[#F5F2EA] placeholder-stone-500 focus:outline-none focus:border-[#C9A45C]"
                 />
               </div>
 
@@ -1039,12 +1091,12 @@ export const AccountPage: React.FC = () => {
                   onChange={e => setOrderStatusFilter(e.target.value)}
                   className="px-3 py-2 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-xs text-[#F5F2EA] focus:outline-none focus:border-[#C9A45C]"
                 >
-                  <option value="all">All Order Statuses ({allOrders.length})</option>
-                  <option value="Processing">Processing</option>
-                  <option value="Shipped">Shipped</option>
-                  <option value="Out for Delivery">Out for Delivery</option>
-                  <option value="Delivered">Delivered</option>
-                  <option value="Cancelled">Cancelled</option>
+                  <option value="all">{t('admin.orders.allStatuses', 'All Order Statuses')} ({allOrders.length})</option>
+                  <option value="Processing">{getLocalizedOrderStatus('Processing', t)}</option>
+                  <option value="Shipped">{getLocalizedOrderStatus('Shipped', t)}</option>
+                  <option value="Out for Delivery">{getLocalizedOrderStatus('Out for Delivery', t)}</option>
+                  <option value="Delivered">{getLocalizedOrderStatus('Delivered', t)}</option>
+                  <option value="Cancelled">{getLocalizedOrderStatus('Cancelled', t)}</option>
                 </select>
               </div>
             </div>
@@ -1053,8 +1105,8 @@ export const AccountPage: React.FC = () => {
             {filteredOrders.length === 0 ? (
               <div className="p-16 text-center rounded-2xl bg-[#0D0C0A] border border-white/5 space-y-4">
                 <ShoppingBag className="w-12 h-12 text-[#8E713D] mx-auto opacity-50" />
-                <h3 className="font-cinzel text-lg text-[#F5F2EA]">No Orders Found</h3>
-                <p className="text-xs text-[#A7A29A]">No orders match your filter criteria.</p>
+                <h3 className="font-cinzel text-lg text-[#F5F2EA]">{t('admin.orders.empty', 'No Orders Found')}</h3>
+                <p className="text-xs text-[#A7A29A]">{t('admin.orders.emptyDesc', 'No orders match your filter criteria.')}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -1079,12 +1131,12 @@ export const AccountPage: React.FC = () => {
                                 : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                             }`}
                           >
-                            {order.status}
+                            {getLocalizedOrderStatus(order.status, t)}
                           </span>
                         </div>
                         <div className="text-xs text-[#A7A29A]">
-                          Date: <span className="text-[#F5F2EA]">{order.date}</span> • Payment:{' '}
-                          <span className="text-[#C9A45C]">{order.paymentMethod}</span>
+                          {t('admin.orders.date', 'Date')}: <span className="text-[#F5F2EA]">{formatDateLocalized(order.date, i18n.language)}</span> • {t('admin.orders.payment', 'Payment')}:{' '}
+                          <span className="text-[#C9A45C]">{getLocalizedPaymentMethod(order.paymentMethod, t)}</span>
                         </div>
                       </div>
 
@@ -1093,35 +1145,35 @@ export const AccountPage: React.FC = () => {
                         {/* Instant Status Changer */}
                         <div className="flex items-center gap-1.5">
                           <span className="text-[10px] uppercase tracking-wider text-[#8E713D] font-bold">
-                            Set Status:
+                            {t('admin.orders.setStatus', 'Set Status:')}
                           </span>
                           <select
                             value={order.status}
                             onChange={e => updateOrderStatus(order.id, e.target.value as any)}
                             className="px-2.5 py-1.5 bg-[#151310] border border-[#C9A45C]/30 rounded-lg text-xs text-[#F5F2EA] font-semibold focus:outline-none focus:border-[#C9A45C]"
                           >
-                            <option value="Processing">Processing</option>
-                            <option value="Shipped">Shipped</option>
-                            <option value="Out for Delivery">Out for Delivery</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Cancelled">Cancelled</option>
+                            <option value="Processing">{getLocalizedOrderStatus('Processing', t)}</option>
+                            <option value="Shipped">{getLocalizedOrderStatus('Shipped', t)}</option>
+                            <option value="Out for Delivery">{getLocalizedOrderStatus('Out for Delivery', t)}</option>
+                            <option value="Delivered">{getLocalizedOrderStatus('Delivered', t)}</option>
+                            <option value="Cancelled">{getLocalizedOrderStatus('Cancelled', t)}</option>
                           </select>
                         </div>
 
                         {/* View Invoice Receipt */}
                         <button
                           onClick={() => setSelectedInvoiceOrder(order)}
-                          className="px-3 py-1.5 rounded-lg bg-[#C9A45C]/15 hover:bg-[#C9A45C]/30 border border-[#C9A45C]/40 text-xs text-[#E3C27A] font-semibold flex items-center gap-1.5 transition-colors"
+                          className="px-3 py-1.5 rounded-lg bg-[#C9A45C]/15 hover:bg-[#C9A45C]/30 border border-[#C9A45C]/40 text-xs text-[#E3C27A] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                         >
                           <Eye className="w-3.5 h-3.5" />
-                          <span>Full Invoice</span>
+                          <span>{t('admin.orders.fullInvoice', 'Full Invoice')}</span>
                         </button>
 
                         {/* Delete Order */}
                         <button
                           onClick={() => setOrderToDelete(order)}
-                          className="p-1.5 text-stone-500 hover:text-red-400 transition-colors"
-                          title="Delete order archive"
+                          className="p-1.5 text-stone-500 hover:text-red-400 transition-colors cursor-pointer"
+                          title={t('admin.orders.deleteOrder', 'Delete order archive')}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -1155,7 +1207,7 @@ export const AccountPage: React.FC = () => {
                               <div className="flex-1 min-w-0">
                                 <div className="text-xs font-bold text-[#F5F2EA] truncate">{it.name}</div>
                                 <div className="text-[11px] text-[#A7A29A]">
-                                  {it.size} • Qty: <span className="text-[#F5F2EA] font-semibold">{it.quantity}</span>
+                                  {it.size} • {t('common.quantity', 'Qty')}: <span className="text-[#F5F2EA] font-semibold">{it.quantity}</span>
                                 </div>
                               </div>
                               <div className="text-xs font-bold text-[#F0D9A4]">
@@ -1169,15 +1221,15 @@ export const AccountPage: React.FC = () => {
                       {/* Customer & Address */}
                       <div className="lg:col-span-5 p-3.5 rounded-xl bg-[#151310]/30 border border-white/5 text-xs space-y-1">
                         <div className="text-[10px] uppercase font-bold text-[#C9A45C] tracking-wider">
-                          Recipient & Destination
+                          {t('admin.orders.recipientDestination', 'Recipient & Destination')}
                         </div>
                         <div className="font-semibold text-[#F5F2EA]">{order.shippingAddress.fullName}</div>
                         <div className="text-[#A7A29A]">{order.shippingAddress.phone}</div>
                         <div className="text-[#A7A29A] text-[11px] truncate">
-                          {order.shippingAddress.streetAddress}, {order.shippingAddress.area ? `${order.shippingAddress.area}, ` : ''}{order.shippingAddress.governorate || order.shippingAddress.city}
+                          {order.shippingAddress.streetAddress}, {order.shippingAddress.area ? `${order.shippingAddress.area}, ` : ''}{getLocalizedGovernorate(order.shippingAddress.governorate || order.shippingAddress.city, t)}
                         </div>
                         <div className="pt-2 border-t border-white/5 flex justify-between items-center text-xs">
-                          <span className="text-[#A7A29A]">Total Order Value:</span>
+                          <span className="text-[#A7A29A]">{t('admin.orders.totalOrderValue', 'Total Order Value:')}</span>
                           <span className="font-cinzel font-bold text-[#C9A45C] text-sm">{formatPrice(order.total)}</span>
                         </div>
                       </div>
@@ -1193,20 +1245,20 @@ export const AccountPage: React.FC = () => {
         {activeTab === 'alerts' && (
           <div className="space-y-6">
             <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-amber-500/30 space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <h3 className="font-cinzel text-lg font-bold text-amber-300">
-                    Priority Replenishment & Stock Alerts
+                    {t('admin.alerts.title', 'Priority Replenishment & Stock Alerts')}
                   </h3>
                   <p className="text-xs text-[#A7A29A]">
-                    Fragrances with inventory levels equal to 0 (out of stock) or ≤ 5 units (critically low).
+                    {t('admin.alerts.desc', 'Fragrances with inventory levels equal to 0 (out of stock) or ≤ 5 units (critically low).')}
                   </p>
                 </div>
                 <button
                   onClick={handleBatchRestockLow}
-                  className="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-200 text-xs font-bold rounded-full transition-colors"
+                  className="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-200 text-xs font-bold rounded-full transition-colors cursor-pointer shrink-0"
                 >
-                  Restock All (+10 units)
+                  {t('admin.alerts.restockAll', 'Restock All (+10 units)')}
                 </button>
               </div>
 
@@ -1233,7 +1285,10 @@ export const AccountPage: React.FC = () => {
                           <div className="text-xs font-bold text-[#F5F2EA]">{product.name}</div>
                           <div className="text-[11px] text-[#A7A29A]">{product.brand} • {product.size}</div>
                           <div className={`text-xs font-bold mt-1 ${isOut ? 'text-red-400' : 'text-amber-400'}`}>
-                            {isOut ? 'OUT OF STOCK (0 units)' : `LOW STOCK: ${product.stock} units remaining`}
+                            {isOut
+                              ? t('admin.alerts.outOfStockAlert', 'OUT OF STOCK (0 units)')
+                              : t('admin.alerts.lowStockAlert', { count: product.stock, defaultValue: `LOW STOCK: ${product.stock} units remaining` })
+                            }
                           </div>
                         </div>
                       </div>
@@ -1241,13 +1296,14 @@ export const AccountPage: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => adjustStock(product.id, (product.stock || 0) + 10)}
-                          className="px-3 py-1.5 rounded-lg bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-xs shadow-md transition-colors"
+                          className="px-3 py-1.5 rounded-lg bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-xs shadow-md transition-colors cursor-pointer"
                         >
-                          +10 Restock
+                          {t('admin.alerts.restockTen', '+10 Restock')}
                         </button>
                         <button
                           onClick={() => handleOpenEditModal(product)}
-                          className="p-1.5 rounded-lg bg-[#151310] text-[#A7A29A] hover:text-white border border-white/10"
+                          className="p-1.5 rounded-lg bg-[#151310] text-[#A7A29A] hover:text-white border border-white/10 cursor-pointer"
+                          title={t('admin.inventory.editProduct', 'Edit full product details')}
                         >
                           <Edit3 className="w-3.5 h-3.5" />
                         </button>
@@ -1259,7 +1315,7 @@ export const AccountPage: React.FC = () => {
 
               {lowStockProducts.length === 0 && outOfStockProducts.length === 0 && (
                 <div className="p-8 text-center text-xs text-emerald-400">
-                  ✓ All fragrances are currently in healthy stock levels (&gt; 5 units).
+                  {t('admin.alerts.allHealthy', '✓ All fragrances are currently in healthy stock levels (> 5 units).')}
                 </div>
               )}
             </div>
@@ -1271,14 +1327,16 @@ export const AccountPage: React.FC = () => {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/30 space-y-3">
-                <h3 className="font-cinzel text-sm font-bold text-[#F5F2EA]">Fragrance Chapters Breakdown</h3>
+                <h3 className="font-cinzel text-sm font-bold text-[#F5F2EA]">
+                  {t('admin.analytics.chaptersBreakdown', 'Fragrance Chapters Breakdown')}
+                </h3>
                 <div className="space-y-2 text-xs">
                   {['oud', 'men', 'women', 'unisex', 'exclusive'].map(cat => {
                     const count = products.filter(p => p.category === cat).length;
                     return (
                       <div key={cat} className="flex justify-between items-center py-1 border-b border-white/5">
-                        <span className="capitalize text-[#A7A29A]">{cat} Collection:</span>
-                        <span className="font-bold text-[#F0D9A4]">{count} fragrances</span>
+                        <span className="capitalize text-[#A7A29A]">{getLocalizedCategory(cat, t)}:</span>
+                        <span className="font-bold text-[#F0D9A4]">{count} {t('admin.analytics.fragrancesCount', 'fragrances')}</span>
                       </div>
                     );
                   })}
@@ -1286,28 +1344,30 @@ export const AccountPage: React.FC = () => {
               </div>
 
               <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/30 space-y-3">
-                <h3 className="font-cinzel text-sm font-bold text-[#F5F2EA]">Order Fulfillment Metrics</h3>
+                <h3 className="font-cinzel text-sm font-bold text-[#F5F2EA]">
+                  {t('admin.analytics.fulfillmentMetrics', 'Order Fulfillment Metrics')}
+                </h3>
                 <div className="space-y-2 text-xs">
                   <div className="flex justify-between items-center py-1 border-b border-white/5">
-                    <span className="text-[#A7A29A]">Delivered Orders:</span>
+                    <span className="text-[#A7A29A]">{t('orderStatus.delivered', 'Delivered Orders')}:</span>
                     <span className="font-bold text-emerald-400">
                       {allOrders.filter(o => o.status === 'Delivered').length}
                     </span>
                   </div>
                   <div className="flex justify-between items-center py-1 border-b border-white/5">
-                    <span className="text-[#A7A29A]">In Transit / Dispatched:</span>
+                    <span className="text-[#A7A29A]">{t('admin.analytics.inTransit', 'In Transit / Dispatched')}:</span>
                     <span className="font-bold text-amber-300">
                       {allOrders.filter(o => o.status === 'Shipped' || o.status === 'Out for Delivery').length}
                     </span>
                   </div>
                   <div className="flex justify-between items-center py-1 border-b border-white/5">
-                    <span className="text-[#A7A29A]">Processing / Queued:</span>
+                    <span className="text-[#A7A29A]">{t('admin.analytics.processingQueued', 'Processing / Queued')}:</span>
                     <span className="font-bold text-[#F5F2EA]">
                       {allOrders.filter(o => o.status === 'Processing').length}
                     </span>
                   </div>
                   <div className="flex justify-between items-center py-1 border-b border-white/5">
-                    <span className="text-[#A7A29A]">Cancelled:</span>
+                    <span className="text-[#A7A29A]">{t('orderStatus.cancelled', 'Cancelled')}:</span>
                     <span className="font-bold text-red-400">
                       {allOrders.filter(o => o.status === 'Cancelled').length}
                     </span>
@@ -1316,22 +1376,24 @@ export const AccountPage: React.FC = () => {
               </div>
 
               <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/30 space-y-3">
-                <h3 className="font-cinzel text-sm font-bold text-[#F5F2EA]">Catalog Data Management</h3>
+                <h3 className="font-cinzel text-sm font-bold text-[#F5F2EA]">
+                  {t('admin.analytics.dataManagement', 'Catalog Data Management')}
+                </h3>
                 <p className="text-xs text-[#A7A29A]">
-                  Export a snapshot of all active products and stock quantities for backups or enterprise spreadsheets.
+                  {t('admin.analytics.dataManagementDesc', 'Export a snapshot of all active products and stock quantities for backups or enterprise spreadsheets.')}
                 </p>
                 <div className="pt-2 space-y-2">
                   <button
                     onClick={handleExportJSON}
-                    className="w-full py-2 px-3 rounded-xl bg-[#151310] hover:bg-[#C9A45C]/20 border border-[#C9A45C]/40 text-xs text-[#E3C27A] font-bold flex items-center justify-center gap-2 transition-colors"
+                    className="w-full py-2 px-3 rounded-xl bg-[#151310] hover:bg-[#C9A45C]/20 border border-[#C9A45C]/40 text-xs text-[#E3C27A] font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer"
                   >
-                    <Download className="w-4 h-4" /> Download Catalog JSON
+                    <Download className="w-4 h-4" /> {t('admin.analytics.downloadJson', 'Download Catalog JSON')}
                   </button>
                   <button
                     onClick={resetProductsToDefault}
-                    className="w-full py-2 px-3 rounded-xl bg-red-950/20 hover:bg-red-950/40 border border-red-500/30 text-xs text-red-300 font-semibold flex items-center justify-center gap-2 transition-colors"
+                    className="w-full py-2 px-3 rounded-xl bg-red-950/20 hover:bg-red-950/40 border border-red-500/30 text-xs text-red-300 font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer"
                   >
-                    <RotateCcw className="w-4 h-4" /> Restore Factory Curated Stock
+                    <RotateCcw className="w-4 h-4" /> {t('admin.analytics.restoreDefaults', 'Restore Factory Curated Stock')}
                   </button>
                 </div>
               </div>
@@ -1359,25 +1421,30 @@ export const AccountPage: React.FC = () => {
       {productToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
           <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-red-500/40 max-w-md w-full space-y-4 shadow-2xl">
-            <h3 className="font-cinzel text-base font-bold text-red-400">Delete Fragrance from Catalog?</h3>
+            <h3 className="font-cinzel text-base font-bold text-red-400">
+              {t('admin.inventory.deleteModalTitle', 'Delete Fragrance from Catalog?')}
+            </h3>
             <p className="text-xs text-[#A7A29A] leading-relaxed">
-              Are you sure you want to remove <strong className="text-[#F5F2EA]">"{productToDelete.name}"</strong>? This will permanently delete it from live store catalog and search results.
+              {t('admin.inventory.deleteModalDesc', {
+                name: productToDelete.name,
+                defaultValue: `Are you sure you want to remove "${productToDelete.name}"? This will permanently delete it from live store catalog and search results.`
+              })}
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 onClick={() => setProductToDelete(null)}
-                className="px-4 py-2 rounded-full border border-white/10 text-xs text-[#A7A29A] hover:text-white"
+                className="px-4 py-2 rounded-full border border-white/10 text-xs text-[#A7A29A] hover:text-white cursor-pointer"
               >
-                Cancel
+                {t('common.cancel', 'Cancel')}
               </button>
               <button
                 onClick={() => {
                   deleteProduct(productToDelete.id);
                   setProductToDelete(null);
                 }}
-                className="px-5 py-2 rounded-full bg-red-500 hover:bg-red-600 text-white font-bold text-xs uppercase tracking-wider transition-colors"
+                className="px-5 py-2 rounded-full bg-red-500 hover:bg-red-600 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
               >
-                Confirm Delete
+                {t('admin.inventory.confirmDelete', 'Confirm Delete')}
               </button>
             </div>
           </div>
@@ -1388,25 +1455,31 @@ export const AccountPage: React.FC = () => {
       {orderToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
           <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-red-500/40 max-w-md w-full space-y-4 shadow-2xl">
-            <h3 className="font-cinzel text-base font-bold text-red-400">Delete Order Archive?</h3>
+            <h3 className="font-cinzel text-base font-bold text-red-400">
+              {t('admin.orders.deleteModalTitle', 'Delete Order Archive?')}
+            </h3>
             <p className="text-xs text-[#A7A29A] leading-relaxed">
-              Remove order <strong className="text-[#F5F2EA]">{orderToDelete.orderNumber}</strong> ({orderToDelete.shippingAddress.fullName}) from records?
+              {t('admin.orders.deleteModalDesc', {
+                number: orderToDelete.orderNumber,
+                name: orderToDelete.shippingAddress.fullName,
+                defaultValue: `Remove order ${orderToDelete.orderNumber} (${orderToDelete.shippingAddress.fullName}) from records?`
+              })}
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 onClick={() => setOrderToDelete(null)}
-                className="px-4 py-2 rounded-full border border-white/10 text-xs text-[#A7A29A] hover:text-white"
+                className="px-4 py-2 rounded-full border border-white/10 text-xs text-[#A7A29A] hover:text-white cursor-pointer"
               >
-                Cancel
+                {t('common.cancel', 'Cancel')}
               </button>
               <button
                 onClick={() => {
                   deleteOrder(orderToDelete.id);
                   setOrderToDelete(null);
                 }}
-                className="px-5 py-2 rounded-full bg-red-500 hover:bg-red-600 text-white font-bold text-xs uppercase tracking-wider transition-colors"
+                className="px-5 py-2 rounded-full bg-red-500 hover:bg-red-600 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
               >
-                Confirm Delete
+                {t('admin.orders.confirmDelete', 'Confirm Delete')}
               </button>
             </div>
           </div>

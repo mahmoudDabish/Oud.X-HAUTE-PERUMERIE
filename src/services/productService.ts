@@ -66,11 +66,20 @@ export const productService = {
           })),
           concentration: p.concentration,
           fragranceFamily: p.fragrance_family,
+          nameAr: p.name_ar || p.notes?.ar?.name || (typeof p.notes?.name_ar === 'string' ? p.notes.name_ar : undefined),
+          subtitleAr: p.subtitle_ar || p.notes?.ar?.subtitle || (typeof p.notes?.subtitle_ar === 'string' ? p.notes.subtitle_ar : undefined),
+          descriptionAr: p.description_ar || p.notes?.ar?.description || (typeof p.notes?.description_ar === 'string' ? p.notes.description_ar : undefined),
+          storyAr: p.story_ar || p.notes?.ar?.story || (typeof p.notes?.story_ar === 'string' ? p.notes.story_ar : undefined),
           notes: {
             top: p.notes?.top || [],
             heart: p.notes?.heart || [],
             base: p.notes?.base || []
           },
+          notesAr: p.notes_ar || (p.notes?.ar && (p.notes.ar.top || p.notes.ar.heart || p.notes.ar.base) ? {
+            top: p.notes.ar.top || [],
+            heart: p.notes.ar.heart || [],
+            base: p.notes.ar.base || []
+          } : undefined),
           longevity: p.longevity,
           sillage: p.sillage,
           season: Array.isArray(p.season) ? p.season : [],
@@ -134,11 +143,20 @@ export const productService = {
         })) || [],
         concentration: p.concentration,
         fragranceFamily: p.fragrance_family,
+        nameAr: p.name_ar || p.notes?.ar?.name || (typeof p.notes?.name_ar === 'string' ? p.notes.name_ar : undefined),
+        subtitleAr: p.subtitle_ar || p.notes?.ar?.subtitle || (typeof p.notes?.subtitle_ar === 'string' ? p.notes.subtitle_ar : undefined),
+        descriptionAr: p.description_ar || p.notes?.ar?.description || (typeof p.notes?.description_ar === 'string' ? p.notes.description_ar : undefined),
+        storyAr: p.story_ar || p.notes?.ar?.story || (typeof p.notes?.story_ar === 'string' ? p.notes.story_ar : undefined),
         notes: {
           top: p.notes?.top || [],
           heart: p.notes?.heart || [],
           base: p.notes?.base || []
         },
+        notesAr: p.notes_ar || (p.notes?.ar && (p.notes.ar.top || p.notes.ar.heart || p.notes.ar.base) ? {
+          top: p.notes.ar.top || [],
+          heart: p.notes.ar.heart || [],
+          base: p.notes.ar.base || []
+        } : undefined),
         longevity: p.longevity,
         sillage: p.sillage,
         season: Array.isArray(p.season) ? p.season : [],
@@ -168,7 +186,31 @@ export const productService = {
           ? productData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.floor(Math.random() * 1000)
           : `product-${Date.now()}`);
 
-      const insertData = {
+      const notesObj: any = {
+        top: productData.notes?.top || [],
+        heart: productData.notes?.heart || [],
+        base: productData.notes?.base || []
+      };
+
+      if (
+        productData.nameAr ||
+        productData.subtitleAr ||
+        productData.descriptionAr ||
+        productData.storyAr ||
+        productData.notesAr
+      ) {
+        notesObj.ar = {
+          name: productData.nameAr || undefined,
+          subtitle: productData.subtitleAr || undefined,
+          description: productData.descriptionAr || undefined,
+          story: productData.storyAr || undefined,
+          top: productData.notesAr?.top || undefined,
+          heart: productData.notesAr?.heart || undefined,
+          base: productData.notesAr?.base || undefined
+        };
+      }
+
+      const insertData: any = {
         name: productData.name,
         slug: generatedSlug,
         brand: productData.brand,
@@ -181,7 +223,7 @@ export const productService = {
         gender: productData.gender,
         concentration: productData.concentration,
         fragrance_family: productData.fragranceFamily,
-        notes: productData.notes,
+        notes: notesObj,
         longevity: productData.longevity,
         sillage: productData.sillage,
         season: productData.season,
@@ -194,12 +236,30 @@ export const productService = {
         is_sale: productData.isSale || false
       };
 
-      const { data, error } = await supabase
+      if (productData.nameAr) insertData.name_ar = productData.nameAr;
+      if (productData.subtitleAr) insertData.subtitle_ar = productData.subtitleAr;
+      if (productData.descriptionAr) insertData.description_ar = productData.descriptionAr;
+      if (productData.storyAr) insertData.story_ar = productData.storyAr;
+      if (productData.notesAr) insertData.notes_ar = productData.notesAr;
+
+      let { data, error } = await supabase
         .from('products')
         .insert(insertData)
         .select()
         .single();
         
+      // If root columns do not exist in DB yet (42703 or PGRST204), retry without root _ar columns
+      if (error && (error.code === '42703' || error.code === 'PGRST204' || error.message?.includes('does not exist') || error.message?.includes('Could not find'))) {
+        delete insertData.name_ar;
+        delete insertData.subtitle_ar;
+        delete insertData.description_ar;
+        delete insertData.story_ar;
+        delete insertData.notes_ar;
+        const fallbackRes = await supabase.from('products').insert(insertData).select().single();
+        data = fallbackRes.data;
+        error = fallbackRes.error;
+      }
+
       if (error || !data) return { data: null, error };
 
       // Insert images if available
@@ -227,11 +287,15 @@ export const productService = {
       const mappedProduct: Product = {
         id: data.id,
         name: data.name,
+        nameAr: productData.nameAr || data.name_ar || data.notes?.ar?.name,
         slug: data.slug,
         brand: data.brand,
         subtitle: data.subtitle,
+        subtitleAr: productData.subtitleAr || data.subtitle_ar || data.notes?.ar?.subtitle,
         description: data.description,
+        descriptionAr: productData.descriptionAr || data.description_ar || data.notes?.ar?.description,
         story: data.story,
+        storyAr: productData.storyAr || data.story_ar || data.notes?.ar?.story,
         price: data.price,
         compareAtPrice: data.compare_at_price,
         category: productData.category || data.category_id,
@@ -244,6 +308,11 @@ export const productService = {
           heart: data.notes?.heart || [],
           base: data.notes?.base || []
         },
+        notesAr: productData.notesAr || data.notes_ar || (data.notes?.ar ? {
+          top: data.notes.ar.top || [],
+          heart: data.notes.ar.heart || [],
+          base: data.notes.ar.base || []
+        } : undefined),
         longevity: data.longevity,
         sillage: data.sillage,
         season: Array.isArray(data.season) ? data.season : [],
@@ -271,10 +340,13 @@ export const productService = {
     try {
       const updateData: any = {};
       if ('name' in updates) updateData.name = updates.name;
+      if ('brand' in updates) updateData.brand = updates.brand;
+      if ('subtitle' in updates) updateData.subtitle = updates.subtitle;
+      if ('description' in updates) updateData.description = updates.description;
+      if ('story' in updates) updateData.story = updates.story;
       if ('price' in updates) updateData.price = updates.price;
       if ('compareAtPrice' in updates) updateData.compare_at_price = updates.compareAtPrice ?? null;
       if ('stock' in updates) updateData.stock = updates.stock;
-      if ('description' in updates) updateData.description = updates.description;
       if ('isFeatured' in updates) updateData.is_featured = updates.isFeatured;
       if ('isSale' in updates) updateData.is_sale = updates.isSale;
       if ('isNew' in updates) updateData.is_new = updates.isNew;
@@ -282,11 +354,80 @@ export const productService = {
       if ('badge' in updates) updateData.badge = updates.badge ?? null;
       if ('categoryId' in updates) updateData.category_id = updates.categoryId;
       if ('gender' in updates) updateData.gender = updates.gender;
+      if ('concentration' in updates) updateData.concentration = updates.concentration;
+      if ('fragranceFamily' in updates) updateData.fragrance_family = updates.fragranceFamily;
+      if ('longevity' in updates) updateData.longevity = updates.longevity;
+      if ('sillage' in updates) updateData.sillage = updates.sillage;
+      if ('season' in updates) updateData.season = updates.season;
+      if ('size' in updates) updateData.size = updates.size;
 
-      const { error } = await supabase
+      // Handle notes and notes.ar merging carefully
+      if (
+        'notes' in updates ||
+        'nameAr' in updates ||
+        'subtitleAr' in updates ||
+        'descriptionAr' in updates ||
+        'storyAr' in updates ||
+        'notesAr' in updates
+      ) {
+        const { data: currentProd } = await supabase
+          .from('products')
+          .select('notes')
+          .eq('id', id)
+          .single();
+
+        const currentNotes = currentProd?.notes || {};
+        const currentAr = currentNotes.ar || {};
+
+        const mergedNotes: any = {
+          top: ('notes' in updates && updates.notes?.top) ? updates.notes.top : (currentNotes.top || []),
+          heart: ('notes' in updates && updates.notes?.heart) ? updates.notes.heart : (currentNotes.heart || []),
+          base: ('notes' in updates && updates.notes?.base) ? updates.notes.base : (currentNotes.base || [])
+        };
+
+        const mergedAr: any = {
+          name: updates.nameAr !== undefined ? updates.nameAr : currentAr.name,
+          subtitle: updates.subtitleAr !== undefined ? updates.subtitleAr : currentAr.subtitle,
+          description: updates.descriptionAr !== undefined ? updates.descriptionAr : currentAr.description,
+          story: updates.storyAr !== undefined ? updates.storyAr : currentAr.story,
+          top: (updates.notesAr?.top !== undefined) ? updates.notesAr.top : currentAr.top,
+          heart: (updates.notesAr?.heart !== undefined) ? updates.notesAr.heart : currentAr.heart,
+          base: (updates.notesAr?.base !== undefined) ? updates.notesAr.base : currentAr.base
+        };
+
+        const cleanAr: any = {};
+        Object.entries(mergedAr).forEach(([k, v]) => {
+          if (v !== undefined && v !== '') cleanAr[k] = v;
+        });
+
+        if (Object.keys(cleanAr).length > 0) {
+          mergedNotes.ar = cleanAr;
+        }
+
+        updateData.notes = mergedNotes;
+      }
+
+      if ('nameAr' in updates && updates.nameAr !== undefined) updateData.name_ar = updates.nameAr;
+      if ('subtitleAr' in updates && updates.subtitleAr !== undefined) updateData.subtitle_ar = updates.subtitleAr;
+      if ('descriptionAr' in updates && updates.descriptionAr !== undefined) updateData.description_ar = updates.descriptionAr;
+      if ('storyAr' in updates && updates.storyAr !== undefined) updateData.story_ar = updates.storyAr;
+      if ('notesAr' in updates && updates.notesAr !== undefined) updateData.notes_ar = updates.notesAr;
+
+      let { error } = await supabase
         .from('products')
         .update(updateData)
         .eq('id', id);
+
+      // If root columns do not exist in DB yet (42703 or PGRST204), retry without root _ar columns
+      if (error && (error.code === '42703' || error.code === 'PGRST204' || error.message?.includes('does not exist') || error.message?.includes('Could not find'))) {
+        delete updateData.name_ar;
+        delete updateData.subtitle_ar;
+        delete updateData.description_ar;
+        delete updateData.story_ar;
+        delete updateData.notes_ar;
+        const retryRes = await supabase.from('products').update(updateData).eq('id', id);
+        error = retryRes.error;
+      }
 
       if (error) return { error };
 

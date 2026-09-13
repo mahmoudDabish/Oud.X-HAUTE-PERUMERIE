@@ -7,7 +7,8 @@ export type FragranceFamily =
   | 'Spicy Leather' 
   | 'Floral Citrus' 
   | 'Aromatic Fougere' 
-  | 'Warm Resin';
+  | 'Warm Resin'
+  | (string & {});
 
 export type FragranceConcentration = 'Extrait de Parfum' | 'Eau de Parfum' | 'Parfum Oil (Attar)' | 'Elixir';
 
@@ -30,11 +31,15 @@ export interface ProductReview {
 export interface Product {
   id: string;
   name: string;
+  nameAr?: string;
   slug: string;
   brand: string;
   subtitle: string;
+  subtitleAr?: string;
   description: string;
+  descriptionAr?: string;
   story: string;
+  storyAr?: string;
   price: number;
   compareAtPrice?: number;
   images: string[];
@@ -46,6 +51,7 @@ export interface Product {
   concentration: FragranceConcentration;
   fragranceFamily: FragranceFamily;
   notes: FragranceNotes;
+  notesAr?: FragranceNotes;
   longevity: '8-10 Hours' | '12+ Hours' | '14-18 Hours (Beast Mode)' | '6-8 Hours';
   sillage: 'Moderate' | 'Heavy' | 'Intense / Enormous' | 'Intimate';
   season: string[];

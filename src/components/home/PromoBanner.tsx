@@ -1,10 +1,12 @@
 import React from 'react';
 import { useShop } from '../../context/ShopContext';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/Button';
-import { Sparkles, ArrowRight, Tag } from 'lucide-react';
+import { ArrowRight, Tag } from 'lucide-react';
 
 export const PromoBanner: React.FC = () => {
-  const { navigateTo, applyPromoCode } = useShop();
+  const { navigateTo } = useShop();
+  const { t } = useTranslation();
 
   const handleApplyPromo = () => {
     navigateTo('/shop?filter=sale');
@@ -32,26 +34,26 @@ export const PromoBanner: React.FC = () => {
           </div>
 
           {/* Content Container */}
-          <div className="relative z-10 p-8 sm:p-14 lg:p-16 max-w-2xl space-y-6 text-left">
+          <div className="relative z-10 p-8 sm:p-14 lg:p-16 max-w-2xl space-y-6 text-left rtl:text-right">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#070707]/80 border border-[#C9A45C]/35 backdrop-blur-md">
               <Tag className="w-3.5 h-3.5 text-[#C9A45C]" />
               <span className="text-[10px] font-semibold uppercase tracking-[3px] text-[#C9A45C]">
-                SEASONAL PRIVILEGE
+                {t('home.promo.privilegeBadge')}
               </span>
             </div>
 
             <div className="space-y-2">
               <span className="text-xs uppercase tracking-[3px] text-[#A7A29A] font-semibold block">
-                EXCLUSIVE OFFER
+                {t('home.promo.exclusiveOffer')}
               </span>
               <h2 className="font-serif-luxury text-3xl sm:text-5xl lg:text-6xl font-normal text-[#F5F2EA] leading-tight">
-                UP TO 20% OFF <br />
-                <span className="text-[#C9A45C] italic font-serif">ON SELECTED ITEMS</span>
+                {t('home.promo.titleLine1')} <br />
+                <span className="text-[#C9A45C] italic font-serif">{t('home.promo.titleLine2')}</span>
               </h2>
             </div>
 
             <p className="text-xs sm:text-sm text-[#A7A29A] leading-relaxed max-w-lg">
-              Indulge in our curated private vaults and bespoke travel atomizers. <strong className="text-[#F0D9A4]">Discounts are applied automatically</strong> to selected items in the shop. No code required.
+              {t('home.promo.desc')}
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
@@ -59,19 +61,19 @@ export const PromoBanner: React.FC = () => {
                 onClick={handleApplyPromo}
                 variant="primary"
                 size="lg"
-                rightIcon={<ArrowRight className="w-4 h-4" />}
-                className="shadow-xl shadow-[#C9A45C]/15 tracking-[2px] font-bold"
+                rightIcon={<ArrowRight className="w-4 h-4 rtl-flip" />}
+                className="shadow-xl shadow-[#C9A45C]/15 tracking-[2px] font-bold cursor-pointer"
               >
-                SHOP THE SALE
+                {t('home.promo.shopSale')}
               </Button>
 
               <Button
                 onClick={() => navigateTo('/products/prive-gift-vault')}
                 variant="secondary"
                 size="lg"
-                className="tracking-[2px] font-bold"
+                className="tracking-[2px] font-bold cursor-pointer"
               >
-                EXPLORE GIFT VAULT
+                {t('home.promo.exploreVault')}
               </Button>
             </div>
           </div>

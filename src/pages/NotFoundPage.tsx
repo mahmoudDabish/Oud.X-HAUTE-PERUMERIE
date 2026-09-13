@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useShop } from '../context/ShopContext';
 import { Sparkles, Compass, ArrowRight } from 'lucide-react';
 
 export const NotFoundPage: React.FC = () => {
+  const { t } = useTranslation();
   const { navigateTo } = useShop();
 
   return (
@@ -18,13 +20,13 @@ export const NotFoundPage: React.FC = () => {
 
         <div className="space-y-2">
           <span className="font-cinzel text-xs uppercase tracking-[4px] text-[#C9A45C] font-semibold flex items-center justify-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5" /> 404 • UNCHARTED SCENT
+            <Sparkles className="w-3.5 h-3.5" /> {t('notFound.badge', '404 • UNCHARTED SCENT')}
           </span>
           <h1 className="font-serif-luxury text-3xl sm:text-4xl text-[#F5F2EA]">
-            Destination Vaulted
+            {t('notFound.title', 'Destination Vaulted')}
           </h1>
           <p className="text-xs text-[#A7A29A] leading-relaxed max-w-sm mx-auto">
-            The fragrance journey you are searching for does not exist or has been retired to our private archives.
+            {t('notFound.desc', 'The fragrance journey you are searching for does not exist or has been retired to our private archives.')}
           </p>
         </div>
 
@@ -33,13 +35,13 @@ export const NotFoundPage: React.FC = () => {
             onClick={() => navigateTo('/shop')}
             className="py-3 px-6 rounded-full bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-xs uppercase tracking-[2px] transition-colors flex items-center justify-center gap-2 cursor-pointer"
           >
-            Explore Boutique <ArrowRight className="w-3.5 h-3.5" />
+            {t('notFound.exploreBoutique', 'Explore Boutique')} <ArrowRight className="w-3.5 h-3.5 rtl-flip" />
           </button>
           <button
             onClick={() => navigateTo('/')}
             className="py-3 px-6 rounded-full bg-transparent border border-[#C9A45C]/40 hover:bg-[#C9A45C]/10 text-[#C9A45C] font-semibold text-xs uppercase tracking-[2px] transition-colors cursor-pointer"
           >
-            Return Home
+            {t('notFound.returnHome', 'Return Home')}
           </button>
         </div>
       </div>

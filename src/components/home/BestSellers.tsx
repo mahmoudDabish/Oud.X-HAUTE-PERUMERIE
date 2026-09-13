@@ -1,17 +1,34 @@
 import React, { useState } from 'react';
 import { useShop } from '../../context/ShopContext';
+import { useTranslation } from 'react-i18next';
 import { ProductCard } from '../products/ProductCard';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
 export const BestSellers: React.FC = () => {
   const { products, isLoadingProducts, navigateTo } = useShop();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'all' | 'oud' | 'men' | 'unisex'>('all');
 
   const bestSellerProducts = products.filter(p => p.isBestSeller || p.badge === 'BEST SELLER');
 
   const filtered = activeTab === 'all'
     ? bestSellerProducts
-    : bestSellerProducts.filter(p => p.category === activeTab || p.gender === activeTab);
+    : bestSellerProducts.filter(p => {
+        if (activeTab === 'men') {
+          return p.gender === 'men' || p.gender === 'unisex' || p.category === 'men';
+        }
+        if (activeTab === 'oud') {
+          return p.category === 'oud' || p.fragranceFamily === 'Smoky Oud' || p.name.toLowerCase().includes('oud');
+        }
+        return p.category === activeTab || p.gender === activeTab;
+      });
+
+  const tabLabels: Record<'all' | 'oud' | 'men' | 'unisex', string> = {
+    all: t('common.all'),
+    oud: t('categories.oud'),
+    men: t('gender.men'),
+    unisex: t('gender.unisex')
+  };
 
   return (
     <section className="py-24 bg-[#070707] relative overflow-hidden">
@@ -21,16 +38,16 @@ export const BestSellers: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header with View All */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6 text-left rtl:text-right">
           <div className="space-y-2">
             <span className="text-[11px] uppercase tracking-[3px] text-[#C9A45C] font-semibold flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" /> Signature Selection
+              <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" /> {t('home.bestSellers.subtitle')}
             </span>
             <h2 className="font-serif-luxury text-3xl sm:text-4xl lg:text-5xl font-normal text-[#F5F2EA]">
-              BEST SELLERS
+              {t('home.bestSellers.title')}
             </h2>
-            <p className="text-xs sm:text-sm text-[#A7A29A]">
-              Explore our most loved fragrances, celebrated across the globe for supreme sillage and longevity.
+            <p className="text-xs sm:text-sm text-[#A7A29A] leading-relaxed">
+              {t('home.bestSellers.desc')}
             </p>
           </div>
 
@@ -41,23 +58,23 @@ export const BestSellers: React.FC = () => {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`text-[11px] uppercase tracking-[2px] px-3.5 py-1.5 rounded-full transition-all ${
+                  className={`text-[11px] uppercase tracking-[2px] px-3.5 py-1.5 rounded-full transition-all cursor-pointer ${
                     activeTab === tab
                       ? 'bg-[#C9A45C] text-[#070707] font-bold shadow-md shadow-[#C9A45C]/20'
                       : 'text-[#A7A29A] hover:text-[#F5F2EA]'
                   }`}
                 >
-                  {tab}
+                  {tabLabels[tab]}
                 </button>
               ))}
             </div>
 
             <button
               onClick={() => navigateTo('/shop?filter=bestsellers')}
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[2px] text-[#F0D9A4] hover:text-white transition-colors pl-2"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[2px] text-[#F0D9A4] hover:text-white transition-colors pl-2 rtl:pl-0 rtl:pr-2 cursor-pointer"
             >
-              <span>VIEW ALL</span>
-              <ArrowRight className="w-4 h-4 text-[#C9A45C]" />
+              <span>{t('common.viewAll')}</span>
+              <ArrowRight className="w-4 h-4 text-[#C9A45C] rtl-flip" />
             </button>
           </div>
         </div>

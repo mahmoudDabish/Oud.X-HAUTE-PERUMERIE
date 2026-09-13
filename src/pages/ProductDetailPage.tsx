@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from '../components/products/ProductCard';
 import { Badge } from '../components/ui/Badge';
@@ -9,21 +10,32 @@ import {
   Sparkles,
   ShieldCheck,
   Truck,
-  RotateCcw,
   ChevronRight,
   ChevronDown,
-  Clock,
-  Wind,
   Droplets,
-  Layers,
-  Award
+  Layers
 } from 'lucide-react';
+import {
+  getLocalizedCategory,
+  getLocalizedConcentration,
+  getLocalizedFragranceFamily,
+  getLocalizedGender,
+  getLocalizedProductName,
+  getLocalizedProductSubtitle,
+  getLocalizedProductDescription,
+  getLocalizedProductStory,
+  getLocalizedNotesList,
+  getLocalizedLongevity,
+  getLocalizedSillage
+} from '../i18n/presentation';
 
 interface ProductDetailPageProps {
   slug: string;
 }
 
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) => {
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === 'ar';
   const {
     products,
     getProductBySlug,
@@ -32,7 +44,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
     toggleWishlist,
     formatPrice,
     navigateTo,
-    showToast,
     isLoadingProducts
   } = useShop();
 
@@ -54,13 +65,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
   if (!product) {
     return (
       <div className="min-h-screen bg-[#070707] text-[#F5F2EA] flex flex-col items-center justify-center p-8 text-center space-y-4">
-        <h2 className="font-serif-luxury text-2xl text-[#F5F2EA]">Fragrance Not Found</h2>
-        <p className="text-xs text-[#A7A29A]">The requested scent may have been vaulted or moved.</p>
+        <h2 className="font-serif-luxury text-2xl text-[#F5F2EA]">{t('product.notFound')}</h2>
+        <p className="text-xs text-[#A7A29A]">{t('product.notFoundDesc')}</p>
         <button
           onClick={() => navigateTo('/shop')}
           className="px-6 py-3 rounded-full bg-[#C9A45C] text-[#070707] font-bold text-xs uppercase tracking-widest hover:bg-[#E3C27A] transition-colors"
         >
-          Return to Boutique
+          {t('common.returnToBoutique', 'Return to Boutique')}
         </button>
       </div>
     );
@@ -75,18 +86,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
     compareAtPrice: product.compareAtPrice
   };
 
-  const CATEGORY_MAP: Record<string, string> = {
-    'all': 'All Collections',
-    '11111111-1111-1111-1111-111111111111': 'Perfumes',
-    '22222222-2222-2222-2222-222222222222': 'Body Splash',
-    '33333333-3333-3333-3333-333333333333': 'Oud',
-    '44444444-4444-4444-4444-444444444444': 'Body Care',
-    '55555555-5555-5555-5555-555555555555': 'Gift Sets'
-  };
-  
-  const displayCategory = CATEGORY_MAP[product.category] || product.category;
-
+  const displayCategory = getLocalizedCategory(product.categoryId || product.category, t);
   const isFav = isInWishlist(product.id);
+
+  const productName = getLocalizedProductName(product);
+  const productSubtitle = getLocalizedProductSubtitle(product);
+  const productDesc = getLocalizedProductDescription(product);
+  const productStory = getLocalizedProductStory(product);
+  const topNotesList = getLocalizedNotesList(product.notes?.top, product.notesAr?.top);
+  const heartNotesList = getLocalizedNotesList(product.notes?.heart, product.notesAr?.heart);
+  const baseNotesList = getLocalizedNotesList(product.notes?.base, product.notesAr?.base);
 
   const relatedProducts = products
     .filter(p => p.id !== product.id && (p.category === product.category || p.fragranceFamily === product.fragranceFamily))
@@ -107,15 +116,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
       <div className="bg-[#0D0C0A] border-b border-white/5 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center gap-2 text-xs text-[#A7A29A] uppercase tracking-wider flex-wrap">
-            <button onClick={() => navigateTo('/')} className="hover:text-[#F5F2EA]">Home</button>
-            <ChevronRight className="w-3 h-3 text-[#8E713D]" />
-            <button onClick={() => navigateTo('/shop')} className="hover:text-[#F5F2EA]">Shop</button>
-            <ChevronRight className="w-3 h-3 text-[#8E713D]" />
+            <button onClick={() => navigateTo('/')} className="hover:text-[#F5F2EA]">{t('shop.breadcrumbHome')}</button>
+            <ChevronRight className="w-3 h-3 text-[#8E713D] rtl-flip" />
+            <button onClick={() => navigateTo('/shop')} className="hover:text-[#F5F2EA]">{t('shop.breadcrumbShop')}</button>
+            <ChevronRight className="w-3 h-3 text-[#8E713D] rtl-flip" />
             <button onClick={() => navigateTo(`/collections/${product.categoryId || product.category}`)} className="hover:text-[#F5F2EA] capitalize">
               {displayCategory}
             </button>
-            <ChevronRight className="w-3 h-3 text-[#8E713D]" />
-            <span className="text-[#C9A45C] font-serif truncate max-w-xs">{product.name}</span>
+            <ChevronRight className="w-3 h-3 text-[#8E713D] rtl-flip" />
+            <span className="text-[#C9A45C] font-serif truncate max-w-xs">{productName}</span>
           </nav>
         </div>
       </div>
@@ -130,28 +139,28 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
             <div className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-[#C9A45C]/35 bg-[#0D0C0A] shadow-2xl">
               <img
                 src={productImages[activeImageIndex] || productImages[0]}
-                alt={product.name}
+                alt={productName}
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center transition-all duration-500"
               />
 
               {/* Badges */}
-              <div className="absolute top-4 left-4 flex flex-col gap-2">
+              <div className="absolute top-4 left-4 rtl:left-auto rtl:right-4 flex flex-col gap-2">
                 {product.badge && <Badge variant={product.badge} />}
                 <span className="px-2.5 py-1 rounded bg-[#070707]/90 border border-white/10 text-[10px] uppercase tracking-wider text-[#A7A29A]">
-                  {product.concentration}
+                  {getLocalizedConcentration(product.concentration, t)}
                 </span>
               </div>
 
               {/* Wishlist Button Overlay */}
               <button
                 onClick={() => toggleWishlist(product.id)}
-                className={`absolute top-4 right-4 p-3 rounded-full backdrop-blur-md transition-all ${
+                className={`absolute top-4 right-4 rtl:right-auto rtl:left-4 p-3 rounded-full backdrop-blur-md transition-all ${
                   isFav
                     ? 'bg-[#C9A45C] text-[#070707] shadow-lg shadow-[#C9A45C]/30'
                     : 'bg-black/60 text-[#A7A29A] hover:text-[#F5F2EA] border border-white/10'
                 }`}
-                aria-label="Wishlist"
+                aria-label={isFav ? t('wishlist.remove') : t('wishlist.add')}
               >
                 <Heart className={`w-5 h-5 ${isFav ? 'fill-current' : ''}`} />
               </button>
@@ -179,11 +188,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
             {/* Perfume Narrative / Story Block */}
             <div className="p-6 rounded-xl bg-[#0D0C0A] border border-[#C9A45C]/20 space-y-2 mt-6">
               <span className="text-[10px] uppercase tracking-[0.25em] text-[#8E713D] font-semibold flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" /> The Atelier Story
+                <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" /> {t('product.atelierStory', 'The Atelier Story')}
               </span>
-              <h3 className="font-serif-luxury text-xl text-[#F5F2EA]">The Olfactory Inspiration</h3>
+              <h3 className="font-serif-luxury text-xl text-[#F5F2EA]">{t('product.inspiration', 'The Olfactory Inspiration')}</h3>
               <p className="text-xs sm:text-sm text-[#A7A29A] leading-relaxed italic font-serif">
-                &quot;{product.story}&quot;
+                &quot;{productStory}&quot;
               </p>
             </div>
           </div>
@@ -195,30 +204,30 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs uppercase tracking-widest text-[#C9A45C] font-semibold">
                 <span>{product.brand}</span>
-                <span className="text-[#8E713D]">{product.fragranceFamily}</span>
+                <span className="text-[#8E713D]">{getLocalizedFragranceFamily(product.fragranceFamily, t)}</span>
               </div>
 
               <h1 className="font-serif-luxury text-3xl sm:text-4xl font-normal text-[#F5F2EA] leading-tight flex items-center gap-3 flex-wrap">
-                {product.name}
+                {productName}
                 {product.stock <= 0 && (
                   <span className="px-3 py-1 text-xs font-bold tracking-widest text-[#A7A29A] border border-white/20 rounded-full bg-[#151310]/80">
-                    OUT OF STOCK
+                    {t('products.outOfStock')}
                   </span>
                 )}
               </h1>
 
-              {product.subtitle && (
+              {productSubtitle && (
                 <p className="text-xs sm:text-sm text-[#E3C27A] font-medium">
-                  {product.subtitle}
+                  {productSubtitle}
                 </p>
               )}
 
               {/* Rating & Review counter */}
               <div className="flex items-center gap-3 pt-1">
-                <span className="text-xs text-[#A7A29A] italic">No reviews yet.</span>
+                <span className="text-xs text-[#A7A29A] italic">{t('products.noReviewsYet')}</span>
                 <span className="text-neutral-500">•</span>
                 <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5" /> 100% Certified Authentic
+                  <ShieldCheck className="w-3.5 h-3.5" /> {t('product.authenticityGuaranteed')}
                 </span>
               </div>
             </div>
@@ -236,23 +245,23 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
                 )}
               </div>
 
-              {currentSizeObj.compareAtPrice && (
+              {currentSizeObj.compareAtPrice && currentSizeObj.compareAtPrice > currentSizeObj.price && (
                 <span className="text-xs px-2 py-0.5 rounded bg-red-950/40 text-red-300 border border-red-800/40 font-semibold">
-                  Save {formatPrice(currentSizeObj.compareAtPrice - currentSizeObj.price)}
+                  {t('product.saveAmount', { amount: formatPrice(currentSizeObj.compareAtPrice - currentSizeObj.price) })}
                 </span>
               )}
             </div>
 
             {/* Description */}
             <p className="text-xs sm:text-sm text-[#A7A29A] leading-relaxed">
-              {product.description}
+              {productDesc}
             </p>
 
             {/* Size Selector */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-semibold uppercase tracking-wider text-[#A7A29A]">
-                  Select Flacon Size: <strong className="text-[#F5F2EA]">{currentSizeObj.size}</strong>
+                  {t('product.selectSize')}: <strong className="text-[#F5F2EA]">{currentSizeObj.size}</strong>
                 </span>
               </div>
 
@@ -261,7 +270,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
                   <button
                     key={s.size}
                     onClick={() => setSelectedSizeIndex(idx)}
-                    className={`p-3 rounded-lg border text-left transition-all ${
+                    className={`p-3 rounded-lg border text-left rtl:text-right transition-all ${
                       selectedSizeIndex === idx
                         ? 'border-[#C9A45C] bg-[#C9A45C]/15 text-[#E3C27A] shadow-sm shadow-[#C9A45C]/10'
                         : 'border-white/10 bg-[#0D0C0A] text-[#A7A29A] hover:border-white/20'
@@ -304,7 +313,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
                   fullWidth
                   leftIcon={product.stock > 0 ? <ShoppingBag className="w-4 h-4" /> : undefined}
                 >
-                  {product.stock <= 0 ? 'OUT OF STOCK' : 'ADD TO SHOPPING BAG'}
+                  {product.stock <= 0 ? t('products.outOfStock') : t('product.addToBag')}
                 </Button>
               </div>
 
@@ -316,7 +325,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
                   size="md"
                   fullWidth
                 >
-                  BUY NOW WITH 1-CLICK CHECKOUT
+                  {t('product.buyNow')}
                 </Button>
               )}
             </div>
@@ -325,28 +334,28 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
             <div className="p-5 rounded-xl bg-[#0D0C0A] border border-[#C9A45C]/30 space-y-4">
               <div className="flex items-center justify-between border-b border-white/5 pb-2">
                 <h3 className="font-cinzel text-xs font-bold uppercase tracking-widest text-[#E3C27A] flex items-center gap-2">
-                  <Droplets className="w-4 h-4 text-[#C9A45C]" /> Fragrance Notes Architecture
+                  <Droplets className="w-4 h-4 text-[#C9A45C]" /> {t('product.tabs.details')}
                 </h3>
               </div>
 
               <div className="space-y-3 text-xs">
                 <div>
                   <span className="text-[10px] uppercase tracking-wider font-semibold text-[#8E713D] block">
-                    TOP NOTES (First 15–30 Mins)
+                    {t('product.notes.top')} (15–30 min)
                   </span>
-                  <span className="text-[#F5F2EA] font-medium">{product.notes.top.join(' • ')}</span>
+                  <span className="text-[#F5F2EA] font-medium">{topNotesList.join(' • ')}</span>
                 </div>
                 <div>
                   <span className="text-[10px] uppercase tracking-wider font-semibold text-[#8E713D] block">
-                    HEART NOTES (2–6 Hours)
+                    {t('product.notes.heart')} (2–6 h)
                   </span>
-                  <span className="text-[#F5F2EA] font-medium">{product.notes.heart.join(' • ')}</span>
+                  <span className="text-[#F5F2EA] font-medium">{heartNotesList.join(' • ')}</span>
                 </div>
                 <div>
                   <span className="text-[10px] uppercase tracking-wider font-semibold text-[#8E713D] block">
-                    BASE NOTES (6–18+ Hours Sillage)
+                    {t('product.notes.base')} (6–18+ h)
                   </span>
-                  <span className="text-[#F5F2EA] font-medium">{product.notes.base.join(' • ')}</span>
+                  <span className="text-[#F5F2EA] font-medium">{baseNotesList.join(' • ')}</span>
                 </div>
               </div>
             </div>
@@ -358,22 +367,21 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
               <div className="border border-white/5 rounded-lg bg-[#0D0C0A] overflow-hidden">
                 <button
                   onClick={() => setActiveAccordion(activeAccordion === 'details' ? null : 'details')}
-                  className="w-full p-4 flex items-center justify-between text-left text-xs font-semibold uppercase tracking-wider text-[#F5F2EA]"
+                  className="w-full p-4 flex items-center justify-between text-left rtl:text-right text-xs font-semibold uppercase tracking-wider text-[#F5F2EA]"
                 >
                   <span className="flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-[#C9A45C]" /> Olfactory Performance & Specifications
+                    <Layers className="w-4 h-4 text-[#C9A45C]" /> {t('product.tabs.details')}
                   </span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${activeAccordion === 'details' ? 'rotate-180 text-[#C9A45C]' : ''}`} />
                 </button>
                 {activeAccordion === 'details' && (
                   <div className="p-4 pt-0 text-xs text-[#A7A29A] space-y-2 border-t border-white/5 mt-2">
                     <div className="grid grid-cols-2 gap-2 pt-2">
-                      <div><strong className="text-[#F5F2EA]">Concentration:</strong> {product.concentration}</div>
-                      <div><strong className="text-[#F5F2EA]">Longevity:</strong> {product.longevity}</div>
-                      <div><strong className="text-[#F5F2EA]">Sillage:</strong> {product.sillage}</div>
-                      <div><strong className="text-[#F5F2EA]">Gender:</strong> {product.gender.toUpperCase()}</div>
-                      <div><strong className="text-[#F5F2EA]">Best Season:</strong> {product.season.join(', ')}</div>
-                      <div><strong className="text-[#F5F2EA]">Batch:</strong> 2026 Vintage Cask</div>
+                      <div><strong className="text-[#F5F2EA]">{t('product.notes.concentration')}:</strong> {getLocalizedConcentration(product.concentration, t)}</div>
+                      <div><strong className="text-[#F5F2EA]">{t('product.notes.longevity')}:</strong> {getLocalizedLongevity(product.longevity, t)}</div>
+                      <div><strong className="text-[#F5F2EA]">{t('product.notes.sillage')}:</strong> {getLocalizedSillage(product.sillage, t)}</div>
+                      <div><strong className="text-[#F5F2EA]">{t('product.notes.gender')}:</strong> {getLocalizedGender(product.gender, t)}</div>
+                      <div><strong className="text-[#F5F2EA]">Atelier Batch:</strong> 2026 Vintage Cask</div>
                     </div>
                   </div>
                 )}
@@ -383,18 +391,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
               <div className="border border-white/5 rounded-lg bg-[#0D0C0A] overflow-hidden">
                 <button
                   onClick={() => setActiveAccordion(activeAccordion === 'shipping' ? null : 'shipping')}
-                  className="w-full p-4 flex items-center justify-between text-left text-xs font-semibold uppercase tracking-wider text-[#F5F2EA]"
+                  className="w-full p-4 flex items-center justify-between text-left rtl:text-right text-xs font-semibold uppercase tracking-wider text-[#F5F2EA]"
                 >
                   <span className="flex items-center gap-2">
-                    <Truck className="w-4 h-4 text-[#C9A45C]" /> Shipping & VIP White-Glove Delivery
+                    <Truck className="w-4 h-4 text-[#C9A45C]" /> {t('product.tabs.shipping')}
                   </span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${activeAccordion === 'shipping' ? 'rotate-180 text-[#C9A45C]' : ''}`} />
                 </button>
                 {activeAccordion === 'shipping' && (
-                  <div className="p-4 pt-0 text-xs text-[#A7A29A] space-y-2 border-t border-white/5 mt-2">
-                    <p>• Complimentary VIP Delivery across Egypt on all orders above 2,500 EGP.</p>
-                    <p>• Express 24h delivery for Greater Cairo and Alexandria.</p>
-                    <p>• 14-day unopened satisfaction guarantee with full exchange privilege.</p>
+                  <div className="p-4 pt-0 text-xs text-[#A7A29A] space-y-2 border-t border-white/5 mt-2 leading-relaxed">
+                    <p>• {t('product.shippingTab.deliveryText')}</p>
+                    <p>• {t('product.shippingTab.returnsText')}</p>
                   </div>
                 )}
               </div>
@@ -411,17 +418,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
             <div className="flex items-end justify-between mb-8">
               <div>
                 <span className="text-[10px] uppercase tracking-[0.25em] text-[#8E713D] font-semibold flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" /> Scent Pairing
+                  <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" /> {t('product.relatedSubtitle', 'Scent Pairing')}
                 </span>
                 <h2 className="font-serif-luxury text-2xl sm:text-4xl text-[#F5F2EA]">
-                  YOU MAY ALSO LIKE
+                  {t('product.relatedTitle')}
                 </h2>
               </div>
               <button
                 onClick={() => navigateTo('/shop')}
                 className="text-xs uppercase tracking-widest text-[#E3C27A] hover:underline font-semibold"
               >
-                VIEW FULL BOUTIQUE →
+                {t('common.viewAll', 'VIEW FULL BOUTIQUE')}{isRtl ? ' ←' : ' →'}
               </button>
             </div>
 

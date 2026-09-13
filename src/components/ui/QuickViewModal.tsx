@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useShop } from '../../context/ShopContext';
-import { X, Heart, ShoppingBag, Check, ShieldCheck, Sparkles, Clock, Wind } from 'lucide-react';
+import { X, Heart, ShoppingBag, Sparkles } from 'lucide-react';
 import { Button } from './Button';
 import { Badge } from './Badge';
 import { Rating } from './Rating';
 import { AnimatePresence, motion } from 'motion/react';
+import {
+  getLocalizedConcentration,
+  getLocalizedProductName,
+  getLocalizedProductSubtitle,
+  getLocalizedProductDescription,
+  getLocalizedNotesList
+} from '../../i18n/presentation';
 
 export const QuickViewModal: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === 'ar';
   const {
     quickViewProduct,
     setQuickViewProduct,
@@ -76,18 +86,18 @@ export const QuickViewModal: React.FC = () => {
           {/* Close button */}
           <button
             onClick={handleClose}
-            className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/60 text-[#A7A29A] hover:text-[#F5F2EA] border border-[#C9A45C]/20 backdrop-blur-md transition-colors"
-            aria-label="Close modal"
+            className="absolute top-4 right-4 rtl:right-auto rtl:left-4 z-20 p-2 rounded-full bg-black/60 text-[#A7A29A] hover:text-[#F5F2EA] border border-[#C9A45C]/20 backdrop-blur-md transition-colors"
+            aria-label={t('common.close')}
           >
             <X className="w-4 h-4" />
           </button>
 
           {/* Left Media Gallery */}
-          <div className="w-full md:w-1/2 p-6 flex flex-col justify-between bg-[#0D0C0A]/60 border-b md:border-b-0 md:border-r border-[#C9A45C]/20 backdrop-blur-md">
+          <div className="w-full md:w-1/2 p-6 flex flex-col justify-between bg-[#0D0C0A]/60 border-b md:border-b-0 md:border-r rtl:md:border-r-0 rtl:md:border-l border-[#C9A45C]/20 backdrop-blur-md">
             <div className="relative aspect-[4/5] rounded-xl overflow-hidden border border-[#C9A45C]/20 bg-black">
               <img
                 src={productImages[activeImageIndex] || productImages[0]}
-                alt={product.name}
+                alt={getLocalizedProductName(product)}
                 referrerPolicy="no-referrer"
                 onError={(e) => {
                   if (e.currentTarget.src !== window.location.origin + '/images/hero-perfume.webp') {
@@ -97,7 +107,7 @@ export const QuickViewModal: React.FC = () => {
                 className="w-full h-full object-cover object-center"
               />
               {product.badge && (
-                <div className="absolute top-3 left-3">
+                <div className="absolute top-3 left-3 rtl:left-auto rtl:right-3">
                   <Badge variant={product.badge} />
                 </div>
               )}
@@ -129,18 +139,18 @@ export const QuickViewModal: React.FC = () => {
               {/* Brand and Category */}
               <div className="flex items-center justify-between text-xs tracking-[2px] uppercase text-[#C9A45C] font-semibold mb-2">
                 <span>{product.brand}</span>
-                <span className="text-[#A7A29A] font-normal">{product.concentration}</span>
+                <span className="text-[#A7A29A] font-normal">{getLocalizedConcentration(product.concentration, t)}</span>
               </div>
 
               {/* Title */}
               <h2 className="font-serif-luxury text-2xl sm:text-3xl font-medium text-[#F5F2EA] mb-2 leading-tight">
-                {product.name}
+                {getLocalizedProductName(product)}
               </h2>
 
               {/* Subtitle */}
               {product.subtitle && (
                 <p className="text-xs text-[#8E713D] mb-3 font-medium">
-                  {product.subtitle}
+                  {getLocalizedProductSubtitle(product)}
                 </p>
               )}
 
@@ -159,35 +169,41 @@ export const QuickViewModal: React.FC = () => {
                     {formatPrice(currentSizeObj.compareAtPrice)}
                   </span>
                 )}
-                {currentSizeObj.compareAtPrice && (
+                {currentSizeObj.compareAtPrice && currentSizeObj.compareAtPrice > currentSizeObj.price && (
                   <span className="text-xs text-emerald-400 font-medium">
-                    Save {formatPrice(currentSizeObj.compareAtPrice - currentSizeObj.price)}
+                    {t('product.saveAmount', { amount: formatPrice(currentSizeObj.compareAtPrice - currentSizeObj.price) })}
                   </span>
                 )}
               </div>
 
               {/* Short description */}
               <p className="text-xs sm:text-sm text-[#A7A29A] leading-relaxed mb-5 line-clamp-3">
-                {product.description}
+                {getLocalizedProductDescription(product)}
               </p>
 
               {/* Fragrance Notes Highlights with Frosted Glass */}
               <div className="p-3.5 bg-[#151310]/70 rounded-xl border border-[#C9A45C]/20 mb-5 backdrop-blur-md">
                 <div className="text-[11px] font-semibold uppercase tracking-[2px] text-[#C9A45C] mb-2 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5" /> Key Olfactory Pyramid
+                  <Sparkles className="w-3.5 h-3.5" /> {t('product.keyPyramid')}
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-[10px]">
                   <div>
-                    <span className="text-neutral-400 block font-medium">TOP:</span>
-                    <span className="text-[#F5F2EA] line-clamp-1">{product.notes.top.join(', ')}</span>
+                    <span className="text-neutral-400 block font-medium uppercase">{t('product.notes.top')}:</span>
+                    <span className="text-[#F5F2EA] line-clamp-1">
+                      {getLocalizedNotesList(product.notes?.top, product.notesAr?.top).join(', ')}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-neutral-400 block font-medium">HEART:</span>
-                    <span className="text-[#F5F2EA] line-clamp-1">{product.notes.heart.join(', ')}</span>
+                    <span className="text-neutral-400 block font-medium uppercase">{t('product.notes.heart')}:</span>
+                    <span className="text-[#F5F2EA] line-clamp-1">
+                      {getLocalizedNotesList(product.notes?.heart, product.notesAr?.heart).join(', ')}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-neutral-400 block font-medium">BASE:</span>
-                    <span className="text-[#F5F2EA] line-clamp-1">{product.notes.base.join(', ')}</span>
+                    <span className="text-neutral-400 block font-medium uppercase">{t('product.notes.base')}:</span>
+                    <span className="text-[#F5F2EA] line-clamp-1">
+                      {getLocalizedNotesList(product.notes?.base, product.notesAr?.base).join(', ')}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -195,7 +211,7 @@ export const QuickViewModal: React.FC = () => {
               {/* Size Selector */}
               <div className="mb-5">
                 <label className="block text-xs font-semibold uppercase tracking-[2px] text-[#A7A29A] mb-2">
-                  Select Size: <span className="text-[#F5F2EA]">{currentSizeObj.size}</span>
+                  {t('product.selectSize')}: <span className="text-[#F5F2EA]">{currentSizeObj.size}</span>
                 </label>
                 <div className="flex gap-2">
                   {product.availableSizes.map((s, idx) => (
@@ -218,7 +234,7 @@ export const QuickViewModal: React.FC = () => {
               {/* Quantity */}
               <div className="flex items-center gap-4 mb-6">
                 <label className="text-xs font-semibold uppercase tracking-[2px] text-[#A7A29A]">
-                  Quantity:
+                  {t('product.quantity')}:
                 </label>
                 <div className="flex items-center border border-[#C9A45C]/25 rounded-full bg-[#0D0C0A]/80 px-1">
                   <button
@@ -247,7 +263,7 @@ export const QuickViewModal: React.FC = () => {
                   fullWidth
                   leftIcon={<ShoppingBag className="w-4 h-4" />}
                 >
-                  ADD TO SHOPPING BAG
+                  {t('product.addToBag')}
                 </Button>
                 <button
                   onClick={() => toggleWishlist(product.id)}
@@ -256,7 +272,7 @@ export const QuickViewModal: React.FC = () => {
                       ? 'border-[#C9A45C] bg-[#C9A45C]/20 text-[#C9A45C]'
                       : 'border-[#C9A45C]/20 text-[#A7A29A] hover:text-[#F5F2EA] hover:border-[#C9A45C]/40 bg-[#151310]/60'
                   }`}
-                  aria-label="Save to wishlist"
+                  aria-label={isFav ? t('wishlist.remove') : t('wishlist.add')}
                 >
                   <Heart className={`w-4 h-4 ${isFav ? 'fill-current' : ''}`} />
                 </button>
@@ -266,7 +282,7 @@ export const QuickViewModal: React.FC = () => {
                 onClick={handleGoToDetails}
                 className="text-center text-xs text-[#C9A45C] hover:text-[#F0D9A4] underline tracking-[2px] uppercase pt-1"
               >
-                View Full Product Narrative & Reviews →
+                {t('product.viewFullDetails')}{isRtl ? ' ←' : ' →'}
               </button>
             </div>
           </div>

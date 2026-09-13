@@ -1,13 +1,15 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useShop } from '../../context/ShopContext';
 import { CheckCircle2, Info, Sparkles, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
 export const ToastContainer: React.FC = () => {
+  const { t } = useTranslation();
   const { toasts, removeToast } = useShop();
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none px-4">
+    <div className="fixed bottom-6 right-6 rtl:right-auto rtl:left-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none px-4">
       <AnimatePresence>
         {toasts.map(toast => (
           <motion.div
@@ -36,7 +38,7 @@ export const ToastContainer: React.FC = () => {
             <button
               onClick={() => removeToast(toast.id)}
               className="text-[#A7A29A] hover:text-[#F5F2EA] transition-colors p-1 rounded-full hover:bg-white/5"
-              aria-label="Close notification"
+              aria-label={t('common.close')}
             >
               <X className="w-4 h-4" />
             </button>

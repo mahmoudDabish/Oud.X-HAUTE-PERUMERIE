@@ -1,6 +1,14 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FilterState, FragranceFamily } from '../../types';
-import { X, RotateCcw, ChevronDown, Check } from 'lucide-react';
+import { X, RotateCcw, Check } from 'lucide-react';
+import { useShop } from '../../context/ShopContext';
+import {
+  getLocalizedCategory,
+  getLocalizedGender,
+  getLocalizedFragranceFamily,
+  getLocalizedConcentration
+} from '../../i18n/presentation';
 
 interface ProductFiltersProps {
   filters: FilterState;
@@ -17,24 +25,35 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
   isMobile = false,
   onCloseMobile
 }) => {
+  const { t } = useTranslation();
+  const { formatPrice, products } = useShop();
+
   const categories = [
-    { label: 'All Collections', value: 'all' },
-    { label: 'Perfumes', value: '11111111-1111-1111-1111-111111111111' },
-    { label: 'Body Splash', value: '22222222-2222-2222-2222-222222222222' },
-    { label: 'Oud', value: '33333333-3333-3333-3333-333333333333' },
-    { label: 'Body Care', value: '44444444-4444-4444-4444-444444444444' },
-    { label: 'Gift Sets', value: '55555555-5555-5555-5555-555555555555' }
+    { label: getLocalizedCategory('all', t), value: 'all' },
+    { label: getLocalizedCategory('11111111-1111-1111-1111-111111111111', t), value: '11111111-1111-1111-1111-111111111111' },
+    { label: getLocalizedCategory('22222222-2222-2222-2222-222222222222', t), value: '22222222-2222-2222-2222-222222222222' },
+    { label: getLocalizedCategory('33333333-3333-3333-3333-333333333333', t), value: '33333333-3333-3333-3333-333333333333' },
+    { label: getLocalizedCategory('44444444-4444-4444-4444-444444444444', t), value: '44444444-4444-4444-4444-444444444444' },
+    { label: getLocalizedCategory('55555555-5555-5555-5555-555555555555', t), value: '55555555-5555-5555-5555-555555555555' }
   ];
 
-  const fragranceFamilies: FragranceFamily[] = [
-    'Smoky Oud',
-    'Amber Gourmand',
-    'Oriental Woody',
-    'Spicy Leather',
-    'Floral Citrus',
-    'Aromatic Fougere',
-    'Warm Resin'
-  ];
+  const fragranceFamilies = React.useMemo(() => {
+    const presetFamilies: FragranceFamily[] = [
+      'Smoky Oud',
+      'Amber Gourmand',
+      'Oriental Woody',
+      'Spicy Leather',
+      'Floral Citrus',
+      'Aromatic Fougere',
+      'Warm Resin'
+    ];
+    const customFromProducts = products
+      ? products
+          .map(p => p.fragranceFamily)
+          .filter((f): f is string => Boolean(f) && !presetFamilies.includes(f as any))
+      : [];
+    return [...presetFamilies, ...Array.from(new Set(customFromProducts))];
+  }, [products]);
 
   const concentrations = ['Extrait de Parfum', 'Eau de Parfum'];
 
@@ -62,48 +81,54 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
     });
   };
 
+  const getAvailabilityLabel = (opt: string) => {
+    if (opt === 'in_stock') return t('shop.filters.inStockOnly');
+    if (opt === 'out_of_stock') return t('shop.filters.outOfStock');
+    return t('shop.filters.allProducts');
+  };
+
   return (
-    <div className={`space-y-6 ${isMobile ? 'p-6 bg-[#0D0C0A]/95 backdrop-blur-2xl' : 'p-5 bg-[#151310]/50 border border-[#C9A45C]/20 rounded-2xl backdrop-blur-xl shadow-lg'}`}>
+    <div className={`space-y-6 ${isMobile ? 'p-6 bg-[#0D0C0A]/95 backdrop-blur-2xl' : ''}`}>
       {/* Mobile Header */}
       {isMobile && (
         <div className="flex items-center justify-between pb-4 border-b border-[#C9A45C]/15">
           <h3 className="font-cinzel text-base font-bold text-[#F5F2EA] tracking-wider uppercase">
-            Filter Fragrances
+            {t('shop.filters.title')}
           </h3>
           <button
             onClick={onCloseMobile}
-            className="p-1 text-[#A7A29A] hover:text-[#F5F2EA] rounded-full hover:bg-white/5"
-            aria-label="Close filters"
+            className="p-1 text-[#A7A29A] hover:text-[#F5F2EA] rounded-full hover:bg-white/5 cursor-pointer"
+            aria-label={t('catalog.closeFilters', 'Close filters')}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
       )}
 
-      {/* Reset Bar */}
-      <div className="flex items-center justify-between pb-2 border-b border-[#C9A45C]/15">
+      {/* Reset Bar (Sticky at top of scrollable sidebar) */}
+      <div className="sticky -top-5 z-10 bg-[#0D0C0A]/95 backdrop-blur-md -mx-1 px-1 pt-1 pb-2.5 border-b border-[#C9A45C]/15 flex items-center justify-between">
         <span className="text-[11px] uppercase tracking-[2px] text-[#F0D9A4] font-bold">
-          Refine Results
+          {t('shop.filters.refine')}
         </span>
         <button
           onClick={onReset}
-          className="flex items-center gap-1 text-[11px] text-[#A7A29A] hover:text-[#F5F2EA] transition-colors px-2 py-0.5 rounded-full hover:bg-white/5"
+          className="flex items-center gap-1 text-[11px] text-[#A7A29A] hover:text-[#F5F2EA] transition-colors px-2 py-0.5 rounded-full hover:bg-white/5 cursor-pointer"
         >
-          <RotateCcw className="w-3 h-3 text-[#C9A45C]" /> Reset
+          <RotateCcw className="w-3 h-3 text-[#C9A45C]" /> {t('shop.filters.reset')}
         </button>
       </div>
 
       {/* Category Section */}
       <div className="space-y-2">
         <label className="block text-[11px] font-bold uppercase tracking-[2px] text-[#C9A45C]">
-          Collection
+          {t('shop.filters.collection')}
         </label>
         <div className="space-y-1">
           {categories.map((cat) => (
             <button
               key={cat.value}
               onClick={() => onChange({ ...filters, category: cat.value })}
-              className={`w-full text-left text-xs py-2 px-3 rounded-xl transition-all flex items-center justify-between ${
+              className={`w-full text-left rtl:text-right text-xs py-2 px-3 rounded-xl transition-all flex items-center justify-between ${
                 filters.category === cat.value
                   ? 'bg-[#C9A45C]/20 text-[#F0D9A4] font-semibold border border-[#C9A45C]/40 backdrop-blur-sm shadow-sm'
                   : 'text-[#A7A29A] hover:text-[#F5F2EA] hover:bg-white/5 border border-transparent'
@@ -119,7 +144,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
       {/* Gender / Silhouette Section */}
       <div className="space-y-2">
         <label className="block text-[11px] font-bold uppercase tracking-[2px] text-[#C9A45C]">
-          Gender Silhouette
+          {t('shop.filters.gender')}
         </label>
         <div className="flex flex-wrap gap-2">
           {['men', 'women', 'unisex'].map((g) => {
@@ -134,7 +159,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
                     : 'border-white/10 text-[#A7A29A] hover:border-[#C9A45C]/30 bg-[#151310]/40'
                 }`}
               >
-                {g}
+                {getLocalizedGender(g, t)}
               </button>
             );
           })}
@@ -144,14 +169,14 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
       {/* Availability Section */}
       <div className="space-y-2">
         <label className="block text-[11px] font-bold uppercase tracking-[2px] text-[#C9A45C]">
-          Availability
+          {t('shop.filters.availability')}
         </label>
         <div className="space-y-1.5">
           {['all', 'in_stock', 'out_of_stock'].map((opt) => (
             <button
               key={opt}
               onClick={() => onChange({ ...filters, availability: opt as any })}
-              className="flex items-center gap-2 group w-full text-left"
+              className="flex items-center gap-2 group w-full text-left rtl:text-right"
             >
               <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-all ${
                 filters.availability === opt 
@@ -161,7 +186,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
                 {filters.availability === opt && <Check className="w-3 h-3 text-[#070707]" />}
               </div>
               <span className="text-xs text-[#A7A29A] group-hover:text-[#F5F2EA] transition-colors capitalize">
-                {opt.replace(/_/g, ' ')}
+                {getAvailabilityLabel(opt)}
               </span>
             </button>
           ))}
@@ -171,7 +196,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
       {/* Fragrance Family Section */}
       <div className="space-y-2">
         <label className="block text-[11px] font-bold uppercase tracking-[2px] text-[#C9A45C]">
-          Olfactory Family
+          {t('shop.filters.fragranceFamily')}
         </label>
         <div className="space-y-1.5">
           {fragranceFamilies.map((fam) => {
@@ -191,7 +216,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
                 >
                   {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
                 </div>
-                <span>{fam}</span>
+                <span>{getLocalizedFragranceFamily(fam, t)}</span>
               </label>
             );
           })}
@@ -201,7 +226,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
       {/* Concentration Section */}
       <div className="space-y-2">
         <label className="block text-[11px] font-bold uppercase tracking-[2px] text-[#C9A45C]">
-          Concentration
+          {t('shop.filters.concentration')}
         </label>
         <div className="space-y-1.5">
           {concentrations.map((conc) => {
@@ -221,7 +246,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
                 >
                   {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
                 </div>
-                <span>{conc}</span>
+                <span>{getLocalizedConcentration(conc, t)}</span>
               </label>
             );
           })}
@@ -231,9 +256,11 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
       {/* Price Range Slider */}
       <div className="space-y-3 pt-2 border-t border-[#C9A45C]/15">
         <div className="flex items-center justify-between text-xs">
-          <span className="font-bold uppercase tracking-[2px] text-[#C9A45C]">Price Cap</span>
+          <span className="font-bold uppercase tracking-[2px] text-[#C9A45C]">
+            {t('shop.filters.priceCap', 'Price Cap')}
+          </span>
           <span className="font-cinzel text-xs text-[#F0D9A4] font-semibold">
-            Up to {filters.priceRange[1].toLocaleString()} EGP
+            {formatPrice(filters.priceRange[1])}
           </span>
         </div>
         <input
@@ -251,12 +278,10 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
           className="w-full accent-[#C9A45C] bg-[#11100E] cursor-pointer"
         />
         <div className="flex justify-between text-[10px] text-[#8E713D]">
-          <span>1,000 EGP</span>
-          <span>6,000+ EGP</span>
+          <span>{formatPrice(1000)}</span>
+          <span>{formatPrice(6000)}+</span>
         </div>
       </div>
-
-      {/* Rating & Availability Footer removed as it is handled above */}
 
       {/* Mobile Apply Button */}
       {isMobile && (
@@ -264,7 +289,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
           onClick={onCloseMobile}
           className="w-full py-3 bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] font-bold text-xs uppercase tracking-[2px] rounded-full mt-4 shadow-lg shadow-[#C9A45C]/20 transition-colors"
         >
-          APPLY FILTERS
+          {t('common.apply', 'APPLY FILTERS')}
         </button>
       )}
     </div>

@@ -1,17 +1,19 @@
 import React from 'react';
 import { useShop } from '../../context/ShopContext';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/Button';
-import { Sparkles, ArrowRight, Award, Flame } from 'lucide-react';
+import { Sparkles, ArrowRight, Flame } from 'lucide-react';
 
 export const NewArrivals: React.FC = () => {
   const { navigateTo, products, isLoadingProducts } = useShop();
+  const { t } = useTranslation();
 
   const newProduct = products?.find(p => p.isNew) || products?.[0];
   const perfumeName = newProduct?.name || 'Royal Oud Imperial Reserve';
   const slug = newProduct?.slug || 'royal-oud-imperial';
   const link = `/products/${slug}`;
   const image = newProduct?.images?.[0] || '/images/new_arrivals_perfume_1787700509279.jpg';
-  const description = newProduct?.description || 'Be the first to discover our latest olfactory creations, distilled from aged Cambodian agarwoods, honeyed Turkish ambergris, and sun-drenched Taif roses.';
+  const description = newProduct?.description || t('home.newArrivals.defaultDesc');
 
   return (
     <section className="py-24 bg-[#0D0C0A] relative overflow-hidden border-t border-[#C9A45C]/15">
@@ -27,18 +29,18 @@ export const NewArrivals: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             
             {/* Left Column: Editorial Copy */}
-            <div className="lg:col-span-6 space-y-6 sm:space-y-8">
+            <div className="lg:col-span-6 space-y-6 sm:space-y-8 text-left rtl:text-right">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#151310]/70 border border-[#C9A45C]/35 backdrop-blur-md">
                 <Flame className="w-3.5 h-3.5 text-[#C9A45C]" />
                 <span className="text-[10px] font-semibold uppercase tracking-[3px] text-[#C9A45C]">
-                  HAUTE ATELIER DROP 2026
+                  {t('home.newArrivals.badge')}
                 </span>
               </div>
 
               <div className="space-y-3">
                 <h2 className="font-serif-luxury text-3xl sm:text-5xl lg:text-6xl font-normal text-[#F5F2EA] leading-tight">
-                  NEW ARRIVALS: <br />
-                  <span className="text-[#C9A45C] italic font-serif">THE ROYAL ELIXIRS</span>
+                  {t('home.newArrivals.titleLine1')} <br />
+                  <span className="text-[#C9A45C] italic font-serif">{t('home.newArrivals.titleLine2')}</span>
                 </h2>
                 <p className="text-sm sm:text-base text-[#A7A29A] max-w-lg leading-relaxed line-clamp-3">
                   {description}
@@ -47,20 +49,20 @@ export const NewArrivals: React.FC = () => {
 
               {/* Olfactory Highlights Grid with Frosted Glass Cards */}
               <div className="grid grid-cols-2 gap-4 pt-2">
-                <div className="p-4 rounded-xl bg-[#151310]/60 border border-[#C9A45C]/15 backdrop-blur-md hover:border-[#C9A45C]/35 transition-colors">
+                <div className="p-4 rounded-xl bg-[#151310]/60 border border-[#C9A45C]/15 backdrop-blur-md hover:border-[#C9A45C]/35 transition-colors text-left rtl:text-right">
                   <div className="text-[10px] font-semibold uppercase tracking-[2px] text-[#C9A45C] mb-1">
-                    EXTRAIT CONCENTRATION
+                    {t('home.newArrivals.extraitTitle')}
                   </div>
-                  <div className="font-cinzel text-base text-[#F5F2EA] font-semibold">35% Pure Oil</div>
-                  <p className="text-[11px] text-[#A7A29A] mt-1">Guarantees 14+ hours of rich, velvet sillage.</p>
+                  <div className="font-cinzel text-base text-[#F5F2EA] font-semibold">{t('home.newArrivals.extraitValue')}</div>
+                  <p className="text-[11px] text-[#A7A29A] mt-1">{t('home.newArrivals.extraitDesc')}</p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-[#151310]/60 border border-[#C9A45C]/15 backdrop-blur-md hover:border-[#C9A45C]/35 transition-colors">
+                <div className="p-4 rounded-xl bg-[#151310]/60 border border-[#C9A45C]/15 backdrop-blur-md hover:border-[#C9A45C]/35 transition-colors text-left rtl:text-right">
                   <div className="text-[10px] font-semibold uppercase tracking-[2px] text-[#C9A45C] mb-1">
-                    ARTISANAL AGING
+                    {t('home.newArrivals.agingTitle')}
                   </div>
-                  <div className="font-cinzel text-base text-[#F5F2EA] font-semibold">180-Day Cask Maturation</div>
-                  <p className="text-[11px] text-[#A7A29A] mt-1">Aged inside charred French oak barrels.</p>
+                  <div className="font-cinzel text-base text-[#F5F2EA] font-semibold">{t('home.newArrivals.agingValue')}</div>
+                  <p className="text-[11px] text-[#A7A29A] mt-1">{t('home.newArrivals.agingDesc')}</p>
                 </div>
               </div>
 
@@ -69,19 +71,19 @@ export const NewArrivals: React.FC = () => {
                   onClick={() => navigateTo('/shop?filter=new')}
                   variant="primary"
                   size="lg"
-                  rightIcon={<ArrowRight className="w-4 h-4" />}
-                  className="shadow-xl shadow-[#C9A45C]/15 tracking-[2px] font-bold"
+                  rightIcon={<ArrowRight className="w-4 h-4 rtl-flip" />}
+                  className="shadow-xl shadow-[#C9A45C]/15 tracking-[2px] font-bold cursor-pointer"
                 >
-                  DISCOVER NOW
+                  {t('home.newArrivals.shopNow')}
                 </Button>
 
                 <Button
                   onClick={() => navigateTo(link)}
                   variant="secondary"
                   size="lg"
-                  className="tracking-[2px] font-bold uppercase truncate max-w-[200px]"
+                  className="tracking-[2px] font-bold uppercase truncate max-w-[200px] cursor-pointer"
                 >
-                  VIEW PRODUCT
+                  {t('home.hero.shopProduct')}
                 </Button>
               </div>
             </div>
@@ -100,10 +102,10 @@ export const NewArrivals: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-transparent pointer-events-none" />
 
                   {/* Floating Capsule Badge - Frosted Glass */}
-                  <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-[#0D0C0A]/85 border border-[#C9A45C]/25 backdrop-blur-lg flex items-center justify-between shadow-xl">
+                  <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-[#0D0C0A]/85 border border-[#C9A45C]/25 backdrop-blur-lg flex items-center justify-between shadow-xl text-left rtl:text-right">
                     <div>
                       <span className="text-[10px] uppercase font-semibold text-[#C9A45C] tracking-[2px] block">
-                        Limited Edition Launch
+                        {t('home.hero.limited500')}
                       </span>
                       <span className="font-serif-luxury text-base sm:text-lg text-[#F5F2EA] font-medium">
                         {perfumeName}
@@ -111,10 +113,10 @@ export const NewArrivals: React.FC = () => {
                     </div>
                     <button
                       onClick={() => navigateTo(link)}
-                      className="text-xs uppercase tracking-[2px] text-[#F0D9A4] hover:text-white font-semibold flex items-center gap-1 transition-colors"
+                      className="text-xs uppercase tracking-[2px] text-[#F0D9A4] hover:text-white font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                     >
-                      <span>Details</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-[#C9A45C]" />
+                      <span>{t('home.hero.shopProduct')}</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-[#C9A45C] rtl-flip" />
                     </button>
                   </div>
                 </div>

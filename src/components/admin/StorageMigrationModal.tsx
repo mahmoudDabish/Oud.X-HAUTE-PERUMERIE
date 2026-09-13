@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabaseClient';
 import { Button } from '../ui/Button';
 import { 
@@ -39,6 +40,7 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
   onClose,
   onMigrationComplete
 }) => {
+  const { t } = useTranslation();
   const [step, setStep] = useState<'audit' | 'migrating' | 'completed'>('audit');
   const [isLoadingAudit, setIsLoadingAudit] = useState(false);
   const [images, setImages] = useState<ImageRow[]>([]);
@@ -305,12 +307,12 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] uppercase tracking-[2px] font-bold text-[#E3C27A] px-2 py-0.5 rounded bg-[#C9A45C]/10 border border-[#C9A45C]/30">
-                  Admin Migration Utility
+                  {t('admin.actions.storageMigration', 'Admin Migration Utility')}
                 </span>
-                <span className="text-xs text-[#A7A29A]">• Safe & Non-Destructive</span>
+                <span className="text-xs text-[#A7A29A]">• {t('admin.migration.safeNonDestructive', 'Safe & Non-Destructive')}</span>
               </div>
               <h3 className="font-cinzel text-lg font-bold text-[#F5F2EA]">
-                Migrate Product Images to Supabase Storage
+                {t('admin.migration.title', 'Migrate Product Images to Supabase Storage')}
               </h3>
             </div>
           </div>
@@ -333,21 +335,21 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
               {/* Summary Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="p-4 rounded-xl bg-[#151310] border border-[#C9A45C]/20 space-y-1">
-                  <span className="text-[10px] uppercase tracking-wider text-[#A7A29A]">Total Catalog Images</span>
+                  <span className="text-[10px] uppercase tracking-wider text-[#A7A29A]">{t('admin.migration.totalImages', 'Total Catalog Images')}</span>
                   <div className="font-cinzel text-2xl font-bold text-[#F5F2EA]">{images.length}</div>
-                  <span className="text-[11px] text-[#8E713D]">PostgreSQL product_images rows</span>
+                  <span className="text-[11px] text-[#8E713D]">{t('admin.migration.totalImagesSub', 'PostgreSQL product_images rows')}</span>
                 </div>
 
                 <div className="p-4 rounded-xl bg-[#151310] border border-[#C9A45C]/20 space-y-1">
-                  <span className="text-[10px] uppercase tracking-wider text-[#A7A29A]">Total Base64 Payload</span>
+                  <span className="text-[10px] uppercase tracking-wider text-[#A7A29A]">{t('admin.migration.totalPayload', 'Total Base64 Payload')}</span>
                   <div className="font-cinzel text-2xl font-bold text-[#E3C27A]">{totalBase64MB} MB</div>
-                  <span className="text-[11px] text-amber-500/80">Stored directly in database</span>
+                  <span className="text-[11px] text-amber-500/80">{t('admin.migration.totalPayloadSub', 'Stored directly in database')}</span>
                 </div>
 
                 <div className="p-4 rounded-xl bg-[#151310] border border-[#C9A45C]/20 space-y-1">
-                  <span className="text-[10px] uppercase tracking-wider text-[#A7A29A]">Images To Migrate</span>
+                  <span className="text-[10px] uppercase tracking-wider text-[#A7A29A]">{t('admin.migration.imagesToMigrate', 'Images To Migrate')}</span>
                   <div className="font-cinzel text-2xl font-bold text-[#C9A45C]">{pendingCount}</div>
-                  <span className="text-[11px] text-emerald-500/80">Will convert to WebP & CDN URLs</span>
+                  <span className="text-[11px] text-emerald-500/80">{t('admin.migration.imagesToMigrateSub', 'Will convert to WebP & CDN URLs')}</span>
                 </div>
               </div>
 
@@ -355,26 +357,26 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
               <div className="p-4 rounded-xl bg-[#C9A45C]/10 border border-[#C9A45C]/30 space-y-2">
                 <div className="flex items-center gap-2 text-[#E3C27A] font-bold">
                   <ShieldCheck className="w-4 h-4" />
-                  <span>Strict Safety & Zero-Downtime Safeguards</span>
+                  <span>{t('admin.migration.safetyHeader', 'Strict Safety & Zero-Downtime Safeguards')}</span>
                 </div>
                 <ul className="list-disc list-inside text-[#A7A29A] space-y-1 leading-relaxed">
-                  <li><strong>Non-destructive:</strong> Base64 data is NEVER touched until the Storage upload passes an HTTP 200 GET verification and browser render check.</li>
-                  <li><strong>Zero credential exposure:</strong> Uses your active authenticated Admin session directly. No administrative secret keys required.</li>
-                  <li><strong>High visual quality:</strong> Converted to 90% quality WebP via client-side Canvas. No aggressive lossy degradation.</li>
-                  <li><strong>Fail-safe isolation:</strong> If an individual image fails verification, its database row is untouched and the migration continues.</li>
+                  <li><strong>{t('admin.migration.nonDestructive', 'Non-destructive:')}</strong> Base64 data is NEVER touched until the Storage upload passes an HTTP 200 GET verification and browser render check.</li>
+                  <li><strong>{t('admin.migration.zeroCredential', 'Zero credential exposure:')}</strong> Uses your active authenticated Admin session directly. No administrative secret keys required.</li>
+                  <li><strong>{t('admin.migration.highQuality', 'High visual quality:')}</strong> Converted to 90% quality WebP via client-side Canvas. No aggressive lossy degradation.</li>
+                  <li><strong>{t('admin.migration.failSafe', 'Fail-safe isolation:')}</strong> If an individual image fails verification, its database row is untouched and the migration continues.</li>
                 </ul>
               </div>
 
               {/* Pre-Migration Table */}
               <div className="rounded-xl border border-white/10 overflow-hidden">
-                <table className="w-full text-left text-xs">
+                <table className="w-full text-left rtl:text-right text-xs">
                   <thead className="bg-[#151310] text-[#E3C27A] border-b border-white/10 text-[10px] uppercase tracking-wider">
                     <tr>
                       <th className="p-3">#</th>
-                      <th className="p-3">Product Name</th>
-                      <th className="p-3">Image ID</th>
-                      <th className="p-3">Original Size</th>
-                      <th className="p-3">Current Format</th>
+                      <th className="p-3">{t('admin.modals.productName', 'Product Name')}</th>
+                      <th className="p-3">{t('admin.migration.imageId', 'Image ID')}</th>
+                      <th className="p-3">{t('admin.migration.originalSize', 'Original Size')}</th>
+                      <th className="p-3">{t('admin.migration.currentFormat', 'Current Format')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
@@ -387,11 +389,11 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
                         <td className="p-3">
                           {img.url.startsWith('data:image') ? (
                             <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[10px] font-bold border border-amber-500/20">
-                              Base64 Data
+                              {t('admin.migration.base64Data', 'Base64 Data')}
                             </span>
                           ) : (
                             <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px] font-bold border border-emerald-500/20">
-                              Storage CDN URL
+                              {t('admin.migration.cdnUrl', 'Storage CDN URL')}
                             </span>
                           )}
                         </td>
@@ -405,19 +407,19 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
                 <button
                   onClick={onClose}
-                  className="px-5 py-2.5 rounded-full bg-[#151310] hover:bg-[#1f1b16] border border-white/10 text-xs font-semibold text-[#A7A29A] hover:text-[#F5F2EA] transition-colors"
+                  className="px-5 py-2.5 rounded-full bg-[#151310] hover:bg-[#1f1b16] border border-white/10 text-xs font-semibold text-[#A7A29A] hover:text-[#F5F2EA] transition-colors cursor-pointer"
                 >
-                  Cancel
+                  {t('common.cancel', 'Cancel')}
                 </button>
                 <Button
                   onClick={startMigration}
                   variant="primary"
                   size="md"
                   disabled={isLoadingAudit || pendingCount === 0}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 cursor-pointer"
                 >
                   <UploadCloud className="w-4 h-4" />
-                  <span>Start Safe Migration ({pendingCount} Images)</span>
+                  <span>{t('admin.migration.startMigration', { count: pendingCount, defaultValue: `Start Safe Migration (${pendingCount} Images)` })}</span>
                 </Button>
               </div>
             </div>
@@ -430,7 +432,7 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
               <div className="p-4 rounded-xl bg-[#151310] border border-[#C9A45C]/30 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs uppercase tracking-wider font-bold text-[#E3C27A]">
-                    Migrating Image {currentIndex + 1} of {images.length}
+                    {t('admin.migration.migratingImage', { current: currentIndex + 1, total: images.length, defaultValue: `Migrating Image ${currentIndex + 1} of ${images.length}` })}
                   </span>
                   <span className="text-xs font-mono text-[#C9A45C]">
                     {Math.round(((currentIndex + 1) / images.length) * 100)}%
@@ -447,20 +449,20 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
 
                 <div className="text-[11px] text-[#A7A29A] flex items-center gap-2">
                   <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#C9A45C]" />
-                  <span>Currently processing: <strong>{images[currentIndex]?.product_name}</strong> ({images[currentIndex]?.status}...)</span>
+                  <span>{t('admin.migration.currentlyProcessing', 'Currently processing:')} <strong>{images[currentIndex]?.product_name}</strong> ({images[currentIndex]?.status}...)</span>
                 </div>
               </div>
 
               {/* Real-time Status Table */}
               <div className="rounded-xl border border-white/10 overflow-hidden max-h-72 overflow-y-auto">
-                <table className="w-full text-left text-xs">
+                <table className="w-full text-left rtl:text-right text-xs">
                   <thead className="bg-[#151310] text-[#E3C27A] border-b border-white/10 text-[10px] uppercase tracking-wider sticky top-0">
                     <tr>
                       <th className="p-3">#</th>
-                      <th className="p-3">Product</th>
-                      <th className="p-3">Original Size</th>
-                      <th className="p-3">New Size</th>
-                      <th className="p-3">Status</th>
+                      <th className="p-3">{t('admin.modals.productName', 'Product')}</th>
+                      <th className="p-3">{t('admin.migration.originalSize', 'Original Size')}</th>
+                      <th className="p-3">{t('admin.migration.newSize', 'New Size')}</th>
+                      <th className="p-3">{t('common.status', 'Status')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
@@ -474,25 +476,25 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
                         </td>
                         <td className="p-3">
                           {img.status === 'pending' && (
-                            <span className="text-[#A7A29A] text-[10px]">Queued</span>
+                            <span className="text-[#A7A29A] text-[10px]">{t('admin.migration.queued', 'Queued')}</span>
                           )}
                           {img.status === 'converting' && (
-                            <span className="text-amber-400 text-[10px] font-bold animate-pulse">Converting to WebP...</span>
+                            <span className="text-amber-400 text-[10px] font-bold animate-pulse">{t('admin.migration.convertingWebp', 'Converting to WebP...')}</span>
                           )}
                           {img.status === 'uploading' && (
-                            <span className="text-blue-400 text-[10px] font-bold animate-pulse">Uploading to Storage...</span>
+                            <span className="text-blue-400 text-[10px] font-bold animate-pulse">{t('admin.migration.uploadingStorage', 'Uploading to Storage...')}</span>
                           )}
                           {img.status === 'verifying' && (
-                            <span className="text-purple-400 text-[10px] font-bold animate-pulse">HTTP GET Verifying...</span>
+                            <span className="text-purple-400 text-[10px] font-bold animate-pulse">{t('admin.migration.verifying', 'HTTP GET Verifying...')}</span>
                           )}
                           {img.status === 'success' && (
                             <span className="inline-flex items-center gap-1 text-emerald-400 text-[10px] font-bold">
-                              <CheckCircle2 className="w-3.5 h-3.5" /> Verified & Saved
+                              <CheckCircle2 className="w-3.5 h-3.5" /> {t('admin.migration.verifiedSaved', 'Verified & Saved')}
                             </span>
                           )}
                           {img.status === 'failed' && (
                             <span className="inline-flex items-center gap-1 text-red-400 text-[10px] font-bold" title={img.error}>
-                              <XCircle className="w-3.5 h-3.5" /> Failed (Untouched)
+                              <XCircle className="w-3.5 h-3.5" /> {t('admin.migration.failed', 'Failed (Untouched)')}
                             </span>
                           )}
                         </td>
@@ -514,10 +516,10 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
                   </div>
                   <div>
                     <h4 className="font-cinzel text-xl font-bold text-[#F5F2EA]">
-                      Storage Migration Completed Successfully!
+                      {t('admin.migration.completedTitle', 'Storage Migration Completed Successfully!')}
                     </h4>
                     <p className="text-xs text-[#A7A29A]">
-                      All 14 catalog images have been converted to WebP, verified via public HTTP GET, and updated in PostgreSQL.
+                      {t('admin.migration.completedDesc', 'All catalog images have been converted to WebP, verified via public HTTP GET, and updated in PostgreSQL.')}
                     </p>
                   </div>
                 </div>
@@ -525,24 +527,24 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
                 {/* Metrics Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
                   <div className="p-3 rounded-xl bg-black/50 border border-white/10">
-                    <span className="text-[10px] uppercase text-[#A7A29A] block">Successfully Migrated</span>
+                    <span className="text-[10px] uppercase text-[#A7A29A] block">{t('admin.migration.migratedSuccess', 'Successfully Migrated')}</span>
                     <span className="font-cinzel text-xl font-bold text-emerald-400">{finalAudit.migrated} / {finalAudit.total}</span>
                   </div>
 
                   <div className="p-3 rounded-xl bg-black/50 border border-white/10">
-                    <span className="text-[10px] uppercase text-[#A7A29A] block">Failed Migrations</span>
+                    <span className="text-[10px] uppercase text-[#A7A29A] block">{t('admin.migration.failedCount', 'Failed Migrations')}</span>
                     <span className="font-cinzel text-xl font-bold text-[#F5F2EA]">{finalAudit.failed}</span>
                   </div>
 
                   <div className="p-3 rounded-xl bg-black/50 border border-white/10">
-                    <span className="text-[10px] uppercase text-[#A7A29A] block">New WebP Storage Size</span>
+                    <span className="text-[10px] uppercase text-[#A7A29A] block">{t('admin.migration.newSize', 'New WebP Storage Size')}</span>
                     <span className="font-cinzel text-xl font-bold text-[#E3C27A]">
                       {(finalAudit.newTotalBytes / (1024 * 1024)).toFixed(2)} MB
                     </span>
                   </div>
 
                   <div className="p-3 rounded-xl bg-black/50 border border-white/10">
-                    <span className="text-[10px] uppercase text-[#A7A29A] block">Payload Reduction</span>
+                    <span className="text-[10px] uppercase text-[#A7A29A] block">{t('admin.migration.payloadReduction', 'Payload Reduction')}</span>
                     <span className="font-cinzel text-xl font-bold text-emerald-400">-{finalAudit.reductionPercent}%</span>
                   </div>
                 </div>
@@ -550,14 +552,14 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
 
               {/* Complete Result Table */}
               <div className="rounded-xl border border-white/10 overflow-hidden max-h-72 overflow-y-auto">
-                <table className="w-full text-left text-xs">
+                <table className="w-full text-left rtl:text-right text-xs">
                   <thead className="bg-[#151310] text-[#E3C27A] border-b border-white/10 text-[10px] uppercase tracking-wider sticky top-0">
                     <tr>
                       <th className="p-3">#</th>
-                      <th className="p-3">Product</th>
-                      <th className="p-3">Storage Path</th>
-                      <th className="p-3">New WebP Size</th>
-                      <th className="p-3">Verification</th>
+                      <th className="p-3">{t('admin.modals.productName', 'Product')}</th>
+                      <th className="p-3">{t('admin.migration.storagePath', 'Storage Path')}</th>
+                      <th className="p-3">{t('admin.migration.newSize', 'New WebP Size')}</th>
+                      <th className="p-3">{t('admin.migration.verification', 'Verification')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
@@ -577,10 +579,10 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
                               rel="noreferrer" 
                               className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 underline text-[10px]"
                             >
-                              <ExternalLink className="w-3 h-3" /> HTTP 200 Verified
+                              <ExternalLink className="w-3 h-3 rtl-flip" /> {t('admin.migration.httpVerified', 'HTTP 200 Verified')}
                             </a>
                           ) : (
-                            <span className="text-red-400 text-[10px]">Failed</span>
+                            <span className="text-red-400 text-[10px]">{t('admin.migration.failed', 'Failed')}</span>
                           )}
                         </td>
                       </tr>
@@ -595,8 +597,9 @@ export const StorageMigrationModal: React.FC<StorageMigrationModalProps> = ({
                   onClick={onClose}
                   variant="primary"
                   size="md"
+                  className="cursor-pointer"
                 >
-                  Close & View Dashboard
+                  {t('admin.migration.closeViewDashboard', 'Close & View Dashboard')}
                 </Button>
               </div>
             </div>
