@@ -33,7 +33,7 @@ export const AboutPage: React.FC = () => {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#11100E] border border-[#C9A45C]/40">
               <Crown className="w-3.5 h-3.5 text-[#E3C27A]" />
               <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#E3C27A]">
-                {t('about.heroEyebrow', 'Since 2018 • Cairo & Grasse')}
+                {t('about.heroEyebrow', 'Since 2026 • Cairo ')}
               </span>
             </div>
 
@@ -51,7 +51,7 @@ export const AboutPage: React.FC = () => {
 
       {/* Main Narrative Content */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 space-y-20">
-        
+
         {/* Section 1: Philosophy */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           <div className="space-y-4">

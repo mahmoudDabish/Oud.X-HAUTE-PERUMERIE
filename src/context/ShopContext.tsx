@@ -6,6 +6,7 @@ import { authService } from '../services/authService';
 import { wishlistService } from '../services/wishlistService';
 import { supabase } from '../lib/supabaseClient';
 import i18n from '../i18n';
+import { formatPriceLocalized } from '../i18n/presentation';
 
 interface ToastMessage {
   id: string;
@@ -280,9 +281,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [currency, setCurrency] = useState<'EGP' | 'USD' | 'AED'>('EGP');
 
   const formatPrice = (amountInEGP: number) => {
-    const isAr = i18n.language === 'ar';
-    const num = (amountInEGP || 0).toLocaleString(isAr ? 'ar-EG' : 'en-EG');
-    return isAr ? `${num} ج.م` : `${num} EGP`;
+    return formatPriceLocalized(amountInEGP, i18n.language);
   };
 
   // User state

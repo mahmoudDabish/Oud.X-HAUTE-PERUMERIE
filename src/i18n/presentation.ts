@@ -112,7 +112,10 @@ export const getLocalizedGovernorate = (gov: string, t: TranslationFn = defaultT
 
 export const formatPriceLocalized = (amount: number, lang: string = i18n.language): string => {
   const isAr = lang === 'ar';
-  const num = (amount || 0).toLocaleString(isAr ? 'ar-EG' : 'en-EG');
+  let num = (amount || 0).toLocaleString(isAr ? 'ar-EG' : 'en-EG');
+  if (isAr) {
+    num = num.replace(/[\u066C\u060C]/g, ',');
+  }
   return isAr ? `${num} ج.م` : `${num} EGP`;
 };
 
