@@ -33,7 +33,7 @@ export const AboutPage: React.FC = () => {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#11100E] border border-[#C9A45C]/40">
               <Crown className="w-3.5 h-3.5 text-[#E3C27A]" />
               <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#E3C27A]">
-                {t('about.heroEyebrow', 'Since 2026 • Cairo ')}
+                {t('about.heroEyebrow', 'Since 2026 • Cairo')}
               </span>
             </div>
 
