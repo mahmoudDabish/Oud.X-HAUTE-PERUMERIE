@@ -18,6 +18,9 @@
 
   html {
     font-size: 16.8px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   @media (min-width: 1280px) {
@@ -144,12 +147,50 @@
   scrollbar-color: rgba(201, 164, 92, 0.35) rgba(13, 12, 10, 0.6);
 }
 
+/* ==============================================================================
+   LENIS LUXURY SMOOTH SCROLLING ENGINE
+   ============================================================================== */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* GPU Hardware Compositing & Acceleration */
+.gpu-layer {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Off-screen rendering containment */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 700px;
+}
+
 /* Frosted Glass Theme Utilities */
 .frosted-glass {
   background: rgba(21, 19, 16, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(201, 164, 92, 0.15);
+  transform: translateZ(0);
 }
 
 .frosted-glass-elevated {
@@ -157,6 +198,7 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(201, 164, 92, 0.25);
+  transform: translateZ(0);
 }
 
 .frosted-glass-pill {
@@ -164,6 +206,7 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(201, 164, 92, 0.2);
+  transform: translateZ(0);
 }
 
 .frosted-glass-card {
@@ -171,6 +214,7 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(201, 164, 92, 0.15);
+  transform: translateZ(0);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 

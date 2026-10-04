@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { ShopProvider, useShop } from './context/ShopContext';
+import { SmoothScrollProvider } from './context/SmoothScrollProvider';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
@@ -8,19 +9,21 @@ import { CartDrawer } from './components/cart/CartDrawer';
 import { SearchModal } from './components/search/SearchModal';
 import { QuickViewModal } from './components/ui/QuickViewModal';
 import { Toast } from './components/ui/Toast';
+import { LoadingFallback } from './components/ui/LoadingFallback';
 
-import { HomePage } from './pages/HomePage';
-import { ShopPage } from './pages/ShopPage';
-import { CollectionPage } from './pages/CollectionPage';
-import { ProductDetailPage } from './pages/ProductDetailPage';
-import { CartPage } from './pages/CartPage';
-import { CheckoutPage } from './pages/CheckoutPage';
-import { WishlistPage } from './pages/WishlistPage';
-import { AuthPage } from './pages/AuthPage';
-import { AccountPage } from './pages/AccountPage';
-import { AboutPage } from './pages/AboutPage';
-import { ContactPage } from './pages/ContactPage';
-import { NotFoundPage } from './pages/NotFoundPage';
+// Route-level code-splitting for high acceleration & reduced initial bundle
+const HomePage = lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })));
+const ShopPage = lazy(() => import('./pages/ShopPage').then(m => ({ default: m.ShopPage })));
+const CollectionPage = lazy(() => import('./pages/CollectionPage').then(m => ({ default: m.CollectionPage })));
+const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage').then(m => ({ default: m.ProductDetailPage })));
+const CartPage = lazy(() => import('./pages/CartPage').then(m => ({ default: m.CartPage })));
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage').then(m => ({ default: m.CheckoutPage })));
+const WishlistPage = lazy(() => import('./pages/WishlistPage').then(m => ({ default: m.WishlistPage })));
+const AuthPage = lazy(() => import('./pages/AuthPage').then(m => ({ default: m.AuthPage })));
+const AccountPage = lazy(() => import('./pages/AccountPage').then(m => ({ default: m.AccountPage })));
+const AboutPage = lazy(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
+const ContactPage = lazy(() => import('./pages/ContactPage').then(m => ({ default: m.ContactPage })));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
 
 const AppContent: React.FC = () => {
   const { currentRoute } = useShop();
@@ -93,9 +96,11 @@ const AppContent: React.FC = () => {
       {/* 1. Global Luxury Header */}
       <Header />
 
-      {/* 2. Main Page View Content */}
+      {/* 2. Main Page View Content with Suspense */}
       <main className="flex-1 w-full">
-        {renderCurrentView()}
+        <Suspense fallback={<LoadingFallback />}>
+          {renderCurrentView()}
+        </Suspense>
       </main>
 
       {/* 3. Global Luxury Footer */}
@@ -117,7 +122,9 @@ export default function App() {
   return (
     <ErrorBoundary>
       <ShopProvider>
-        <AppContent />
+        <SmoothScrollProvider>
+          <AppContent />
+        </SmoothScrollProvider>
       </ShopProvider>
     </ErrorBoundary>
   );

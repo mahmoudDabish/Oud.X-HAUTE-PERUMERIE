@@ -117,6 +117,7 @@ export const CollectionCards: React.FC = () => {
                 alt={cat.title}
                 referrerPolicy="no-referrer"
                 loading="lazy"
+                decoding="async"
                 className="absolute inset-0 w-full h-full object-cover object-center opacity-80 group-hover:opacity-95 transition-all duration-700 ease-out group-hover:scale-105"
               />
 

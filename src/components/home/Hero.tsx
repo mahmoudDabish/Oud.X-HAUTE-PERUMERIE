@@ -252,6 +252,8 @@ export const Hero: React.FC = () => {
                     src={active.image}
                     alt={active.perfumeName}
                     referrerPolicy="no-referrer"
+                    decoding="async"
+                    fetchPriority="high"
                     initial={{ opacity: 0, scale: 1.05 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.98 }}

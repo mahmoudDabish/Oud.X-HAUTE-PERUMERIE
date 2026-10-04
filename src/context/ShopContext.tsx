@@ -116,7 +116,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigateTo = (route: string) => {
     setCurrentRoute(route);
     window.history.pushState({}, '', route);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   };
 
   useEffect(() => {

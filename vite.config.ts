@@ -18,7 +18,9 @@ export default defineConfig(() => {
           manualChunks: {
             vendor: ['react', 'react-dom'],
             supabase: ['@supabase/supabase-js'],
-            ui: ['lucide-react', 'motion']
+            ui: ['lucide-react', 'motion'],
+            lenis: ['lenis'],
+            i18n: ['i18next', 'react-i18next']
           }
         }
       }

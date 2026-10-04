@@ -113,6 +113,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           alt={displayName}
           referrerPolicy="no-referrer"
           loading="lazy"
+          decoding="async"
           onError={(e) => {
             if (e.currentTarget.src !== window.location.origin + '/images/hero-perfume.webp') {
               e.currentTarget.src = '/images/hero-perfume.webp';

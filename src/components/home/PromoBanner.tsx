@@ -27,6 +27,7 @@ export const PromoBanner: React.FC = () => {
               alt="Exclusive Offer Luxury Gift Set"
               referrerPolicy="no-referrer"
               loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-center opacity-70"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-[#070707]/85 to-black/60" />
