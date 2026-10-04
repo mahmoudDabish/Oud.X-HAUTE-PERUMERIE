@@ -40,7 +40,16 @@ export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ 
       smoothWheel: true,
       wheelMultiplier: 0.95,
       touchMultiplier: 1.5,
-      infinite: false
+      infinite: false,
+      allowNestedScroll: true,
+      prevent: (node: HTMLElement) => {
+        return Boolean(
+          node.hasAttribute?.('data-lenis-prevent') ||
+          node.closest?.('[data-lenis-prevent]') ||
+          node.classList?.contains('overflow-y-auto') ||
+          node.closest?.('.overflow-y-auto')
+        );
+      }
     });
 
     lenisRef.current = lenis;
@@ -70,15 +79,19 @@ export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   }, [currentRoute]);
 
-  // When any modal or drawer is open, pause smooth scrolling to prevent background scroll
+  // When any modal or drawer is open, lock body scroll cleanly
   const isAnyModalOpen = isCartDrawerOpen || isMobileMenuOpen || isSearchOpen || !!quickViewProduct;
   useEffect(() => {
-    if (!lenisRef.current) return;
     if (isAnyModalOpen) {
-      lenisRef.current.stop();
+      document.body.style.overflow = 'hidden';
+      lenisRef.current?.stop();
     } else {
-      lenisRef.current.start();
+      document.body.style.overflow = '';
+      lenisRef.current?.start();
     }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isAnyModalOpen]);
 
   const scrollTo = (target: string | number | HTMLElement, options?: Parameters<Lenis['scrollTo']>[1]) => {

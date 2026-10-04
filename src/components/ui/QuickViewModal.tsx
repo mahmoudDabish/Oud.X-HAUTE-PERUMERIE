@@ -134,7 +134,7 @@ export const QuickViewModal: React.FC = () => {
           </div>
 
           {/* Right Content */}
-          <div className="w-full md:w-1/2 p-6 sm:p-8 overflow-y-auto max-h-[80vh] flex flex-col justify-between">
+          <div data-lenis-prevent className="w-full md:w-1/2 p-6 sm:p-8 overflow-y-auto overscroll-contain max-h-[80vh] flex flex-col justify-between custom-scrollbar touch-pan-y">
             <div>
               {/* Brand and Category */}
               <div className="flex items-center justify-between text-xs tracking-[2px] uppercase text-[#C9A45C] font-semibold mb-2">

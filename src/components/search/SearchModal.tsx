@@ -149,7 +149,7 @@ export const SearchModal: React.FC = () => {
             </form>
 
             {/* Quick Navigation / Results Area */}
-            <div className="mt-6 max-h-[60vh] overflow-y-auto pr-2 rtl:pr-0 rtl:pl-2 space-y-6">
+            <div data-lenis-prevent className="mt-6 max-h-[60vh] overflow-y-auto overscroll-contain pr-2 rtl:pr-0 rtl:pl-2 space-y-6 custom-scrollbar touch-pan-y">
               {inputVal.trim() ? (
                 <div>
                   <div className="flex items-center justify-between mb-3 text-xs uppercase tracking-wider text-[#A7A29A]">

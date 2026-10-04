@@ -80,35 +80,41 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen: propIsOpen, onCl
 
           {/* Drawer Menu with Frosted Glass */}
           <motion.div
+            data-lenis-prevent
             initial={{ x: isRtl ? '100%' : '-100%' }}
             animate={{ x: 0 }}
             exit={{ x: isRtl ? '100%' : '-100%' }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             className={`fixed inset-y-0 ${
               isRtl ? 'right-0 border-l' : 'left-0 border-r'
-            } w-[85%] max-w-sm bg-[#0D0C0A] border-[#C9A45C]/30 backdrop-blur-2xl shadow-2xl flex flex-col justify-between overflow-y-auto z-50`}
+            } w-[85%] max-w-sm bg-[#0D0C0A] border-[#C9A45C]/30 backdrop-blur-2xl shadow-2xl flex flex-col h-full max-h-[100dvh] z-50 overflow-hidden`}
           >
-            {/* Header */}
-            <div>
-              <div className="p-5 border-b border-[#C9A45C]/20 flex items-center justify-between bg-[#151310]/90 backdrop-blur-md">
-                <div onClick={() => handleLinkClick('/')} className="cursor-pointer">
-                  <span className="font-cinzel text-xl font-extrabold tracking-[4px] text-[#C9A45C]">
-                    OUD-X
-                  </span>
-                  <span className="block text-[8px] uppercase tracking-[3px] text-[#8E713D]">
-                    Haute Parfumerie
-                  </span>
-                </div>
-
-                <button
-                  onClick={handleClose}
-                  className="p-2.5 text-[#A7A29A] hover:text-[#F5F2EA] rounded-full hover:bg-white/10 transition-colors border border-white/5 active:scale-95 cursor-pointer"
-                  aria-label={t('nav.closeMenu')}
-                >
-                  <X className="w-5 h-5 text-[#E3C27A]" />
-                </button>
+            {/* Pinned Header */}
+            <div className="shrink-0 p-5 border-b border-[#C9A45C]/20 flex items-center justify-between bg-[#151310]/95 backdrop-blur-md z-10">
+              <div onClick={() => handleLinkClick('/')} className="cursor-pointer">
+                <span className="font-cinzel text-xl font-extrabold tracking-[4px] text-[#C9A45C]">
+                  OUD-X
+                </span>
+                <span className="block text-[8px] uppercase tracking-[3px] text-[#8E713D]">
+                  Haute Parfumerie
+                </span>
               </div>
 
+              <button
+                onClick={handleClose}
+                className="p-2.5 text-[#A7A29A] hover:text-[#F5F2EA] rounded-full hover:bg-white/10 transition-colors border border-white/5 active:scale-95 cursor-pointer"
+                aria-label={t('nav.closeMenu')}
+              >
+                <X className="w-5 h-5 text-[#E3C27A]" />
+              </button>
+            </div>
+
+            {/* Scrollable Content Body with data-lenis-prevent */}
+            <div
+              data-lenis-prevent
+              className="flex-1 min-h-0 overflow-y-auto overscroll-contain custom-scrollbar touch-pan-y"
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
               {/* Language Switcher in Mobile Drawer */}
               <div className="px-4 pt-3 pb-1">
                 <LanguageSwitcher isMobile={true} />
@@ -164,38 +170,38 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen: propIsOpen, onCl
                   </div>
                 ))}
               </nav>
-            </div>
 
-            {/* Bottom Actions & User info */}
-            <div className="p-5 border-t border-[#C9A45C]/20 bg-[#151310]/90 backdrop-blur-md space-y-4">
-              {/* Account & Wishlist shortcuts */}
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  onClick={() => handleLinkClick(isLoggedIn ? '/account' : '/login')}
-                  className="flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#1A1815] border border-[#C9A45C]/30 text-xs font-semibold text-[#F5F2EA] hover:border-[#C9A45C] transition-colors shadow-sm cursor-pointer"
-                >
-                  <User className="w-4 h-4 text-[#C9A45C]" />
-                  <span>{isLoggedIn ? t('nav.account') : t('nav.signIn')}</span>
-                </button>
+              {/* Bottom Actions & User info */}
+              <div className="p-5 border-t border-[#C9A45C]/20 bg-[#151310]/80 space-y-4 pb-10">
+                {/* Account & Wishlist shortcuts */}
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => handleLinkClick(isLoggedIn ? '/account' : '/login')}
+                    className="flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#1A1815] border border-[#C9A45C]/30 text-xs font-semibold text-[#F5F2EA] hover:border-[#C9A45C] transition-colors shadow-sm cursor-pointer"
+                  >
+                    <User className="w-4 h-4 text-[#C9A45C]" />
+                    <span>{isLoggedIn ? t('nav.account') : t('nav.signIn')}</span>
+                  </button>
 
-                <button
-                  onClick={() => handleLinkClick('/wishlist')}
-                  className="flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#1A1815] border border-[#C9A45C]/30 text-xs font-semibold text-[#F5F2EA] hover:border-[#C9A45C] transition-colors shadow-sm cursor-pointer"
-                >
-                  <Heart className="w-4 h-4 text-[#C9A45C]" />
-                  <span>{t('nav.wishlist')} ({wishlistCount})</span>
-                </button>
-              </div>
-
-              {/* Concierge contact */}
-              <div className="text-[11px] text-[#A7A29A] space-y-1.5 pt-1 text-left rtl:text-right">
-                <div className="flex items-center gap-2">
-                  <Phone className="w-3.5 h-3.5 text-[#C9A45C] shrink-0" />
-                  <span dir="ltr">VIP Concierge: +20 100 892 4100</span>
+                  <button
+                    onClick={() => handleLinkClick('/wishlist')}
+                    className="flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#1A1815] border border-[#C9A45C]/30 text-xs font-semibold text-[#F5F2EA] hover:border-[#C9A45C] transition-colors shadow-sm cursor-pointer"
+                  >
+                    <Heart className="w-4 h-4 text-[#C9A45C]" />
+                    <span>{t('nav.wishlist')} ({wishlistCount})</span>
+                  </button>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Mail className="w-3.5 h-3.5 text-[#C9A45C] shrink-0" />
-                  <span>prive@oudx-fragrances.com</span>
+
+                {/* Concierge contact */}
+                <div className="text-[11px] text-[#A7A29A] space-y-1.5 pt-1 text-left rtl:text-right">
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-3.5 h-3.5 text-[#C9A45C] shrink-0" />
+                    <span dir="ltr">VIP Concierge: +20 100 892 4100</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-3.5 h-3.5 text-[#C9A45C] shrink-0" />
+                    <span>prive@oudx-fragrances.com</span>
+                  </div>
                 </div>
               </div>
             </div>

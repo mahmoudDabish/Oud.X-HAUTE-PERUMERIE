@@ -48,6 +48,7 @@ export const CartDrawer: React.FC = () => {
 
         {/* Drawer panel with Frosted Glass */}
         <motion.div
+          data-lenis-prevent
           initial={{ x: isRtl ? '-100%' : '100%' }}
           animate={{ x: 0 }}
           exit={{ x: isRtl ? '-100%' : '100%' }}
@@ -75,7 +76,7 @@ export const CartDrawer: React.FC = () => {
 
 
           {/* Cart Items List */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-3">
+          <div data-lenis-prevent className="flex-1 overflow-y-auto overscroll-contain p-5 space-y-3 custom-scrollbar touch-pan-y">
             {cart.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-4">
                 <div className="w-16 h-16 rounded-full bg-[#151310]/80 border border-[#C9A45C]/25 flex items-center justify-center text-[#C9A45C] backdrop-blur-md">

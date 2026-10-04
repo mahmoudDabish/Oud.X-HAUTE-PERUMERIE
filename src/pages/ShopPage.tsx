@@ -319,7 +319,8 @@ export const ShopPage: React.FC = () => {
               animate={{ x: 0 }}
               exit={{ x: isRtl ? '100%' : '-100%' }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className={`fixed inset-y-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} w-4/5 max-w-sm bg-[#0D0C0A] border-[#C9A45C]/30 shadow-2xl z-10 overflow-y-auto custom-scrollbar`}
+              className={`fixed inset-y-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} w-4/5 max-w-sm bg-[#0D0C0A] border-[#C9A45C]/30 shadow-2xl z-10 overflow-y-auto overscroll-contain custom-scrollbar touch-pan-y`}
+              data-lenis-prevent
             >
               <ProductFilters
                 filters={filters}
