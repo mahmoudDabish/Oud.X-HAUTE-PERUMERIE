@@ -141,6 +141,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
                 src={productImages[activeImageIndex] || productImages[0]}
                 alt={productName}
                 referrerPolicy="no-referrer"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+                width={500}
+                height={625}
                 className="w-full h-full object-cover object-center transition-all duration-500"
               />
 
@@ -179,7 +184,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
                         : 'border-white/10 opacity-60 hover:opacity-100'
                     }`}
                   >
-                    <img src={img} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+                    <img 
+                      src={img} 
+                      alt="" 
+                      referrerPolicy="no-referrer" 
+                      loading="lazy"
+                      decoding="async"
+                      width={80}
+                      height={80}
+                      className="w-full h-full object-cover" 
+                    />
                   </button>
                 ))}
               </div>
@@ -211,7 +225,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
                 {productName}
                 {product.stock <= 0 && (
                   <span className="px-3 py-1 text-xs font-bold tracking-widest text-[#A7A29A] border border-white/20 rounded-full bg-[#151310]/80">
-                    {t('products.outOfStock')}
+                    {t('products.outOfStock', 'Out of Stock')}
                   </span>
                 )}
               </h1>
@@ -224,7 +238,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
 
               {/* Rating & Review counter */}
               <div className="flex items-center gap-3 pt-1">
-                <span className="text-xs text-[#A7A29A] italic">{t('products.noReviewsYet')}</span>
+                <span className="text-xs text-[#A7A29A] italic">{t('products.noReviewsYet', 'No reviews yet.')}</span>
                 <span className="text-neutral-500">•</span>
                 <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5" /> {t('product.authenticityGuaranteed')}

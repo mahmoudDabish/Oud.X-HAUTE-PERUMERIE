@@ -1,0 +1,137 @@
+{
+  "auth": {
+    "status": "PASS",
+    "checks": [
+      {
+        "item": "Guest redirected/prompted for authentication at /account",
+        "passed": true,
+        "details": "Guest header: \"Client Authentication\""
+      },
+      {
+        "item": "Auth form loads with email & password fields",
+        "passed": true,
+        "details": "Form and secure input fields rendered"
+      },
+      {
+        "item": "Switch to Register tab reveals Full Name & Phone fields",
+        "passed": true,
+        "details": "Registration form inputs active"
+      },
+      {
+        "item": "Authentication transitions user session to /account",
+        "passed": true,
+        "details": "Customer session credentials handled"
+      }
+    ]
+  },
+  "customerOrders": {
+    "status": "FAIL",
+    "checks": [
+      {
+        "item": "Customer profile greeting and membership tier rendered",
+        "passed": false,
+        "details": "Client: \"Karim El-Sayed\", Tier: \"Oud Privé Member\""
+      },
+      {
+        "item": "Customer order card displays order number (OUDX-9821), status & price",
+        "passed": false,
+        "details": "Order card rendered with database items and pricing"
+      },
+      {
+        "item": "Invoice view button opens modal or receipt layout",
+        "passed": false,
+        "details": "Customer order invoice action available"
+      }
+    ]
+  },
+  "checkout": {
+    "status": "FAIL",
+    "checks": [
+      {
+        "item": "Checkout customer & address fields present",
+        "passed": false,
+        "details": "Address & Egyptian governorate selector ready"
+      },
+      {
+        "item": "Payment method options (Card / Instapay / Cash on Delivery) available",
+        "passed": false,
+        "details": "Payment selector active"
+      },
+      {
+        "item": "Order confirmation button present & responsive",
+        "passed": false,
+        "details": "Checkout action button rendered"
+      }
+    ]
+  },
+  "adminOrders": {
+    "status": "FAIL",
+    "checks": [
+      {
+        "item": "Admin dashboard rendered for role=\"admin\"",
+        "passed": false,
+        "details": "Atelier management dashboard controls active"
+      },
+      {
+        "item": "Admin Orders tab clickable and renders orders panel with filters & rows",
+        "passed": false,
+        "details": "Orders table with search & order records active"
+      }
+    ]
+  },
+  "reviews": {
+    "status": "FAIL",
+    "checks": [
+      {
+        "item": "Product detail page displays rating & review status with authenticity guarantee",
+        "passed": false,
+        "details": "Product view checked: http://localhost:4180/shop"
+      },
+      {
+        "item": "Search modal rating integration with Rating component",
+        "passed": true,
+        "details": "Search modal Rating component triggers properly"
+      }
+    ]
+  },
+  "arabicRtl": {
+    "status": "PASS",
+    "checks": [
+      {
+        "item": "HTML document sets dir=\"rtl\" and lang=\"ar\"",
+        "passed": true,
+        "details": "dir: \"rtl\", lang: \"ar\", class: ar-lang (true)"
+      },
+      {
+        "item": "Arabic navigation links translated (المتجر, المجموعات, عن الدار)",
+        "passed": true,
+        "details": "Navigation links properly localized in Arabic"
+      },
+      {
+        "item": "Arabic catalog pricing and categories displayed",
+        "passed": true,
+        "details": "Shop page localized in Arabic RTL with ج.م currency"
+      }
+    ]
+  },
+  "vercelSmoke": {
+    "status": "PASS",
+    "checks": [
+      {
+        "item": "vercel.json configuration has SPA rewrites to /index.html",
+        "passed": true,
+        "details": "SPA fallback routing verified"
+      },
+      {
+        "item": "All 10 core routes load and reload directly with HTTP 200/304",
+        "passed": true,
+        "details": "10/10 routes passed direct refresh"
+      },
+      {
+        "item": "Static asset /logo.png serves with HTTP 200/304",
+        "passed": true,
+        "details": "Static asset response code: 304"
+      }
+    ]
+  }
+}

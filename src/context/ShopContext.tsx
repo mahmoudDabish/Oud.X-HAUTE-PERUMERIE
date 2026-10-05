@@ -113,11 +113,11 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return (window.location.pathname || '/') + (window.location.search || '');
   });
 
-  const navigateTo = (route: string) => {
+  const navigateTo = useCallback((route: string) => {
     setCurrentRoute(route);
     window.history.pushState({}, '', route);
     window.scrollTo(0, 0);
-  };
+  }, []);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -171,9 +171,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const getProductBySlug = (slug: string) => {
+  const getProductBySlug = useCallback((slug: string) => {
     return products.find(p => p.slug === slug || p.id === slug);
-  };
+  }, [products]);
 
   // Cart state
   const [cart, setCart] = useState<CartItem[]>(() => {
@@ -265,14 +265,14 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     'Rose'
   ]);
 
-  const addRecentSearch = (query: string) => {
+  const addRecentSearch = useCallback((query: string) => {
     if (!query.trim()) return;
     setRecentSearches(prev => [query.trim(), ...prev.filter(q => q.toLowerCase() !== query.toLowerCase())].slice(0, 6));
-  };
+  }, []);
 
-  const clearRecentSearches = () => {
+  const clearRecentSearches = useCallback(() => {
     setRecentSearches([]);
-  };
+  }, []);
 
   // Mobile Menu State
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -280,9 +280,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Currency
   const [currency, setCurrency] = useState<'EGP' | 'USD' | 'AED'>('EGP');
 
-  const formatPrice = (amountInEGP: number) => {
+  const formatPrice = useCallback((amountInEGP: number) => {
     return formatPriceLocalized(amountInEGP, i18n.language);
-  };
+  }, []);
 
   // User state
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -323,20 +323,20 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Toast
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  const showToast = (title: string, message?: string, type: 'success' | 'info' | 'gold' = 'gold') => {
+  const showToast = useCallback((title: string, message?: string, type: 'success' | 'info' | 'gold' = 'gold') => {
     const id = Date.now().toString() + Math.random().toString(36).substr(2, 4);
     setToasts(prev => [...prev, { id, title, message, type }]);
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));
     }, 4000);
-  };
+  }, []);
 
-  const removeToast = (id: string) => {
+  const removeToast = useCallback((id: string) => {
     setToasts(prev => prev.filter(t => t.id !== id));
-  };
+  }, []);
 
   // Cart operations
-  const addToCart = (product: Product, size?: string, quantity: number = 1, openDrawer: boolean = true) => {
+  const addToCart = useCallback((product: Product, size?: string, quantity: number = 1, openDrawer: boolean = true) => {
     const liveProd = products.find(p => p.id === product.id) || product;
     
     if (liveProd.stock <= 0) {
@@ -363,14 +363,14 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (openDrawer) {
       setIsCartDrawerOpen(true);
     }
-  };
+  }, [products, showToast]);
 
-  const removeFromCart = (productId: string, size: string) => {
+  const removeFromCart = useCallback((productId: string, size: string) => {
     setCart(prev => prev.filter(item => !(item.product.id === productId && item.selectedSize === size)));
     showToast(i18n.t('toast.itemRemoved', 'Item Removed'), i18n.t('toast.fragranceRemovedMsg', 'Removed fragrance from bag'), 'info');
-  };
+  }, [showToast]);
 
-  const updateQuantity = (productId: string, size: string, quantity: number) => {
+  const updateQuantity = useCallback((productId: string, size: string, quantity: number) => {
     if (quantity <= 0) {
       removeFromCart(productId, size);
       return;
@@ -388,12 +388,12 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return item;
     }));
-  };
+  }, [products, removeFromCart, showToast]);
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCart([]);
     setAppliedPromo(null);
-  };
+  }, []);
 
   // Calculations using liveCart
   const cartCount = liveCart.reduce((acc, item) => acc + item.quantity, 0);
@@ -414,7 +414,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // Wishlist operations
-  const toggleWishlist = async (productId: string) => {
+  const toggleWishlist = useCallback(async (productId: string) => {
     const isSaved = wishlist.includes(productId);
     
     // Optimistic UI for guest, real update for authenticated
@@ -447,14 +447,14 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } else {
       showToast(i18n.t('toast.wishlistAdded', 'Saved to Wishlist'), i18n.t('toast.wishlistAddedMsg', 'Added to favorites'), 'gold');
     }
-  };
+  }, [wishlist, user, showToast]);
 
-  const clearWishlist = () => {
+  const clearWishlist = useCallback(() => {
     setWishlist([]);
     showToast(i18n.t('toast.wishlistCleared', 'Wishlist Cleared'), i18n.t('toast.wishlistClearedMsg', 'All saved items removed'), 'info');
-  };
+  }, [showToast]);
 
-  const isInWishlist = (productId: string) => wishlist.includes(productId);
+  const isInWishlist = useCallback((productId: string) => wishlist.includes(productId), [wishlist]);
   const wishlistCount = wishlist.length;
 
   // Authentication
@@ -684,72 +684,111 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const value = React.useMemo(() => ({
+    products,
+    isLoadingProducts,
+    getProductBySlug,
+    cart: liveCart,
+    isCartDrawerOpen,
+    setIsCartDrawerOpen,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    cartCount,
+    subtotal,
+    shipping,
+    discount,
+    appliedPromo,
+    applyPromoCode,
+    removePromoCode,
+    freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
+    amountToFreeShipping,
+    total,
+    wishlist,
+    toggleWishlist,
+    clearWishlist,
+    isInWishlist,
+    wishlistCount,
+    quickViewProduct,
+    setQuickViewProduct,
+    isSearchOpen,
+    setIsSearchOpen,
+    searchQuery,
+    setSearchQuery,
+    recentSearches,
+    addRecentSearch,
+    clearRecentSearches,
+    isMobileMenuOpen,
+    setIsMobileMenuOpen,
+    currency,
+    setCurrency,
+    formatPrice,
+    user,
+    orders: allOrders,
+    allOrders,
+    isLoggedIn,
+    login,
+    register,
+    logout,
+    addOrder,
+    addProduct,
+    updateProduct,
+    deleteProduct,
+    adjustStock,
+    quickAdjustStock,
+    resetProductsToDefault,
+    updateOrderStatus,
+    updateOrderShipping,
+    deleteOrder,
+    toasts,
+    showToast,
+    removeToast,
+    currentRoute,
+    navigateTo
+  }), [
+    products,
+    isLoadingProducts,
+    getProductBySlug,
+    liveCart,
+    isCartDrawerOpen,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    cartCount,
+    subtotal,
+    shipping,
+    discount,
+    appliedPromo,
+    amountToFreeShipping,
+    total,
+    wishlist,
+    toggleWishlist,
+    clearWishlist,
+    isInWishlist,
+    wishlistCount,
+    quickViewProduct,
+    isSearchOpen,
+    searchQuery,
+    recentSearches,
+    addRecentSearch,
+    clearRecentSearches,
+    isMobileMenuOpen,
+    currency,
+    formatPrice,
+    user,
+    allOrders,
+    isLoggedIn,
+    toasts,
+    showToast,
+    removeToast,
+    currentRoute,
+    navigateTo
+  ]);
+
   return (
-    <ShopContext.Provider
-      value={{
-        products,
-        isLoadingProducts,
-        getProductBySlug,
-        cart: liveCart,
-        isCartDrawerOpen,
-        setIsCartDrawerOpen,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart,
-        cartCount,
-        subtotal,
-        shipping,
-        discount,
-        appliedPromo,
-        applyPromoCode,
-        removePromoCode,
-        freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
-        amountToFreeShipping,
-        total,
-        wishlist,
-        toggleWishlist,
-        clearWishlist,
-        isInWishlist,
-        wishlistCount,
-        quickViewProduct,
-        setQuickViewProduct,
-        isSearchOpen,
-        setIsSearchOpen,
-        searchQuery,
-        setSearchQuery,
-        recentSearches,
-        addRecentSearch,
-        clearRecentSearches,
-        isMobileMenuOpen,
-        setIsMobileMenuOpen,
-        currency,
-        setCurrency,
-        formatPrice,
-        user,
-        orders: allOrders,
-        allOrders,
-        isLoggedIn,
-        login,
-        register,
-        logout,
-        addOrder,
-        addProduct,
-        updateProduct,
-        deleteProduct,
-        adjustStock,
-        quickAdjustStock,
-        resetProductsToDefault,
-        updateOrderStatus,
-        updateOrderShipping,
-        deleteOrder,
-        toasts,
-        showToast,
-        removeToast,
-        currentRoute,
-        navigateTo
-      }}
-    >
+    <ShopContext.Provider value={value}>
       {children}
     </ShopContext.Provider>
   );

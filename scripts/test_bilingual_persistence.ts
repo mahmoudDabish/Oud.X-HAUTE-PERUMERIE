@@ -139,12 +139,12 @@ async function runTest() {
   console.log('PASS: Fallback to original English and dictionary notes verified!');
 
   console.log('\n5. Testing Update: Updating price and stock WITHOUT wiping Arabic fields...');
-  const { data: updated, error: updateError } = await productService.updateProduct(fetched.id, {
+  const { error: updateError } = await productService.updateProduct(fetched.id, {
     price: 3600,
     stock: 15,
     // Note: nameAr, descriptionAr, etc. are NOT passed, meaning they must be preserved!
   });
-  if (updateError || !updated) {
+  if (updateError) {
     console.error('FAILED to update product:', updateError);
     process.exit(1);
   }

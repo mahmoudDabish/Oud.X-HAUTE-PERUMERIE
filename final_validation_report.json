@@ -1,0 +1,1400 @@
+{
+  "home": {
+    "m375": {
+      "fcpRange": "340–1024ms",
+      "fcpMedian": 352,
+      "lcpRange": "632–1688ms",
+      "lcpMedian": 640,
+      "clsRange": "0.090–0.407",
+      "clsMedian": 0.09,
+      "tbtMedian": 126,
+      "ttfbMedian": 2,
+      "inpMedian": 35,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 799070,
+      "totalRequests": 26,
+      "supabaseRequests": 5,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 4,
+      "domNodes": 674,
+      "shifts": [
+        {
+          "value": 0.31403940886699505,
+          "time": 1019.0999999642372,
+          "sources": [
+            {
+              "element": "FOOTER.bg-[#050505].text-[#A7A29A].border-t",
+              "prevY": 557,
+              "currY": 0,
+              "dy": -557
+            }
+          ]
+        },
+        {
+          "value": 0.09334647177093192,
+          "time": 1723.199999988079,
+          "sources": [
+            {
+              "element": "DIV.absolute.top-1/2.right-1/4",
+              "prevY": 393.078125,
+              "currY": 441.15625,
+              "dy": 48.078125
+            },
+            {
+              "element": "DIV.absolute.top-1/4.left-1/4",
+              "prevY": 175.9375,
+              "currY": 199.984375,
+              "dy": 24.046875
+            },
+            {
+              "element": "DIV.flex.flex-col.sm:flex-row",
+              "prevY": 390.140625,
+              "currY": 486.296875,
+              "dy": 96.15625
+            },
+            {
+              "element": "DIV.relative.w-full.max-w-md",
+              "prevY": 651.375,
+              "currY": 747.375,
+              "dy": 96
+            },
+            {
+              "element": "P.text-sm.sm:text-base.text-[#A7A29A]",
+              "prevY": 297.890625,
+              "currY": 322.375,
+              "dy": 24.484375
+            }
+          ]
+        }
+      ]
+    },
+    "m390": {
+      "fcpRange": "340–404ms",
+      "fcpMedian": 392,
+      "lcpRange": "672–684ms",
+      "lcpMedian": 676,
+      "clsRange": "0.052–0.052",
+      "clsMedian": 0.052,
+      "tbtMedian": 202,
+      "ttfbMedian": 2,
+      "inpMedian": 21,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 799070,
+      "totalRequests": 26,
+      "supabaseRequests": 5,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 4,
+      "domNodes": 674,
+      "shifts": [
+        {
+          "value": 0.05172356001402969,
+          "time": 822.8000000119209,
+          "sources": [
+            {
+              "element": "DIV.absolute.top-1/2.right-1/4",
+              "prevY": 402.953125,
+              "currY": 430.703125,
+              "dy": 27.75
+            },
+            {
+              "element": "DIV.absolute.top-1/4.left-1/4",
+              "prevY": 180.875,
+              "currY": 194.75,
+              "dy": 13.875
+            },
+            {
+              "element": "DIV.relative.w-full.max-w-md",
+              "prevY": 651.703125,
+              "currY": 707.703125,
+              "dy": 56
+            },
+            {
+              "element": "DIV.flex.flex-col.sm:flex-row",
+              "prevY": 391.140625,
+              "currY": 446.625,
+              "dy": 55.484375
+            },
+            {
+              "element": "P.text-sm.sm:text-base.text-[#A7A29A]",
+              "prevY": 298.890625,
+              "currY": 282.703125,
+              "dy": -16.1875
+            }
+          ]
+        }
+      ]
+    },
+    "d1440": {
+      "fcpRange": "208–264ms",
+      "fcpMedian": 228,
+      "lcpRange": "524–1312ms",
+      "lcpMedian": 564,
+      "clsRange": "0.304–0.304",
+      "clsMedian": 0.304,
+      "tbtMedian": 52,
+      "ttfbMedian": 2,
+      "inpMedian": 31,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 813943,
+      "totalRequests": 27,
+      "supabaseRequests": 5,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 2,
+      "domNodes": 674,
+      "shifts": [
+        {
+          "value": 0.0006511760277349109,
+          "time": 277.39999997615814,
+          "sources": [
+            {
+              "element": "NAV.hidden.lg:flex.items-center",
+              "prevY": 55.546875,
+              "currY": 55.546875,
+              "dy": 0
+            },
+            {
+              "element": "DIV.flex.items-center.gap-1.5",
+              "prevY": 51.296875,
+              "currY": 51.296875,
+              "dy": 0
+            },
+            {
+              "element": "BUTTON.relative.flex.items-center",
+              "prevY": 41.375,
+              "currY": 41.375,
+              "dy": 0
+            },
+            {
+              "element": "",
+              "prevY": 49.25,
+              "currY": 47.25,
+              "dy": -2
+            },
+            {
+              "element": "DIV.flex.items-center.gap-2",
+              "prevY": 47.25,
+              "currY": 47.25,
+              "dy": 0
+            }
+          ]
+        },
+        {
+          "value": 0.27555555555555555,
+          "time": 483,
+          "sources": [
+            {
+              "element": "FOOTER.bg-[#050505].text-[#A7A29A].border-t",
+              "prevY": 652.234375,
+              "currY": 0,
+              "dy": -652.234375
+            }
+          ]
+        },
+        {
+          "value": 0.028287008905606995,
+          "time": 553.1999999880791,
+          "sources": [
+            {
+              "element": "DIV.max-w-7xl.mx-auto.px-4",
+              "prevY": 156.4375,
+              "currY": 140.84375,
+              "dy": -15.59375
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "shop": {
+    "m375": {
+      "fcpRange": "280–376ms",
+      "fcpMedian": 372,
+      "lcpRange": "512–576ms",
+      "lcpMedian": 536,
+      "clsRange": "0.000–0.000",
+      "clsMedian": 0,
+      "tbtMedian": 132,
+      "ttfbMedian": 1,
+      "inpMedian": 11,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 5219284,
+      "totalRequests": 27,
+      "supabaseRequests": 11,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 1,
+      "domNodes": 822,
+      "shifts": []
+    },
+    "m390": {
+      "fcpRange": "328–360ms",
+      "fcpMedian": 356,
+      "lcpRange": "524–560ms",
+      "lcpMedian": 528,
+      "clsRange": "0.000–0.000",
+      "clsMedian": 0,
+      "tbtMedian": 119,
+      "ttfbMedian": 2,
+      "inpMedian": 15,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 5219284,
+      "totalRequests": 27,
+      "supabaseRequests": 11,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 3,
+      "domNodes": 822,
+      "shifts": []
+    },
+    "d1440": {
+      "fcpRange": "208–228ms",
+      "fcpMedian": 212,
+      "lcpRange": "1140–1176ms",
+      "lcpMedian": 1144,
+      "clsRange": "0.137–0.137",
+      "clsMedian": 0.137,
+      "tbtMedian": 28,
+      "ttfbMedian": 2,
+      "inpMedian": 24,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 5828065,
+      "totalRequests": 28,
+      "supabaseRequests": 12,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 1,
+      "domNodes": 822,
+      "shifts": [
+        {
+          "value": 0.000650130241823131,
+          "time": 281.5999999642372,
+          "sources": [
+            {
+              "element": "NAV.hidden.lg:flex.items-center",
+              "prevY": 55.546875,
+              "currY": 55.546875,
+              "dy": 0
+            },
+            {
+              "element": "DIV.flex.items-center.gap-1.5",
+              "prevY": 51.296875,
+              "currY": 51.296875,
+              "dy": 0
+            },
+            {
+              "element": "BUTTON.relative.flex.items-center",
+              "prevY": 41.375,
+              "currY": 41.375,
+              "dy": 0
+            },
+            {
+              "element": "",
+              "prevY": 49.25,
+              "currY": 47.25,
+              "dy": -2
+            },
+            {
+              "element": "DIV.flex.items-center.gap-2",
+              "prevY": 47.25,
+              "currY": 47.25,
+              "dy": 0
+            }
+          ]
+        },
+        {
+          "value": 0.13624093364197531,
+          "time": 446.30000001192093,
+          "sources": [
+            {
+              "element": "FOOTER.bg-[#050505].text-[#A7A29A].border-t",
+              "prevY": 652.234375,
+              "currY": 0,
+              "dy": -652.234375
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "collection": {
+    "m375": {
+      "fcpRange": "340–372ms",
+      "fcpMedian": 344,
+      "lcpRange": "540–572ms",
+      "lcpMedian": 560,
+      "clsRange": "0.000–0.000",
+      "clsMedian": 0,
+      "tbtMedian": 120,
+      "ttfbMedian": 2,
+      "inpMedian": 12,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 803305,
+      "totalRequests": 22,
+      "supabaseRequests": 5,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 3,
+      "domNodes": 309,
+      "shifts": []
+    },
+    "m390": {
+      "fcpRange": "268–392ms",
+      "fcpMedian": 324,
+      "lcpRange": "508–560ms",
+      "lcpMedian": 536,
+      "clsRange": "0.000–0.000",
+      "clsMedian": 0,
+      "tbtMedian": 117,
+      "ttfbMedian": 2,
+      "inpMedian": 10,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 803305,
+      "totalRequests": 22,
+      "supabaseRequests": 5,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 1,
+      "domNodes": 309,
+      "shifts": []
+    },
+    "d1440": {
+      "fcpRange": "204–240ms",
+      "fcpMedian": 236,
+      "lcpRange": "456–504ms",
+      "lcpMedian": 488,
+      "clsRange": "0.070–0.070",
+      "clsMedian": 0.07,
+      "tbtMedian": 28,
+      "ttfbMedian": 9,
+      "inpMedian": 25,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 803305,
+      "totalRequests": 22,
+      "supabaseRequests": 5,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 1,
+      "domNodes": 309,
+      "shifts": [
+        {
+          "value": 0.0006449760112579305,
+          "time": 266.2999999523163,
+          "sources": [
+            {
+              "element": "NAV.hidden.lg:flex.items-center",
+              "prevY": 55.546875,
+              "currY": 55.546875,
+              "dy": 0
+            },
+            {
+              "element": "DIV.flex.items-center.gap-1.5",
+              "prevY": 51.296875,
+              "currY": 51.296875,
+              "dy": 0
+            },
+            {
+              "element": "BUTTON.relative.flex.items-center",
+              "prevY": 41.375,
+              "currY": 41.375,
+              "dy": 0
+            },
+            {
+              "element": "",
+              "prevY": 49.25,
+              "currY": 47.25,
+              "dy": -2
+            },
+            {
+              "element": "DIV.flex.items-center.gap-2",
+              "prevY": 47.25,
+              "currY": 47.25,
+              "dy": 0
+            }
+          ]
+        },
+        {
+          "value": 0.06888888888888889,
+          "time": 461,
+          "sources": [
+            {
+              "element": "FOOTER.bg-[#050505].text-[#A7A29A].border-t",
+              "prevY": 652.234375,
+              "currY": 0,
+              "dy": -652.234375
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "pdp": {
+    "m375": {
+      "fcpRange": "344–356ms",
+      "fcpMedian": 348,
+      "lcpRange": "344–356ms",
+      "lcpMedian": 348,
+      "clsRange": "0.000–0.000",
+      "clsMedian": 0,
+      "tbtMedian": 117,
+      "ttfbMedian": 2,
+      "inpMedian": 10,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "totalRequests": 19,
+      "supabaseRequests": 3,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 2,
+      "domNodes": 202,
+      "shifts": []
+    },
+    "m390": {
+      "fcpRange": "316–356ms",
+      "fcpMedian": 352,
+      "lcpRange": "316–356ms",
+      "lcpMedian": 352,
+      "clsRange": "0.000–0.000",
+      "clsMedian": 0,
+      "tbtMedian": 115,
+      "ttfbMedian": 2,
+      "inpMedian": 11,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "totalRequests": 19,
+      "supabaseRequests": 3,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 2,
+      "domNodes": 202,
+      "shifts": []
+    },
+    "d1440": {
+      "fcpRange": "220–236ms",
+      "fcpMedian": 220,
+      "lcpRange": "220–236ms",
+      "lcpMedian": 220,
+      "clsRange": "0.070–0.070",
+      "clsMedian": 0.07,
+      "tbtMedian": 26,
+      "ttfbMedian": 6,
+      "inpMedian": 24,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "totalRequests": 19,
+      "supabaseRequests": 3,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 1,
+      "domNodes": 202,
+      "shifts": [
+        {
+          "value": 0.0006449760112579305,
+          "time": 243.10000002384186,
+          "sources": [
+            {
+              "element": "NAV.hidden.lg:flex.items-center",
+              "prevY": 55.546875,
+              "currY": 55.546875,
+              "dy": 0
+            },
+            {
+              "element": "DIV.flex.items-center.gap-1.5",
+              "prevY": 51.296875,
+              "currY": 51.296875,
+              "dy": 0
+            },
+            {
+              "element": "BUTTON.relative.flex.items-center",
+              "prevY": 41.375,
+              "currY": 41.375,
+              "dy": 0
+            },
+            {
+              "element": "",
+              "prevY": 49.25,
+              "currY": 47.25,
+              "dy": -2
+            },
+            {
+              "element": "DIV.flex.items-center.gap-2",
+              "prevY": 47.25,
+              "currY": 47.25,
+              "dy": 0
+            }
+          ]
+        },
+        {
+          "value": 0.06888888888888889,
+          "time": 422.19999998807907,
+          "sources": [
+            {
+              "element": "FOOTER.bg-[#050505].text-[#A7A29A].border-t",
+              "prevY": 652.234375,
+              "currY": 0,
+              "dy": -652.234375
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cart": {
+    "m375": {
+      "fcpRange": "348–372ms",
+      "fcpMedian": 356,
+      "lcpRange": "540–572ms",
+      "lcpMedian": 564,
+      "clsRange": "0.000–0.000",
+      "clsMedian": 0,
+      "tbtMedian": 124,
+      "ttfbMedian": 2,
+      "inpMedian": 10,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 3,
+      "domNodes": 226,
+      "shifts": []
+    },
+    "m390": {
+      "fcpRange": "312–356ms",
+      "fcpMedian": 336,
+      "lcpRange": "312–356ms",
+      "lcpMedian": 336,
+      "clsRange": "0.000–0.000",
+      "clsMedian": 0,
+      "tbtMedian": 114,
+      "ttfbMedian": 2,
+      "inpMedian": 13,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 2,
+      "domNodes": 226,
+      "shifts": []
+    },
+    "d1440": {
+      "fcpRange": "216–224ms",
+      "fcpMedian": 216,
+      "lcpRange": "448–460ms",
+      "lcpMedian": 452,
+      "clsRange": "0.070–0.070",
+      "clsMedian": 0.07,
+      "tbtMedian": 31,
+      "ttfbMedian": 2,
+      "inpMedian": 53,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 1,
+      "domNodes": 226,
+      "shifts": [
+        {
+          "value": 0.0006449760112579305,
+          "time": 276.30000001192093,
+          "sources": [
+            {
+              "element": "NAV.hidden.lg:flex.items-center",
+              "prevY": 55.546875,
+              "currY": 55.546875,
+              "dy": 0
+            },
+            {
+              "element": "DIV.flex.items-center.gap-1.5",
+              "prevY": 51.296875,
+              "currY": 51.296875,
+              "dy": 0
+            },
+            {
+              "element": "BUTTON.relative.flex.items-center",
+              "prevY": 41.375,
+              "currY": 41.375,
+              "dy": 0
+            },
+            {
+              "element": "",
+              "prevY": 49.25,
+              "currY": 47.25,
+              "dy": -2
+            },
+            {
+              "element": "DIV.flex.items-center.gap-2",
+              "prevY": 47.25,
+              "currY": 47.25,
+              "dy": 0
+            }
+          ]
+        },
+        {
+          "value": 0.06888888888888889,
+          "time": 425.7000000476837,
+          "sources": [
+            {
+              "element": "FOOTER.bg-[#050505].text-[#A7A29A].border-t",
+              "prevY": 652.234375,
+              "currY": 0,
+              "dy": -652.234375
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "checkout": {
+    "m375": {
+      "fcpRange": "356–372ms",
+      "fcpMedian": 356,
+      "lcpRange": "540–556ms",
+      "lcpMedian": 556,
+      "clsRange": "0.000–0.000",
+      "clsMedian": 0,
+      "tbtMedian": 112,
+      "ttfbMedian": 1,
+      "inpMedian": 11,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 2,
+      "domNodes": 215,
+      "shifts": []
+    },
+    "m390": {
+      "fcpRange": "332–384ms",
+      "fcpMedian": 360,
+      "lcpRange": "532–560ms",
+      "lcpMedian": 552,
+      "clsRange": "0.000–0.000",
+      "clsMedian": 0,
+      "tbtMedian": 106,
+      "ttfbMedian": 8,
+      "inpMedian": 8,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 3,
+      "domNodes": 215,
+      "shifts": []
+    },
+    "d1440": {
+      "fcpRange": "200–208ms",
+      "fcpMedian": 208,
+      "lcpRange": "448–460ms",
+      "lcpMedian": 456,
+      "clsRange": "0.070–0.070",
+      "clsMedian": 0.07,
+      "tbtMedian": 25,
+      "ttfbMedian": 2,
+      "inpMedian": 76,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 1,
+      "domNodes": 215,
+      "shifts": [
+        {
+          "value": 0.0006449760112579305,
+          "time": 233.89999997615814,
+          "sources": [
+            {
+              "element": "NAV.hidden.lg:flex.items-center",
+              "prevY": 55.546875,
+              "currY": 55.546875,
+              "dy": 0
+            },
+            {
+              "element": "DIV.flex.items-center.gap-1.5",
+              "prevY": 51.296875,
+              "currY": 51.296875,
+              "dy": 0
+            },
+            {
+              "element": "BUTTON.relative.flex.items-center",
+              "prevY": 41.375,
+              "currY": 41.375,
+              "dy": 0
+            },
+            {
+              "element": "",
+              "prevY": 49.25,
+              "currY": 47.25,
+              "dy": -2
+            },
+            {
+              "element": "DIV.flex.items-center.gap-2",
+              "prevY": 47.25,
+              "currY": 47.25,
+              "dy": 0
+            }
+          ]
+        },
+        {
+          "value": 0.06888888888888889,
+          "time": 432.89999997615814,
+          "sources": [
+            {
+              "element": "FOOTER.bg-[#050505].text-[#A7A29A].border-t",
+              "prevY": 652.234375,
+              "currY": 0,
+              "dy": -652.234375
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "account": {
+    "m375": {
+      "fcpRange": "344–360ms",
+      "fcpMedian": 356,
+      "lcpRange": "540–560ms",
+      "lcpMedian": 544,
+      "clsRange": "0.000–0.000",
+      "clsMedian": 0,
+      "tbtMedian": 116,
+      "ttfbMedian": 1,
+      "inpMedian": 11,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 3,
+      "domNodes": 210,
+      "shifts": []
+    },
+    "m390": {
+      "fcpRange": "340–376ms",
+      "fcpMedian": 360,
+      "lcpRange": "340–376ms",
+      "lcpMedian": 360,
+      "clsRange": "0.000–0.000",
+      "clsMedian": 0,
+      "tbtMedian": 129,
+      "ttfbMedian": 2,
+      "inpMedian": 12,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 2,
+      "domNodes": 210,
+      "shifts": []
+    },
+    "d1440": {
+      "fcpRange": "192–212ms",
+      "fcpMedian": 208,
+      "lcpRange": "192–212ms",
+      "lcpMedian": 208,
+      "clsRange": "0.070–0.070",
+      "clsMedian": 0.07,
+      "tbtMedian": 27,
+      "ttfbMedian": 2,
+      "inpMedian": 32,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 1,
+      "domNodes": 210,
+      "shifts": [
+        {
+          "value": 0.0006626796727644891,
+          "time": 249.5999999642372,
+          "sources": [
+            {
+              "element": "NAV.hidden.lg:flex.items-center",
+              "prevY": 55.546875,
+              "currY": 55.546875,
+              "dy": 0
+            },
+            {
+              "element": "DIV.flex.items-center.gap-1.5",
+              "prevY": 51.296875,
+              "currY": 51.296875,
+              "dy": 0
+            },
+            {
+              "element": "BUTTON.relative.flex.items-center",
+              "prevY": 41.375,
+              "currY": 41.375,
+              "dy": 0
+            },
+            {
+              "element": "",
+              "prevY": 49.25,
+              "currY": 47.25,
+              "dy": -2
+            },
+            {
+              "element": "DIV.flex.items-center.gap-2",
+              "prevY": 47.25,
+              "currY": 47.25,
+              "dy": 0
+            }
+          ]
+        },
+        {
+          "value": 0.06888888888888889,
+          "time": 418.0999999642372,
+          "sources": [
+            {
+              "element": "FOOTER.bg-[#050505].text-[#A7A29A].border-t",
+              "prevY": 652.234375,
+              "currY": 0,
+              "dy": -652.234375
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "search": {
+    "m375": {
+      "fcpRange": "332–356ms",
+      "fcpMedian": 348,
+      "lcpRange": "616–664ms",
+      "lcpMedian": 620,
+      "clsRange": "0.090–0.090",
+      "clsMedian": 0.09,
+      "tbtMedian": 198,
+      "ttfbMedian": 2,
+      "inpMedian": 22,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 799070,
+      "totalRequests": 28,
+      "supabaseRequests": 5,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 5,
+      "domNodes": 753,
+      "shifts": [
+        {
+          "value": 0.09037176724137931,
+          "time": 795.5999999642372,
+          "sources": [
+            {
+              "element": "DIV.absolute.top-1/2.right-1/4",
+              "prevY": 393.578125,
+              "currY": 441.15625,
+              "dy": 47.578125
+            },
+            {
+              "element": "DIV.absolute.top-1/4.left-1/4",
+              "prevY": 176.1875,
+              "currY": 199.984375,
+              "dy": 23.796875
+            },
+            {
+              "element": "DIV.flex.flex-col.sm:flex-row",
+              "prevY": 391.140625,
+              "currY": 486.296875,
+              "dy": 95.15625
+            },
+            {
+              "element": "DIV.relative.w-full.max-w-md",
+              "prevY": 652.375,
+              "currY": 747.375,
+              "dy": 95
+            },
+            {
+              "element": "P.text-sm.sm:text-base.text-[#A7A29A]",
+              "prevY": 298.890625,
+              "currY": 322.375,
+              "dy": 23.484375
+            }
+          ]
+        }
+      ]
+    },
+    "m390": {
+      "fcpRange": "324–368ms",
+      "fcpMedian": 356,
+      "lcpRange": "592–668ms",
+      "lcpMedian": 624,
+      "clsRange": "0.052–0.052",
+      "clsMedian": 0.052,
+      "tbtMedian": 153,
+      "ttfbMedian": 2,
+      "inpMedian": 19,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 799070,
+      "totalRequests": 28,
+      "supabaseRequests": 5,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 3,
+      "domNodes": 753,
+      "shifts": [
+        {
+          "value": 0.05172356001402969,
+          "time": 776.8999999761581,
+          "sources": [
+            {
+              "element": "DIV.absolute.top-1/2.right-1/4",
+              "prevY": 402.953125,
+              "currY": 430.703125,
+              "dy": 27.75
+            },
+            {
+              "element": "DIV.absolute.top-1/4.left-1/4",
+              "prevY": 180.875,
+              "currY": 194.75,
+              "dy": 13.875
+            },
+            {
+              "element": "DIV.relative.w-full.max-w-md",
+              "prevY": 651.703125,
+              "currY": 707.703125,
+              "dy": 56
+            },
+            {
+              "element": "DIV.flex.flex-col.sm:flex-row",
+              "prevY": 391.140625,
+              "currY": 446.625,
+              "dy": 55.484375
+            },
+            {
+              "element": "P.text-sm.sm:text-base.text-[#A7A29A]",
+              "prevY": 298.890625,
+              "currY": 282.703125,
+              "dy": -16.1875
+            }
+          ]
+        }
+      ]
+    },
+    "d1440": {
+      "fcpRange": "220–272ms",
+      "fcpMedian": 240,
+      "lcpRange": "572–1540ms",
+      "lcpMedian": 1488,
+      "clsRange": "0.304–0.304",
+      "clsMedian": 0.304,
+      "tbtMedian": 46,
+      "ttfbMedian": 32,
+      "inpMedian": 41,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 813943,
+      "totalRequests": 29,
+      "supabaseRequests": 5,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 2,
+      "domNodes": 753,
+      "shifts": [
+        {
+          "value": 0.0006511760277349109,
+          "time": 254.39999997615814,
+          "sources": [
+            {
+              "element": "NAV.hidden.lg:flex.items-center",
+              "prevY": 55.546875,
+              "currY": 55.546875,
+              "dy": 0
+            },
+            {
+              "element": "DIV.flex.items-center.gap-1.5",
+              "prevY": 51.296875,
+              "currY": 51.296875,
+              "dy": 0
+            },
+            {
+              "element": "BUTTON.relative.flex.items-center",
+              "prevY": 41.375,
+              "currY": 41.375,
+              "dy": 0
+            },
+            {
+              "element": "",
+              "prevY": 49.25,
+              "currY": 47.25,
+              "dy": -2
+            },
+            {
+              "element": "DIV.flex.items-center.gap-2",
+              "prevY": 47.25,
+              "currY": 47.25,
+              "dy": 0
+            }
+          ]
+        },
+        {
+          "value": 0.27555555555555555,
+          "time": 472.89999997615814,
+          "sources": [
+            {
+              "element": "FOOTER.bg-[#050505].text-[#A7A29A].border-t",
+              "prevY": 652.234375,
+              "currY": 0,
+              "dy": -652.234375
+            }
+          ]
+        },
+        {
+          "value": 0.028287008905606995,
+          "time": 540.5,
+          "sources": [
+            {
+              "element": "DIV.max-w-7xl.mx-auto.px-4",
+              "prevY": 156.4375,
+              "currY": 140.84375,
+              "dy": -15.59375
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "arabic_home": {
+    "m375": {
+      "fcpRange": "308–392ms",
+      "fcpMedian": 328,
+      "lcpRange": "580–692ms",
+      "lcpMedian": 676,
+      "clsRange": "0.062–0.615",
+      "clsMedian": 0.062,
+      "tbtMedian": 217,
+      "ttfbMedian": 2,
+      "inpMedian": 24,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 799070,
+      "totalRequests": 29,
+      "supabaseRequests": 5,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 5,
+      "domNodes": 674,
+      "shifts": [
+        {
+          "value": 0.09037176724137931,
+          "time": 719.3999999761581,
+          "sources": [
+            {
+              "element": "DIV.absolute.top-1/2.right-1/4",
+              "prevY": 393.578125,
+              "currY": 441.15625,
+              "dy": 47.578125
+            },
+            {
+              "element": "DIV.absolute.top-1/4.left-1/4",
+              "prevY": 176.1875,
+              "currY": 199.984375,
+              "dy": 23.796875
+            },
+            {
+              "element": "DIV.flex.flex-col.sm:flex-row",
+              "prevY": 391.140625,
+              "currY": 486.296875,
+              "dy": 95.15625
+            },
+            {
+              "element": "DIV.relative.w-full.max-w-md",
+              "prevY": 652.375,
+              "currY": 747.375,
+              "dy": 95
+            },
+            {
+              "element": "P.text-sm.sm:text-base.text-[#A7A29A]",
+              "prevY": 298.890625,
+              "currY": 322.375,
+              "dy": 23.484375
+            }
+          ]
+        },
+        {
+          "value": 0.5040086252396321,
+          "time": 1954,
+          "sources": [
+            {
+              "element": "DIV.absolute.top-1/2.right-1/4",
+              "prevY": 441.15625,
+              "currY": 410.375,
+              "dy": -30.78125
+            },
+            {
+              "element": "DIV.absolute.top-1/4.left-1/4",
+              "prevY": 199.984375,
+              "currY": 184.59375,
+              "dy": -15.390625
+            },
+            {
+              "element": "DIV.flex.flex-col.sm:flex-row",
+              "prevY": 486.296875,
+              "currY": 424.734375,
+              "dy": -61.5625
+            },
+            {
+              "element": "P.text-sm.sm:text-base.text-[#A7A29A]",
+              "prevY": 322.375,
+              "currY": 284.703125,
+              "dy": -37.671875
+            },
+            {
+              "element": "DIV.relative.w-full.max-w-md",
+              "prevY": 746.8125,
+              "currY": 685.8125,
+              "dy": -61
+            }
+          ]
+        },
+        {
+          "value": 0.0003622509645951127,
+          "time": 1963,
+          "sources": [
+            {
+              "element": "DIV.absolute.inset-0.bg-gradient-to-t",
+              "prevY": 739.5,
+              "currY": 739.5,
+              "dy": 0
+            }
+          ]
+        },
+        {
+          "value": 0.0006858013419398676,
+          "time": 2173.699999988079,
+          "sources": [
+            {
+              "element": "",
+              "prevY": 167.171875,
+              "currY": 162.171875,
+              "dy": -5
+            },
+            {
+              "element": "DIV.cursor-pointer.group.flex",
+              "prevY": 12.6875,
+              "currY": 10.6875,
+              "dy": -2
+            }
+          ]
+        },
+        {
+          "value": 0.020022034021694286,
+          "time": 2304.699999988079,
+          "sources": [
+            {
+              "element": "DIV.absolute.top-1/2.right-1/4",
+              "prevY": 410.875,
+              "currY": 422.828125,
+              "dy": 11.953125
+            },
+            {
+              "element": "DIV.absolute.top-1/4.left-1/4",
+              "prevY": 184.84375,
+              "currY": 190.8125,
+              "dy": 5.96875
+            },
+            {
+              "element": "DIV.flex.flex-col.sm:flex-row",
+              "prevY": 425.734375,
+              "currY": 449.625,
+              "dy": 23.890625
+            },
+            {
+              "element": "DIV.relative.w-full.max-w-md",
+              "prevY": 686.703125,
+              "currY": 710.703125,
+              "dy": 24
+            },
+            {
+              "element": "DIV.pt-6.sm:pt-8.flex",
+              "prevY": 585.484375,
+              "currY": 609.375,
+              "dy": 23.890625
+            }
+          ]
+        }
+      ]
+    },
+    "m390": {
+      "fcpRange": "296–392ms",
+      "fcpMedian": 384,
+      "lcpRange": "644–1816ms",
+      "lcpMedian": 692,
+      "clsRange": "0.054–0.056",
+      "clsMedian": 0.055,
+      "tbtMedian": 161,
+      "ttfbMedian": 1,
+      "inpMedian": 28,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 799070,
+      "totalRequests": 29,
+      "supabaseRequests": 5,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 5,
+      "domNodes": 674,
+      "shifts": [
+        {
+          "value": 0.05418217608450693,
+          "time": 872.3999999761581,
+          "sources": [
+            {
+              "element": "DIV.absolute.top-1/2.right-1/4",
+              "prevY": 396.359375,
+              "currY": 420.25,
+              "dy": 23.890625
+            },
+            {
+              "element": "DIV.absolute.top-1/4.left-1/4",
+              "prevY": 177.578125,
+              "currY": 189.53125,
+              "dy": 11.953125
+            },
+            {
+              "element": "DIV.relative.w-full.max-w-md",
+              "prevY": 638.8125,
+              "currY": 686.8125,
+              "dy": 48
+            },
+            {
+              "element": "DIV.flex.flex-col.sm:flex-row",
+              "prevY": 377.953125,
+              "currY": 425.734375,
+              "dy": 47.78125
+            },
+            {
+              "element": "DIV.pt-6.sm:pt-8.flex",
+              "prevY": 537.703125,
+              "currY": 585.484375,
+              "dy": 47.78125
+            }
+          ]
+        }
+      ]
+    },
+    "d1440": {
+      "fcpRange": "208–288ms",
+      "fcpMedian": 240,
+      "lcpRange": "524–568ms",
+      "lcpMedian": 540,
+      "clsRange": "0.312–0.313",
+      "clsMedian": 0.313,
+      "tbtMedian": 77,
+      "ttfbMedian": 2,
+      "inpMedian": 24,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 813943,
+      "totalRequests": 30,
+      "supabaseRequests": 5,
+      "duplicateRequests": 0,
+      "failedRequests": 0,
+      "longTasks": 2,
+      "domNodes": 674,
+      "shifts": [
+        {
+          "value": 0.0008340446566358024,
+          "time": 265.5,
+          "sources": [
+            {
+              "element": "NAV.hidden.lg:flex.items-center",
+              "prevY": 55.546875,
+              "currY": 55.546875,
+              "dy": 0
+            },
+            {
+              "element": "BUTTON.relative.flex.items-center",
+              "prevY": 41.375,
+              "currY": 41.375,
+              "dy": 0
+            },
+            {
+              "element": "",
+              "prevY": 44.25,
+              "currY": 41.25,
+              "dy": -3
+            },
+            {
+              "element": "SPAN.mt-6.text-[10px].tracking-[4px]",
+              "prevY": 412.828125,
+              "currY": 412.828125,
+              "dy": 0
+            },
+            {
+              "element": "",
+              "prevY": 7.4375,
+              "currY": 7.4375,
+              "dy": 0
+            }
+          ]
+        },
+        {
+          "value": 0.27555555555555555,
+          "time": 500.69999998807907,
+          "sources": [
+            {
+              "element": "FOOTER.bg-[#050505].text-[#A7A29A].border-t",
+              "prevY": 652.234375,
+              "currY": 0,
+              "dy": -652.234375
+            }
+          ]
+        },
+        {
+          "value": 0.03620300282921811,
+          "time": 577.1999999880791,
+          "sources": [
+            {
+              "element": "DIV.max-w-7xl.mx-auto.px-4",
+              "prevY": 156.4375,
+              "currY": 137.84375,
+              "dy": -18.59375
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

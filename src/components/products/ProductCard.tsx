@@ -25,7 +25,7 @@ export interface ProductCardProps {
   className?: string;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({
+const ProductCardComponent: React.FC<ProductCardProps> = ({
   product,
   image,
   name,
@@ -114,6 +114,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           referrerPolicy="no-referrer"
           loading="lazy"
           decoding="async"
+          width={360}
+          height={450}
           onError={(e) => {
             if (e.currentTarget.src !== window.location.origin + '/images/hero-perfume.webp') {
               e.currentTarget.src = '/images/hero-perfume.webp';
@@ -256,3 +258,5 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     </div>
   );
 };
+
+export const ProductCard = React.memo(ProductCardComponent);

@@ -4,15 +4,13 @@ import { SmoothScrollProvider } from './context/SmoothScrollProvider';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
-import { MobileMenu } from './components/layout/MobileMenu';
-import { CartDrawer } from './components/cart/CartDrawer';
-import { SearchModal } from './components/search/SearchModal';
-import { QuickViewModal } from './components/ui/QuickViewModal';
 import { Toast } from './components/ui/Toast';
 import { LoadingFallback } from './components/ui/LoadingFallback';
 
+import { HomePage } from './pages/HomePage';
+
 // Route-level code-splitting for high acceleration & reduced initial bundle
-const HomePage = lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })));
+
 const ShopPage = lazy(() => import('./pages/ShopPage').then(m => ({ default: m.ShopPage })));
 const CollectionPage = lazy(() => import('./pages/CollectionPage').then(m => ({ default: m.CollectionPage })));
 const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage').then(m => ({ default: m.ProductDetailPage })));
@@ -25,8 +23,14 @@ const AboutPage = lazy(() => import('./pages/AboutPage').then(m => ({ default: m
 const ContactPage = lazy(() => import('./pages/ContactPage').then(m => ({ default: m.ContactPage })));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
 
+// Interactive Drawers & Overlays - Code split for fast initial page load
+const CartDrawer = lazy(() => import('./components/cart/CartDrawer').then(m => ({ default: m.CartDrawer })));
+const MobileMenu = lazy(() => import('./components/layout/MobileMenu').then(m => ({ default: m.MobileMenu })));
+const SearchModal = lazy(() => import('./components/search/SearchModal').then(m => ({ default: m.SearchModal })));
+const QuickViewModal = lazy(() => import('./components/ui/QuickViewModal').then(m => ({ default: m.QuickViewModal })));
+
 const AppContent: React.FC = () => {
-  const { currentRoute } = useShop();
+  const { currentRoute, isCartDrawerOpen, isMobileMenuOpen, isSearchOpen, quickViewProduct } = useShop();
 
   const renderCurrentView = () => {
     // Clean route path without query parameters or trailing slash
@@ -106,12 +110,14 @@ const AppContent: React.FC = () => {
       {/* 3. Global Luxury Footer */}
       <Footer />
 
-      {/* 4. Interactive Drawers & Overlays - Hidden during print */}
+      {/* 4. Interactive Drawers & Overlays - Lazy-loaded on demand */}
       <div className="no-print">
-        <CartDrawer />
-        <MobileMenu />
-        <SearchModal />
-        <QuickViewModal />
+        <Suspense fallback={null}>
+          {isCartDrawerOpen && <CartDrawer />}
+          {isMobileMenuOpen && <MobileMenu />}
+          {isSearchOpen && <SearchModal />}
+          {quickViewProduct && <QuickViewModal />}
+        </Suspense>
         <Toast />
       </div>
     </div>

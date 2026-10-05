@@ -1,0 +1,791 @@
+[
+  {
+    "testCase": "Home English 375x812",
+    "viewport": "375x812",
+    "lang": "en",
+    "cls": {
+      "median": 0.0904,
+      "min": 0,
+      "max": 0.0933
+    },
+    "fcp": {
+      "median": 460,
+      "min": 304,
+      "max": 1888
+    },
+    "lcp": {
+      "median": 492,
+      "min": 356,
+      "max": 2220
+    },
+    "tbt": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "ttfb": {
+      "median": 7,
+      "min": 5,
+      "max": 12
+    },
+    "inp": {
+      "median": 3,
+      "min": 1,
+      "max": 6
+    },
+    "domNodes": 670,
+    "consoleErrors": 0,
+    "failedRequests": 0,
+    "shiftsDetailed": [
+      {
+        "value": 0.09334647177093192,
+        "startTime": 1905.0999999642372,
+        "sources": [
+          {
+            "element": "DIV.absolute.top-1/2.right-1/4",
+            "prevRect": {
+              "x": 0,
+              "y": 393.078125,
+              "w": 281.25,
+              "h": 418.921875
+            },
+            "currRect": {
+              "x": 0,
+              "y": 441.15625,
+              "w": 281.25,
+              "h": 370.84375
+            }
+          },
+          {
+            "element": "DIV.absolute.top-1/4.left-1/4",
+            "prevRect": {
+              "x": 0,
+              "y": 175.9375,
+              "w": 261.75,
+              "h": 336
+            },
+            "currRect": {
+              "x": 0,
+              "y": 199.984375,
+              "w": 261.75,
+              "h": 336
+            }
+          },
+          {
+            "element": "DIV.flex.flex-col.sm:flex-row",
+            "prevRect": {
+              "x": 0,
+              "y": 390.140625,
+              "w": 375,
+              "h": 134.5625
+            },
+            "currRect": {
+              "x": 0,
+              "y": 486.296875,
+              "w": 375,
+              "h": 134.5625
+            }
+          },
+          {
+            "element": "DIV.relative.w-full.max-w-md",
+            "prevRect": {
+              "x": 0,
+              "y": 651.375,
+              "w": 375,
+              "h": 160.625
+            },
+            "currRect": {
+              "x": 0,
+              "y": 747.375,
+              "w": 375,
+              "h": 64.625
+            }
+          },
+          {
+            "element": "P.text-sm.sm:text-base.text-[#A7A29A]",
+            "prevRect": {
+              "x": 16.796875,
+              "y": 297.890625,
+              "w": 341.40625,
+              "h": 71.671875
+            },
+            "currRect": {
+              "x": 16.796875,
+              "y": 322.375,
+              "w": 341.40625,
+              "h": 143.34375
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "testCase": "Home English 390x844",
+    "viewport": "390x844",
+    "lang": "en",
+    "cls": {
+      "median": 0.0517,
+      "min": 0,
+      "max": 0.0517
+    },
+    "fcp": {
+      "median": 340,
+      "min": 284,
+      "max": 376
+    },
+    "lcp": {
+      "median": 376,
+      "min": 352,
+      "max": 460
+    },
+    "tbt": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "ttfb": {
+      "median": 2,
+      "min": 2,
+      "max": 9
+    },
+    "inp": {
+      "median": 5,
+      "min": 1,
+      "max": 14
+    },
+    "domNodes": 670,
+    "consoleErrors": 0,
+    "failedRequests": 0,
+    "shiftsDetailed": [
+      {
+        "value": 0.05172356001402969,
+        "startTime": 753.1999999880791,
+        "sources": [
+          {
+            "element": "DIV.absolute.top-1/2.right-1/4",
+            "prevRect": {
+              "x": 0,
+              "y": 402.953125,
+              "w": 292.5,
+              "h": 441.046875
+            },
+            "currRect": {
+              "x": 0,
+              "y": 430.703125,
+              "w": 292.5,
+              "h": 413.296875
+            }
+          },
+          {
+            "element": "DIV.absolute.top-1/4.left-1/4",
+            "prevRect": {
+              "x": 0,
+              "y": 180.875,
+              "w": 265.5,
+              "h": 336
+            },
+            "currRect": {
+              "x": 0,
+              "y": 194.75,
+              "w": 265.5,
+              "h": 336
+            }
+          },
+          {
+            "element": "DIV.relative.w-full.max-w-md",
+            "prevRect": {
+              "x": 0,
+              "y": 651.703125,
+              "w": 390,
+              "h": 192.296875
+            },
+            "currRect": {
+              "x": 0,
+              "y": 707.703125,
+              "w": 390,
+              "h": 136.296875
+            }
+          },
+          {
+            "element": "DIV.flex.flex-col.sm:flex-row",
+            "prevRect": {
+              "x": 0,
+              "y": 391.140625,
+              "w": 390,
+              "h": 134.5625
+            },
+            "currRect": {
+              "x": 0,
+              "y": 446.625,
+              "w": 390,
+              "h": 134.5625
+            }
+          },
+          {
+            "element": "P.text-sm.sm:text-base.text-[#A7A29A]",
+            "prevRect": {
+              "x": 15.796875,
+              "y": 298.890625,
+              "w": 357.40625,
+              "h": 71.671875
+            },
+            "currRect": {
+              "x": 15.796875,
+              "y": 282.703125,
+              "w": 359,
+              "h": 143.34375
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "testCase": "Home English 1440x900",
+    "viewport": "1440x900",
+    "lang": "en",
+    "cls": {
+      "median": 0.03,
+      "min": 0.0293,
+      "max": 0.03
+    },
+    "fcp": {
+      "median": 352,
+      "min": 296,
+      "max": 372
+    },
+    "lcp": {
+      "median": 368,
+      "min": 312,
+      "max": 372
+    },
+    "tbt": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "ttfb": {
+      "median": 2,
+      "min": 2,
+      "max": 4
+    },
+    "inp": {
+      "median": 4,
+      "min": 1,
+      "max": 7
+    },
+    "domNodes": 670,
+    "consoleErrors": 0,
+    "failedRequests": 0,
+    "shiftsDetailed": [
+      {
+        "value": 0.0017472094626093109,
+        "startTime": 387,
+        "sources": [
+          {
+            "element": "",
+            "prevRect": {
+              "x": 64.390625,
+              "y": 301.5625,
+              "w": 743.046875,
+              "h": 94
+            },
+            "currRect": {
+              "x": 64.390625,
+              "y": 297.0625,
+              "w": 743.046875,
+              "h": 94
+            }
+          },
+          {
+            "element": "NAV.hidden.lg:flex.items-center",
+            "prevRect": {
+              "x": 301.53125,
+              "y": 55.546875,
+              "w": 570.90625,
+              "h": 30.203125
+            },
+            "currRect": {
+              "x": 278.296875,
+              "y": 55.546875,
+              "w": 620.625,
+              "h": 30.203125
+            }
+          },
+          {
+            "element": "DIV.flex.items-center.gap-1.5",
+            "prevRect": {
+              "x": 984.953125,
+              "y": 51.296875,
+              "w": 388.65625,
+              "h": 38.6875
+            },
+            "currRect": {
+              "x": 976.984375,
+              "y": 51.296875,
+              "w": 396.625,
+              "h": 38.6875
+            }
+          },
+          {
+            "element": "BUTTON.inline-flex.items-center.justify-center",
+            "prevRect": {
+              "x": 309.59375,
+              "y": 600.875,
+              "w": 266.46875,
+              "h": 53.578125
+            },
+            "currRect": {
+              "x": 316.59375,
+              "y": 601.875,
+              "w": 270.9375,
+              "h": 53.578125
+            }
+          },
+          {
+            "element": "BUTTON.relative.flex.items-center",
+            "prevRect": {
+              "x": 1186.40625,
+              "y": 41.375,
+              "w": 155.609375,
+              "h": 78.53125
+            },
+            "currRect": {
+              "x": 1182.40625,
+              "y": 41.375,
+              "w": 159.625,
+              "h": 78.53125
+            }
+          }
+        ]
+      },
+      {
+        "value": 0.028287008905606995,
+        "startTime": 629,
+        "sources": [
+          {
+            "element": "DIV.max-w-7xl.mx-auto.px-4",
+            "prevRect": {
+              "x": 32,
+              "y": 156.4375,
+              "w": 1376,
+              "h": 739.578125
+            },
+            "currRect": {
+              "x": 32,
+              "y": 140.84375,
+              "w": 1376,
+              "h": 759.15625
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "testCase": "Home Arabic 375x812",
+    "viewport": "375x812",
+    "lang": "ar",
+    "cls": {
+      "median": 0.0904,
+      "min": 0,
+      "max": 0.0904
+    },
+    "fcp": {
+      "median": 288,
+      "min": 280,
+      "max": 308
+    },
+    "lcp": {
+      "median": 320,
+      "min": 296,
+      "max": 324
+    },
+    "tbt": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "ttfb": {
+      "median": 2,
+      "min": 2,
+      "max": 3
+    },
+    "inp": {
+      "median": 6,
+      "min": 4,
+      "max": 10
+    },
+    "domNodes": 670,
+    "consoleErrors": 0,
+    "failedRequests": 0,
+    "shiftsDetailed": [
+      {
+        "value": 0.09037176724137931,
+        "startTime": 588.3999999761581,
+        "sources": [
+          {
+            "element": "DIV.absolute.top-1/2.right-1/4",
+            "prevRect": {
+              "x": 0,
+              "y": 393.578125,
+              "w": 281.25,
+              "h": 418.421875
+            },
+            "currRect": {
+              "x": 0,
+              "y": 441.15625,
+              "w": 281.25,
+              "h": 370.84375
+            }
+          },
+          {
+            "element": "DIV.absolute.top-1/4.left-1/4",
+            "prevRect": {
+              "x": 0,
+              "y": 176.1875,
+              "w": 261.75,
+              "h": 336
+            },
+            "currRect": {
+              "x": 0,
+              "y": 199.984375,
+              "w": 261.75,
+              "h": 336
+            }
+          },
+          {
+            "element": "DIV.flex.flex-col.sm:flex-row",
+            "prevRect": {
+              "x": 0,
+              "y": 391.140625,
+              "w": 375,
+              "h": 134.5625
+            },
+            "currRect": {
+              "x": 0,
+              "y": 486.296875,
+              "w": 375,
+              "h": 134.5625
+            }
+          },
+          {
+            "element": "DIV.relative.w-full.max-w-md",
+            "prevRect": {
+              "x": 0,
+              "y": 652.375,
+              "w": 375,
+              "h": 159.625
+            },
+            "currRect": {
+              "x": 0,
+              "y": 747.375,
+              "w": 375,
+              "h": 64.625
+            }
+          },
+          {
+            "element": "P.text-sm.sm:text-base.text-[#A7A29A]",
+            "prevRect": {
+              "x": 15.796875,
+              "y": 298.890625,
+              "w": 342.40625,
+              "h": 71.671875
+            },
+            "currRect": {
+              "x": 16.796875,
+              "y": 322.375,
+              "w": 341.40625,
+              "h": 143.34375
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "testCase": "Home Arabic 390x844",
+    "viewport": "390x844",
+    "lang": "ar",
+    "cls": {
+      "median": 0.0517,
+      "min": 0,
+      "max": 0.0517
+    },
+    "fcp": {
+      "median": 340,
+      "min": 276,
+      "max": 344
+    },
+    "lcp": {
+      "median": 344,
+      "min": 276,
+      "max": 372
+    },
+    "tbt": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "ttfb": {
+      "median": 2,
+      "min": 2,
+      "max": 22
+    },
+    "inp": {
+      "median": 8,
+      "min": 2,
+      "max": 10
+    },
+    "domNodes": 670,
+    "consoleErrors": 0,
+    "failedRequests": 0,
+    "shiftsDetailed": [
+      {
+        "value": 0.05172356001402969,
+        "startTime": 607.5,
+        "sources": [
+          {
+            "element": "DIV.absolute.top-1/2.right-1/4",
+            "prevRect": {
+              "x": 0,
+              "y": 402.953125,
+              "w": 292.5,
+              "h": 441.046875
+            },
+            "currRect": {
+              "x": 0,
+              "y": 430.703125,
+              "w": 292.5,
+              "h": 413.296875
+            }
+          },
+          {
+            "element": "DIV.absolute.top-1/4.left-1/4",
+            "prevRect": {
+              "x": 0,
+              "y": 180.875,
+              "w": 265.5,
+              "h": 336
+            },
+            "currRect": {
+              "x": 0,
+              "y": 194.75,
+              "w": 265.5,
+              "h": 336
+            }
+          },
+          {
+            "element": "DIV.relative.w-full.max-w-md",
+            "prevRect": {
+              "x": 0,
+              "y": 651.703125,
+              "w": 390,
+              "h": 192.296875
+            },
+            "currRect": {
+              "x": 0,
+              "y": 707.703125,
+              "w": 390,
+              "h": 136.296875
+            }
+          },
+          {
+            "element": "DIV.flex.flex-col.sm:flex-row",
+            "prevRect": {
+              "x": 0,
+              "y": 391.140625,
+              "w": 390,
+              "h": 134.5625
+            },
+            "currRect": {
+              "x": 0,
+              "y": 446.625,
+              "w": 390,
+              "h": 134.5625
+            }
+          },
+          {
+            "element": "P.text-sm.sm:text-base.text-[#A7A29A]",
+            "prevRect": {
+              "x": 15.796875,
+              "y": 298.890625,
+              "w": 357.40625,
+              "h": 71.671875
+            },
+            "currRect": {
+              "x": 15.796875,
+              "y": 282.703125,
+              "w": 359,
+              "h": 143.34375
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "testCase": "Home Arabic 1440x900",
+    "viewport": "1440x900",
+    "lang": "ar",
+    "cls": {
+      "median": 0.03,
+      "min": 0.0293,
+      "max": 0.03
+    },
+    "fcp": {
+      "median": 312,
+      "min": 292,
+      "max": 340
+    },
+    "lcp": {
+      "median": 356,
+      "min": 308,
+      "max": 380
+    },
+    "tbt": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "ttfb": {
+      "median": 2,
+      "min": 1,
+      "max": 2
+    },
+    "inp": {
+      "median": 4,
+      "min": 3,
+      "max": 6
+    },
+    "domNodes": 670,
+    "consoleErrors": 0,
+    "failedRequests": 0,
+    "shiftsDetailed": [
+      {
+        "value": 0.0008292086293831447,
+        "startTime": 348.30000001192093,
+        "sources": [
+          {
+            "element": "NAV.hidden.lg:flex.items-center",
+            "prevRect": {
+              "x": 301.53125,
+              "y": 55.546875,
+              "w": 570.90625,
+              "h": 30.203125
+            },
+            "currRect": {
+              "x": 278.296875,
+              "y": 55.546875,
+              "w": 620.625,
+              "h": 30.203125
+            }
+          },
+          {
+            "element": "DIV.flex.items-center.gap-1.5",
+            "prevRect": {
+              "x": 984.953125,
+              "y": 51.296875,
+              "w": 388.65625,
+              "h": 38.6875
+            },
+            "currRect": {
+              "x": 976.984375,
+              "y": 51.296875,
+              "w": 396.625,
+              "h": 38.6875
+            }
+          },
+          {
+            "element": "BUTTON.inline-flex.items-center.justify-center",
+            "prevRect": {
+              "x": 309.59375,
+              "y": 601.375,
+              "w": 266.46875,
+              "h": 53.578125
+            },
+            "currRect": {
+              "x": 316.59375,
+              "y": 601.375,
+              "w": 270.9375,
+              "h": 53.578125
+            }
+          },
+          {
+            "element": "BUTTON.relative.flex.items-center",
+            "prevRect": {
+              "x": 1186.40625,
+              "y": 41.375,
+              "w": 155.609375,
+              "h": 78.53125
+            },
+            "currRect": {
+              "x": 1182.40625,
+              "y": 41.375,
+              "w": 159.625,
+              "h": 78.53125
+            }
+          },
+          {
+            "element": "DIV.flex.items-center.gap-2",
+            "prevRect": {
+              "x": 69.328125,
+              "y": 47.25,
+              "w": 116.734375,
+              "h": 35.984375
+            },
+            "currRect": {
+              "x": 74.9375,
+              "y": 47.25,
+              "w": 116.734375,
+              "h": 35.984375
+            }
+          }
+        ]
+      },
+      {
+        "value": 0.0001773654513888889,
+        "startTime": 375.30000001192093,
+        "sources": [
+          {
+            "element": "",
+            "prevRect": {
+              "x": 64.390625,
+              "y": 301.5625,
+              "w": 743.046875,
+              "h": 94
+            },
+            "currRect": {
+              "x": 64.390625,
+              "y": 297.0625,
+              "w": 743.046875,
+              "h": 94
+            }
+          }
+        ]
+      },
+      {
+        "value": 0.028287008905606995,
+        "startTime": 627.8999999761581,
+        "sources": [
+          {
+            "element": "DIV.max-w-7xl.mx-auto.px-4",
+            "prevRect": {
+              "x": 32,
+              "y": 156.4375,
+              "w": 1376,
+              "h": 739.578125
+            },
+            "currRect": {
+              "x": 32,
+              "y": 140.84375,
+              "w": 1376,
+              "h": 759.15625
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

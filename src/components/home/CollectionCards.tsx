@@ -118,6 +118,8 @@ export const CollectionCards: React.FC = () => {
                 referrerPolicy="no-referrer"
                 loading="lazy"
                 decoding="async"
+                width={400}
+                height={420}
                 className="absolute inset-0 w-full h-full object-cover object-center opacity-80 group-hover:opacity-95 transition-all duration-700 ease-out group-hover:scale-105"
               />
 

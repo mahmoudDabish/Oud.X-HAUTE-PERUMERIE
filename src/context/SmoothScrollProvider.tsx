@@ -25,21 +25,26 @@ export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ 
   } = useShop();
 
   useEffect(() => {
-    // Check if user prefers reduced motion
+    // Check if user prefers reduced motion or is on a touch device
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
+    const isTouch = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+    
+    // On mobile / touch screens, mobile operating systems (iOS/Android) have native 120Hz hardware-accelerated
+    // momentum scrolling. Intercepting touch in JS causes touch drag latency and frame drops.
+    // We only attach Lenis on desktop pointer devices for smooth mouse-wheel physics.
+    if (prefersReducedMotion || isTouch) {
       return;
     }
 
-    // Initialize Lenis with high-end luxury inertia physics
+    // Initialize Lenis for desktop mouse wheel
     const lenis = new Lenis({
-      duration: 1.1,
+      duration: 1.0,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
       wheelMultiplier: 0.95,
-      touchMultiplier: 1.5,
+      syncTouch: false,
       infinite: false,
       allowNestedScroll: true,
       prevent: (node: HTMLElement) => {

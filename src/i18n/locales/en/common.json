@@ -893,5 +893,9 @@
     "authSuccess": "Authentication Successful",
     "signedOut": "Signed Out Successfully",
     "signedOutMsg": "You have been safely signed out"
+  },
+  "products": {
+    "outOfStock": "Out of Stock",
+    "noReviewsYet": "No reviews yet."
   }
 }

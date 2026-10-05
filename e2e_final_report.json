@@ -1,0 +1,144 @@
+{
+  "auth": {
+    "name": "Customer Auth",
+    "status": "PASS",
+    "steps": [
+      {
+        "step": "Guest redirection to Client Authentication on /account",
+        "passed": true
+      },
+      {
+        "step": "Auth page renders SignIn/Register tabs and secure form controls",
+        "passed": true
+      },
+      {
+        "step": "Register tab toggles name and phone input fields",
+        "passed": true
+      }
+    ]
+  },
+  "customerOrders": {
+    "name": "Customer Orders",
+    "status": "PASS",
+    "steps": [
+      {
+        "step": "orderService.getUserOrders query with joined order_items and product images",
+        "passed": true
+      },
+      {
+        "step": "Customer Orders card presentation (order number, status pill, price, tracking)",
+        "passed": true
+      },
+      {
+        "step": "Customer Order Invoice modal integration",
+        "passed": true
+      }
+    ]
+  },
+  "checkout": {
+    "name": "Checkout Flow",
+    "status": "PASS",
+    "steps": [
+      {
+        "step": "Egyptian governorate selection dropdown (all 27 governorates present)",
+        "passed": true
+      },
+      {
+        "step": "Delivery address and contact input fields rendered",
+        "passed": true
+      },
+      {
+        "step": "Payment methods selection (Credit/Debit Card, Instapay, Cash on Delivery)",
+        "passed": true
+      },
+      {
+        "step": "Cart items summary and Order Confirmation action button",
+        "passed": true
+      }
+    ]
+  },
+  "adminOrders": {
+    "name": "Admin Orders",
+    "status": "PASS",
+    "steps": [
+      {
+        "step": "orderService.getAllOrders and updateOrderStatus API functions",
+        "passed": true
+      },
+      {
+        "step": "Admin Orders dashboard tab with order search & status filters",
+        "passed": true
+      },
+      {
+        "step": "Order status transitions (Processing, Confirmed, Shipped, Delivered, Cancelled)",
+        "passed": true
+      },
+      {
+        "step": "Admin Order Invoice and printable packing slip modal",
+        "passed": true
+      }
+    ]
+  },
+  "reviews": {
+    "name": "Reviews & Rating System",
+    "status": "PASS",
+    "steps": [
+      {
+        "step": "Rating.tsx component displays 5-star rating visualization with review count",
+        "passed": true
+      },
+      {
+        "step": "ProductDetailPage integrates review status and Authenticity Guarantee badge",
+        "passed": true
+      },
+      {
+        "step": "QuickViewModal & SearchModal integrate Rating component",
+        "passed": true
+      },
+      {
+        "step": "Bilingual review strings present in both English and Arabic locales",
+        "passed": true
+      }
+    ]
+  },
+  "arabicRtl": {
+    "name": "Arabic / RTL Localization",
+    "status": "PASS",
+    "steps": [
+      {
+        "step": "HTML document direction dir=\"rtl\", lang=\"ar\", and .ar-lang / .rtl-mode classes",
+        "passed": true
+      },
+      {
+        "step": "Arabic luxury navigation links translated (المتجر, المجموعات, عن الدار)",
+        "passed": true
+      },
+      {
+        "step": "Catalog pricing formatted in Arabic (ج.م) and category filters localized",
+        "passed": true
+      }
+    ]
+  },
+  "vercelSmoke": {
+    "name": "Vercel Production Smoke Test",
+    "status": "PASS",
+    "steps": [
+      {
+        "step": "vercel.json SPA rewrite rule configured for client-side routing fallback",
+        "passed": true
+      },
+      {
+        "step": "All 10 core routes load and reload directly without 404",
+        "passed": true
+      },
+      {
+        "step": "Production static asset /logo.png serves with HTTP 200/304",
+        "passed": true
+      },
+      {
+        "step": "Zero leaked service_role keys or secrets in production JS bundles",
+        "passed": true
+      }
+    ]
+  }
+}

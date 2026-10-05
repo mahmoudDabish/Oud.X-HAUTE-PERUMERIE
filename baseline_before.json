@@ -1,0 +1,1100 @@
+{
+  "home": {
+    "mobileSmall": {
+      "fcp": 1676,
+      "lcp": 2376,
+      "cls": 0.757360613857612,
+      "longTasks": 7,
+      "totalLongTaskDuration": 539,
+      "maxLongTask": 123,
+      "ttfb": 11.899999976158142,
+      "domContentLoaded": 200.79999995231628,
+      "loadTime": 428.19999998807907,
+      "domNodes": 672,
+      "totalRequests": 29,
+      "supabaseRequests": 9,
+      "failedRequests": 0,
+      "duplicateRequests": 4,
+      "totalBytes": 2950473,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 2809713,
+      "imageCount": 6,
+      "largestImage": {
+        "url": "logo.png",
+        "bytes": 2038133
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 224,
+      "layoutDuration": 317,
+      "recalcStyleDuration": 38
+    },
+    "mobileStd": {
+      "fcp": 388,
+      "lcp": 920,
+      "cls": 0.3692668521538057,
+      "longTasks": 6,
+      "totalLongTaskDuration": 515,
+      "maxLongTask": 169,
+      "ttfb": 2.800000011920929,
+      "domContentLoaded": 130,
+      "loadTime": 131.19999998807907,
+      "domNodes": 672,
+      "totalRequests": 24,
+      "supabaseRequests": 5,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 912340,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 771580,
+      "imageCount": 5,
+      "largestImage": {
+        "url": "1788826460591_5dawdb9.jpg",
+        "bytes": 678831
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 239,
+      "layoutDuration": 344,
+      "recalcStyleDuration": 54
+    },
+    "desktop": {
+      "fcp": 240,
+      "lcp": 660,
+      "cls": 0.27620673158329045,
+      "longTasks": 1,
+      "totalLongTaskDuration": 90,
+      "maxLongTask": 90,
+      "ttfb": 3.5,
+      "domContentLoaded": 88.89999997615814,
+      "loadTime": 89.19999998807907,
+      "domNodes": 672,
+      "totalRequests": 26,
+      "supabaseRequests": 5,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 1623734,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 1482974,
+      "imageCount": 7,
+      "largestImage": {
+        "url": "1788826460591_5dawdb9.jpg",
+        "bytes": 678831
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 145,
+      "layoutDuration": 201,
+      "recalcStyleDuration": 33
+    }
+  },
+  "shop": {
+    "mobileSmall": {
+      "fcp": 404,
+      "lcp": 620,
+      "cls": 0,
+      "longTasks": 5,
+      "totalLongTaskDuration": 447,
+      "maxLongTask": 159,
+      "ttfb": 7.900000035762787,
+      "domContentLoaded": 158.29999995231628,
+      "loadTime": 159.5,
+      "domNodes": 1573,
+      "totalRequests": 26,
+      "supabaseRequests": 11,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 5360044,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 5219284,
+      "imageCount": 8,
+      "largestImage": {
+        "url": "1788825147606_uxbk94t.jpg",
+        "bytes": 746521
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 281,
+      "layoutDuration": 284,
+      "recalcStyleDuration": 50
+    },
+    "mobileStd": {
+      "fcp": 344,
+      "lcp": 544,
+      "cls": 0,
+      "longTasks": 4,
+      "totalLongTaskDuration": 336,
+      "maxLongTask": 143,
+      "ttfb": 1.699999988079071,
+      "domContentLoaded": 117.10000002384186,
+      "loadTime": 124,
+      "domNodes": 1573,
+      "totalRequests": 26,
+      "supabaseRequests": 11,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 5360044,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 5219284,
+      "imageCount": 8,
+      "largestImage": {
+        "url": "1788825147606_uxbk94t.jpg",
+        "bytes": 746521
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 225,
+      "layoutDuration": 262,
+      "recalcStyleDuration": 33
+    },
+    "desktop": {
+      "fcp": 272,
+      "lcp": 504,
+      "cls": 0.1369788001878108,
+      "longTasks": 2,
+      "totalLongTaskDuration": 170,
+      "maxLongTask": 108,
+      "ttfb": 6.699999988079071,
+      "domContentLoaded": 86,
+      "loadTime": 86.89999997615814,
+      "domNodes": 1573,
+      "totalRequests": 27,
+      "supabaseRequests": 12,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 5968825,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 5828065,
+      "imageCount": 9,
+      "largestImage": {
+        "url": "1788825147606_uxbk94t.jpg",
+        "bytes": 746521
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 155,
+      "layoutDuration": 200,
+      "recalcStyleDuration": 29
+    }
+  },
+  "collection_oud": {
+    "mobileSmall": {
+      "fcp": 388,
+      "lcp": 588,
+      "cls": 0,
+      "longTasks": 4,
+      "totalLongTaskDuration": 340,
+      "maxLongTask": 154,
+      "ttfb": 22.100000023841858,
+      "domContentLoaded": 143.5999999642372,
+      "loadTime": 144.39999997615814,
+      "domNodes": 307,
+      "totalRequests": 21,
+      "supabaseRequests": 5,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 944065,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 803305,
+      "imageCount": 3,
+      "largestImage": {
+        "url": "1788826101501_imw9szo.jpg",
+        "bytes": 616247
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 191,
+      "layoutDuration": 242,
+      "recalcStyleDuration": 25
+    },
+    "mobileStd": {
+      "fcp": 364,
+      "lcp": 564,
+      "cls": 0,
+      "longTasks": 4,
+      "totalLongTaskDuration": 336,
+      "maxLongTask": 155,
+      "ttfb": 1.7999999523162842,
+      "domContentLoaded": 117.19999998807907,
+      "loadTime": 118.19999998807907,
+      "domNodes": 307,
+      "totalRequests": 21,
+      "supabaseRequests": 5,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 944065,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 803305,
+      "imageCount": 3,
+      "largestImage": {
+        "url": "1788826101501_imw9szo.jpg",
+        "bytes": 616247
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 206,
+      "layoutDuration": 242,
+      "recalcStyleDuration": 26
+    },
+    "desktop": {
+      "fcp": 240,
+      "lcp": 472,
+      "cls": 0.06966248501331554,
+      "longTasks": 1,
+      "totalLongTaskDuration": 83,
+      "maxLongTask": 83,
+      "ttfb": 2.299999952316284,
+      "domContentLoaded": 103.29999995231628,
+      "loadTime": 103.69999998807907,
+      "domNodes": 307,
+      "totalRequests": 21,
+      "supabaseRequests": 5,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 944065,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 803305,
+      "imageCount": 3,
+      "largestImage": {
+        "url": "1788826101501_imw9szo.jpg",
+        "bytes": 616247
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 103,
+      "layoutDuration": 130,
+      "recalcStyleDuration": 13
+    }
+  },
+  "pdp": {
+    "mobileSmall": {
+      "fcp": 356,
+      "lcp": 356,
+      "cls": 0,
+      "longTasks": 3,
+      "totalLongTaskDuration": 286,
+      "maxLongTask": 155,
+      "ttfb": 1.899999976158142,
+      "domContentLoaded": 136.89999997615814,
+      "loadTime": 137.39999997615814,
+      "domNodes": 200,
+      "totalRequests": 18,
+      "supabaseRequests": 3,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 140760,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "imageCount": 0,
+      "largestImage": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 152,
+      "layoutDuration": 235,
+      "recalcStyleDuration": 24
+    },
+    "mobileStd": {
+      "fcp": 408,
+      "lcp": 408,
+      "cls": 0,
+      "longTasks": 2,
+      "totalLongTaskDuration": 279,
+      "maxLongTask": 218,
+      "ttfb": 1.800000011920929,
+      "domContentLoaded": 119.69999998807907,
+      "loadTime": 120.30000001192093,
+      "domNodes": 200,
+      "totalRequests": 18,
+      "supabaseRequests": 3,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 140760,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "imageCount": 0,
+      "largestImage": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 116,
+      "layoutDuration": 294,
+      "recalcStyleDuration": 13
+    },
+    "desktop": {
+      "fcp": 244,
+      "lcp": 244,
+      "cls": 0.06954618797354574,
+      "longTasks": 1,
+      "totalLongTaskDuration": 88,
+      "maxLongTask": 88,
+      "ttfb": 1.7000000476837158,
+      "domContentLoaded": 85.5,
+      "loadTime": 85.90000003576279,
+      "domNodes": 200,
+      "totalRequests": 18,
+      "supabaseRequests": 3,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 140760,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "imageCount": 0,
+      "largestImage": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 87,
+      "layoutDuration": 127,
+      "recalcStyleDuration": 13
+    }
+  },
+  "cart": {
+    "mobileSmall": {
+      "fcp": 356,
+      "lcp": 552,
+      "cls": 0,
+      "longTasks": 4,
+      "totalLongTaskDuration": 347,
+      "maxLongTask": 153,
+      "ttfb": 2.899999976158142,
+      "domContentLoaded": 116.80000001192093,
+      "loadTime": 117.69999998807907,
+      "domNodes": 225,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 140760,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "imageCount": 0,
+      "largestImage": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 159,
+      "layoutDuration": 239,
+      "recalcStyleDuration": 19
+    },
+    "mobileStd": {
+      "fcp": 356,
+      "lcp": 356,
+      "cls": 0,
+      "longTasks": 3,
+      "totalLongTaskDuration": 284,
+      "maxLongTask": 139,
+      "ttfb": 1.5,
+      "domContentLoaded": 132.10000002384186,
+      "loadTime": 132.9000000357628,
+      "domNodes": 225,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 140760,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "imageCount": 0,
+      "largestImage": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 170,
+      "layoutDuration": 226,
+      "recalcStyleDuration": 22
+    },
+    "desktop": {
+      "fcp": 240,
+      "lcp": 456,
+      "cls": 0.06986323257257909,
+      "longTasks": 1,
+      "totalLongTaskDuration": 85,
+      "maxLongTask": 85,
+      "ttfb": 1.7000000476837158,
+      "domContentLoaded": 76.89999997615814,
+      "loadTime": 77.19999998807907,
+      "domNodes": 225,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 140760,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "imageCount": 0,
+      "largestImage": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 77,
+      "layoutDuration": 138,
+      "recalcStyleDuration": 12
+    }
+  },
+  "checkout": {
+    "mobileSmall": {
+      "fcp": 372,
+      "lcp": 572,
+      "cls": 0,
+      "longTasks": 4,
+      "totalLongTaskDuration": 338,
+      "maxLongTask": 148,
+      "ttfb": 8.200000047683716,
+      "domContentLoaded": 139.10000002384186,
+      "loadTime": 139.80000001192093,
+      "domNodes": 214,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 140760,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "imageCount": 0,
+      "largestImage": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 171,
+      "layoutDuration": 240,
+      "recalcStyleDuration": 18
+    },
+    "mobileStd": {
+      "fcp": 388,
+      "lcp": 572,
+      "cls": 0,
+      "longTasks": 3,
+      "totalLongTaskDuration": 305,
+      "maxLongTask": 154,
+      "ttfb": 1.5,
+      "domContentLoaded": 123.80000001192093,
+      "loadTime": 131.30000001192093,
+      "domNodes": 214,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 140760,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "imageCount": 0,
+      "largestImage": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 176,
+      "layoutDuration": 236,
+      "recalcStyleDuration": 22
+    },
+    "desktop": {
+      "fcp": 220,
+      "lcp": 468,
+      "cls": 0.06953386490014682,
+      "longTasks": 1,
+      "totalLongTaskDuration": 79,
+      "maxLongTask": 79,
+      "ttfb": 1.9000000357627869,
+      "domContentLoaded": 74.69999998807907,
+      "loadTime": 77.40000003576279,
+      "domNodes": 214,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 140760,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "imageCount": 0,
+      "largestImage": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 88,
+      "layoutDuration": 139,
+      "recalcStyleDuration": 12
+    }
+  },
+  "account": {
+    "mobileSmall": {
+      "fcp": 368,
+      "lcp": 736,
+      "cls": 0,
+      "longTasks": 4,
+      "totalLongTaskDuration": 327,
+      "maxLongTask": 144,
+      "ttfb": 1.7999999523162842,
+      "domContentLoaded": 127.19999998807907,
+      "loadTime": 127.90000003576279,
+      "domNodes": 209,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 140760,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "imageCount": 0,
+      "largestImage": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 176,
+      "layoutDuration": 226,
+      "recalcStyleDuration": 21
+    },
+    "mobileStd": {
+      "fcp": 376,
+      "lcp": 376,
+      "cls": 0,
+      "longTasks": 4,
+      "totalLongTaskDuration": 357,
+      "maxLongTask": 157,
+      "ttfb": 1.5,
+      "domContentLoaded": 123.10000002384186,
+      "loadTime": 124.10000002384186,
+      "domNodes": 209,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 140760,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "imageCount": 0,
+      "largestImage": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 177,
+      "layoutDuration": 239,
+      "recalcStyleDuration": 22
+    },
+    "desktop": {
+      "fcp": 240,
+      "lcp": 240,
+      "cls": 0.06955156856165337,
+      "longTasks": 1,
+      "totalLongTaskDuration": 110,
+      "maxLongTask": 110,
+      "ttfb": 1.5999999642372131,
+      "domContentLoaded": 78,
+      "loadTime": 78.5,
+      "domNodes": 209,
+      "totalRequests": 17,
+      "supabaseRequests": 3,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 140760,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 0,
+      "imageCount": 0,
+      "largestImage": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 88,
+      "layoutDuration": 154,
+      "recalcStyleDuration": 12
+    }
+  },
+  "search_interaction": {
+    "mobileSmall": {
+      "fcp": 360,
+      "lcp": 896,
+      "cls": 0.4269271163206662,
+      "longTasks": 8,
+      "totalLongTaskDuration": 638,
+      "maxLongTask": 144,
+      "ttfb": 1.899999976158142,
+      "domContentLoaded": 125.89999997615814,
+      "loadTime": 133.89999997615814,
+      "domNodes": 749,
+      "totalRequests": 24,
+      "supabaseRequests": 5,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 912340,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 771580,
+      "imageCount": 5,
+      "largestImage": {
+        "url": "1788826460591_5dawdb9.jpg",
+        "bytes": 678831
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 323,
+      "layoutDuration": 326,
+      "recalcStyleDuration": 73
+    },
+    "mobileStd": {
+      "fcp": 352,
+      "lcp": 868,
+      "cls": 0.3692668521538057,
+      "longTasks": 6,
+      "totalLongTaskDuration": 504,
+      "maxLongTask": 149,
+      "ttfb": 3.800000011920929,
+      "domContentLoaded": 112.19999998807907,
+      "loadTime": 117.80000001192093,
+      "domNodes": 749,
+      "totalRequests": 24,
+      "supabaseRequests": 5,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 912340,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 771580,
+      "imageCount": 5,
+      "largestImage": {
+        "url": "1788826460591_5dawdb9.jpg",
+        "bytes": 678831
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 276,
+      "layoutDuration": 334,
+      "recalcStyleDuration": 66
+    },
+    "desktop": {
+      "fcp": 212,
+      "lcp": 1312,
+      "cls": 0.27620673158329045,
+      "longTasks": 1,
+      "totalLongTaskDuration": 86,
+      "maxLongTask": 86,
+      "ttfb": 1.699999988079071,
+      "domContentLoaded": 72.19999998807907,
+      "loadTime": 76,
+      "domNodes": 749,
+      "totalRequests": 26,
+      "supabaseRequests": 5,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 954703,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 813943,
+      "imageCount": 7,
+      "largestImage": {
+        "url": "1788826460591_5dawdb9.jpg",
+        "bytes": 678831
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 143,
+      "layoutDuration": 188,
+      "recalcStyleDuration": 36
+    }
+  },
+  "arabic_home": {
+    "mobileSmall": {
+      "fcp": 356,
+      "lcp": 804,
+      "cls": 0.9527543748028343,
+      "longTasks": 7,
+      "totalLongTaskDuration": 790,
+      "maxLongTask": 293,
+      "ttfb": 3,
+      "domContentLoaded": 129.60000002384186,
+      "loadTime": 130.60000002384186,
+      "domNodes": 672,
+      "totalRequests": 32,
+      "supabaseRequests": 5,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 1353300,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 771580,
+      "imageCount": 5,
+      "largestImage": {
+        "url": "1788826460591_5dawdb9.jpg",
+        "bytes": 678831
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 259,
+      "layoutDuration": 681,
+      "recalcStyleDuration": 96
+    },
+    "mobileStd": {
+      "fcp": 384,
+      "lcp": 1000,
+      "cls": 0.35228979561071444,
+      "longTasks": 6,
+      "totalLongTaskDuration": 564,
+      "maxLongTask": 169,
+      "ttfb": 1.7000000476837158,
+      "domContentLoaded": 119.39999997615814,
+      "loadTime": 124.89999997615814,
+      "domNodes": 672,
+      "totalRequests": 28,
+      "supabaseRequests": 5,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 1212540,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 771580,
+      "imageCount": 5,
+      "largestImage": {
+        "url": "1788826460591_5dawdb9.jpg",
+        "bytes": 678831
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 266,
+      "layoutDuration": 402,
+      "recalcStyleDuration": 70
+    },
+    "desktop": {
+      "fcp": 244,
+      "lcp": 1360,
+      "cls": 0.277875705763996,
+      "longTasks": 2,
+      "totalLongTaskDuration": 153,
+      "maxLongTask": 97,
+      "ttfb": 2.5,
+      "domContentLoaded": 77.30000001192093,
+      "loadTime": 77.89999997615814,
+      "domNodes": 672,
+      "totalRequests": 30,
+      "supabaseRequests": 5,
+      "failedRequests": 0,
+      "duplicateRequests": 0,
+      "totalBytes": 1254903,
+      "jsBytes": 0,
+      "cssBytes": 0,
+      "imageBytes": 813943,
+      "imageCount": 7,
+      "largestImage": {
+        "url": "1788826460591_5dawdb9.jpg",
+        "bytes": 678831
+      },
+      "largestJs": {
+        "url": "",
+        "bytes": 0
+      },
+      "largestCss": {
+        "url": "",
+        "bytes": 0
+      },
+      "slowestRequest": {
+        "url": "",
+        "duration": 0
+      },
+      "jsExecutionTime": 141,
+      "layoutDuration": 236,
+      "recalcStyleDuration": 43
+    }
+  }
+}

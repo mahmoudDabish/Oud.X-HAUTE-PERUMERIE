@@ -48,6 +48,7 @@ export const ShopPage: React.FC = () => {
 
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [gridColumns, setGridColumns] = useState<4 | 3>(4);
+  const [displayCount, setDisplayCount] = useState(12);
 
   const resetFilters = () => {
     setFilters({
@@ -82,6 +83,7 @@ export const ShopPage: React.FC = () => {
       const newUrl = searchString ? `${window.location.pathname}?${searchString}` : window.location.pathname;
       window.history.replaceState({}, '', newUrl);
     }
+    setDisplayCount(12);
   }, [filters]);
 
   // Filtered & Sorted Products
@@ -286,17 +288,30 @@ export const ShopPage: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div
-                className={`grid grid-cols-2 ${
-                  gridColumns === 3
-                    ? 'md:grid-cols-2 xl:grid-cols-3'
-                    : 'md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
-                } gap-4 sm:gap-6`}
-              >
-                {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
+              <>
+                <div
+                  className={`grid grid-cols-2 ${
+                    gridColumns === 3
+                      ? 'md:grid-cols-2 xl:grid-cols-3'
+                      : 'md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
+                  } gap-4 sm:gap-6`}
+                >
+                  {filteredProducts.slice(0, displayCount).map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+
+                {displayCount < filteredProducts.length && (
+                  <div className="pt-8 pb-4 flex justify-center">
+                    <button
+                      onClick={() => setDisplayCount(prev => prev + 12)}
+                      className="px-8 py-3 rounded-full border border-[#C9A45C]/35 hover:border-[#C9A45C] bg-[#151310]/80 hover:bg-[#C9A45C]/20 text-[#E3C27A] font-semibold text-xs uppercase tracking-[2px] transition-all backdrop-blur-md shadow-lg shadow-black/50 cursor-pointer"
+                    >
+                      {isRtl ? 'استكشف المزيد من العطور' : 'Discover More Fragrances'} ({filteredProducts.length - displayCount})
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
 

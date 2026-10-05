@@ -64,49 +64,50 @@ export const Hero: React.FC = () => {
     }
   ];
 
-  const featuredProducts = products?.filter(p => p.isFeatured) || [];
+  const slides = React.useMemo(() => {
+    const featuredProducts = products?.filter(p => p.isFeatured) || [];
+    if (featuredProducts.length === 0) {
+      return defaultSlides;
+    }
 
-  const presetTitles = [
-    { line1: t('home.hero.title3Line1'), line2: t('home.hero.title3Line2'), eyebrow: t('home.hero.eyebrow3') },
-    { line1: t('home.hero.title1Line1'), line2: t('home.hero.title1Line2'), eyebrow: t('home.hero.eyebrow1') },
-    { line1: t('home.hero.title2Line1'), line2: t('home.hero.title2Line2'), eyebrow: t('home.hero.eyebrow2') },
-  ];
+    const presetTitles = [
+      { line1: t('home.hero.title3Line1'), line2: t('home.hero.title3Line2'), eyebrow: t('home.hero.eyebrow3') },
+      { line1: t('home.hero.title1Line1'), line2: t('home.hero.title1Line2'), eyebrow: t('home.hero.eyebrow1') },
+      { line1: t('home.hero.title2Line1'), line2: t('home.hero.title2Line2'), eyebrow: t('home.hero.eyebrow2') },
+    ];
 
-  const dynamicSlides = featuredProducts.length > 0 
-    ? featuredProducts.map((p, index) => {
-        const preset = presetTitles[index % presetTitles.length];
-        
-        let notesDisplay = '';
-        if (p.notes && p.notes.top && p.notes.heart && p.notes.base) {
-          const topN = getLocalizedNotesList(p.notes.top, p.notesAr?.top);
-          const heartN = getLocalizedNotesList(p.notes.heart, p.notesAr?.heart);
-          const baseN = getLocalizedNotesList(p.notes.base, p.notesAr?.base);
-          notesDisplay = [topN[0], heartN[0], baseN[0]].filter(Boolean).join(' • ');
-        } else if (p.subtitle || p.subtitleAr) {
-          notesDisplay = getLocalizedProductSubtitle(p);
-        } else {
-          notesDisplay = getLocalizedNotesList(['Smoked Agarwood', 'Saffron', 'Royal Amber']).join(' • ');
-        }
+    return featuredProducts.map((p, index) => {
+      const preset = presetTitles[index % presetTitles.length];
+      
+      let notesDisplay = '';
+      if (p.notes && p.notes.top && p.notes.heart && p.notes.base) {
+        const topN = getLocalizedNotesList(p.notes.top, p.notesAr?.top);
+        const heartN = getLocalizedNotesList(p.notes.heart, p.notesAr?.heart);
+        const baseN = getLocalizedNotesList(p.notes.base, p.notesAr?.base);
+        notesDisplay = [topN[0], heartN[0], baseN[0]].filter(Boolean).join(' • ');
+      } else if (p.subtitle || p.subtitleAr) {
+        notesDisplay = getLocalizedProductSubtitle(p);
+      } else {
+        notesDisplay = getLocalizedNotesList(['Smoked Agarwood', 'Saffron', 'Royal Amber']).join(' • ');
+      }
 
-        return {
-          id: `0${index + 1}`,
-          eyebrow: preset.eyebrow,
-          titleLine1: preset.line1,
-          titleLine2: preset.line2,
-          description: getLocalizedProductDescription(p, p.subtitle ? getLocalizedProductSubtitle(p) : t('home.hero.desc1')),
-          primaryCta: t('home.hero.shopProduct'),
-          primaryLink: `/products/${p.slug}`,
-          secondaryCta: t('home.hero.exploreCollections'),
-          secondaryLink: '/shop',
-          image: p.images[0] || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1400&auto=format&fit=crop',
-          badge: p.badge || t('home.hero.featuredMasterpiece'),
-          perfumeName: getLocalizedProductName(p, p.name),
-          notes: notesDisplay
-        };
-      })
-    : defaultSlides;
-
-  const slides = dynamicSlides;
+      return {
+        id: `0${index + 1}`,
+        eyebrow: preset.eyebrow,
+        titleLine1: preset.line1,
+        titleLine2: preset.line2,
+        description: getLocalizedProductDescription(p, p.subtitle ? getLocalizedProductSubtitle(p) : t('home.hero.desc1')),
+        primaryCta: t('home.hero.shopProduct'),
+        primaryLink: `/products/${p.slug}`,
+        secondaryCta: t('home.hero.exploreCollections'),
+        secondaryLink: '/shop',
+        image: p.images[0] || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1400&auto=format&fit=crop',
+        badge: p.badge || t('home.hero.featuredMasterpiece'),
+        perfumeName: getLocalizedProductName(p, p.name),
+        notes: notesDisplay
+      };
+    });
+  }, [products, t]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -116,19 +117,6 @@ export const Hero: React.FC = () => {
   }, [slides.length]);
 
   const active = slides[currentSlide] || slides[0];
-
-  if (isLoadingProducts) {
-    return (
-      <section className="relative min-h-[85vh] lg:min-h-[92vh] flex items-center bg-[#070707] overflow-hidden">
-        <div className="absolute top-1/2 right-1/4 w-[450px] h-[450px] bg-radial from-[#C9A45C]/15 to-transparent rounded-full blur-[60px] pointer-events-none -translate-y-1/2" />
-        <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-[#C9A45C]/10 rounded-full blur-[80px] pointer-events-none -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute top-20 right-[12%] w-[1px] h-[450px] bg-gradient-to-b from-transparent via-[#C9A45C]/30 to-transparent pointer-events-none hidden lg:block" />
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          <div className="w-10 h-10 border-2 border-[#C9A45C]/20 border-t-[#C9A45C] rounded-full animate-spin" />
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="relative min-h-[85vh] lg:min-h-[92vh] flex items-center bg-[#070707] overflow-hidden">
@@ -253,7 +241,10 @@ export const Hero: React.FC = () => {
                     alt={active.perfumeName}
                     referrerPolicy="no-referrer"
                     decoding="async"
+                    loading="eager"
                     fetchPriority="high"
+                    width={480}
+                    height={600}
                     initial={{ opacity: 0, scale: 1.05 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.98 }}
