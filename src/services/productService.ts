@@ -96,6 +96,14 @@ export const productService = {
         };
       });
 
+      // Place out of stock products at the end
+      products.sort((a, b) => {
+        const aOut = (a.stock ?? 0) <= 0;
+        const bOut = (b.stock ?? 0) <= 0;
+        if (aOut !== bOut) return aOut ? 1 : -1;
+        return 0;
+      });
+
       return { data: products, error: null };
     } catch (error) {
       return { data: null, error };

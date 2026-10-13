@@ -9,7 +9,14 @@ export const WishlistPage: React.FC = () => {
   const { t } = useTranslation();
   const { wishlist, products, navigateTo, addToCart, clearWishlist } = useShop();
 
-  const wishlistProducts = products.filter(p => wishlist.includes(p.id));
+  const wishlistProducts = products
+    .filter(p => wishlist.includes(p.id))
+    .sort((a, b) => {
+      const aOut = (a.stock ?? 0) <= 0;
+      const bOut = (b.stock ?? 0) <= 0;
+      if (aOut !== bOut) return aOut ? 1 : -1;
+      return 0;
+    });
 
   const handleAddAllToBag = () => {
     wishlistProducts.forEach(product => {

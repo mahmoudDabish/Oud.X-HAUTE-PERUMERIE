@@ -175,6 +175,11 @@
     },
     "brandLogos": {
       "title": "ESTEEMED HOUSES & ATELIERS WE CURATE"
+    },
+    "brands": {
+      "title": "All Brands",
+      "subtitle": "Esteemed Houses & Ateliers",
+      "viewAll": "View All"
     }
   },
   "shop": {
@@ -403,6 +408,7 @@
     "tabs": {
       "inventory": "Inventory & Products",
       "orders": "Order Fulfillment",
+      "brands": "Brands & Categories",
       "alerts": "Stock Alerts",
       "analytics": "Store Analytics"
     },
@@ -441,6 +447,25 @@
       "editProduct": "Edit Fragrance",
       "duplicateProduct": "Duplicate Fragrance",
       "deleteProduct": "Delete Fragrance"
+    },
+    "brands": {
+      "title": "Brands & Atelier Collections",
+      "subtitle": "Manage storefront brand showcase circles, brand names, Arabic typography, and custom high-resolution logos.",
+      "addBrand": "Add Brand / Atelier",
+      "resetDefaults": "Reset to Default Brands",
+      "searchPlaceholder": "Search brand by name, Arabic title, or collection tag...",
+      "allBrands": "All Brands",
+      "activeOnly": "Active in Showcase",
+      "hiddenOnly": "Hidden",
+      "orderLabel": "Order #{{order}}",
+      "linkedProducts": "{{count}} Products",
+      "activeBadge": "Visible",
+      "hiddenBadge": "Hidden",
+      "changeLogo": "Edit / Change Logo",
+      "deleteBrand": "Delete Brand",
+      "deleteConfirmTitle": "Delete Brand / Collection?",
+      "deleteConfirmDesc": "Are you sure you want to remove \"{{name}}\"? This brand will no longer appear in the circular storefront showcase or filter collections.",
+      "empty": "No brands found matching your search."
     },
     "orders": {
       "searchPlaceholder": "Search by order #, client name, phone, city, or items...",

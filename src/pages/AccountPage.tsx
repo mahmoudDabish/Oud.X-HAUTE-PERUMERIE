@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useShop } from '../context/ShopContext';
-import { Product, Order } from '../types';
+import { Product, Order, BrandItem } from '../types';
 import { orderService } from '../services/orderService';
 import {
   Package,
@@ -37,9 +37,12 @@ import {
   CreditCard,
   ChevronRight,
   User as UserIcon,
-  Crown
+  Crown,
+  Tags,
+  Image as ImageIcon
 } from 'lucide-react';
 import { AddEditProductModal } from '../components/admin/AddEditProductModal';
+import { AddEditBrandModal, ICON_PRESETS } from '../components/admin/AddEditBrandModal';
 import { OrderInvoiceModal } from '../components/admin/OrderInvoiceModal';
 import { StorageMigrationModal } from '../components/admin/StorageMigrationModal';
 import {
@@ -66,6 +69,11 @@ export const AccountPage: React.FC = () => {
     adjustStock,
     quickAdjustStock,
     resetProductsToDefault,
+    brands,
+    addBrand,
+    updateBrand,
+    deleteBrand,
+    resetBrandsToDefault,
     allOrders,
     updateOrderStatus,
     deleteOrder,
@@ -392,7 +400,7 @@ export const AccountPage: React.FC = () => {
   }
 
   // Tab navigation
-  const [activeTab, setActiveTab] = useState<'inventory' | 'orders' | 'alerts' | 'analytics'>('inventory');
+  const [activeTab, setActiveTab] = useState<'inventory' | 'orders' | 'brands' | 'alerts' | 'analytics'>('inventory');
 
   // Modals state
   const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
@@ -401,6 +409,13 @@ export const AccountPage: React.FC = () => {
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
   const [isMigrationModalOpen, setIsMigrationModalOpen] = useState(false);
+
+  // Brands State
+  const [isAddEditBrandModalOpen, setIsAddEditBrandModalOpen] = useState(false);
+  const [brandToEdit, setBrandToEdit] = useState<BrandItem | null>(null);
+  const [brandToDelete, setBrandToDelete] = useState<BrandItem | null>(null);
+  const [brandSearchQuery, setBrandSearchQuery] = useState('');
+  const [brandStatusFilter, setBrandStatusFilter] = useState<'all' | 'active' | 'hidden'>('all');
 
   // Inventory Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -493,7 +508,64 @@ export const AccountPage: React.FC = () => {
     });
   }, [allOrders, orderSearchQuery, orderStatusFilter]);
 
+  // Filtered Brands
+  const filteredBrands = useMemo(() => {
+    return brands
+      .filter(brand => {
+        if (brandSearchQuery.trim()) {
+          const q = brandSearchQuery.toLowerCase();
+          const matchesEn = brand.name.toLowerCase().includes(q);
+          const matchesAr = (brand.nameAr || '').toLowerCase().includes(q);
+          const matchesTag = (brand.tag || '').toLowerCase().includes(q);
+          if (!matchesEn && !matchesAr && !matchesTag) return false;
+        }
+        if (brandStatusFilter === 'active' && !brand.isActive) return false;
+        if (brandStatusFilter === 'hidden' && brand.isActive) return false;
+        return true;
+      })
+      .sort((a, b) => a.displayOrder - b.displayOrder);
+  }, [brands, brandSearchQuery, brandStatusFilter]);
+
   // Handlers
+  const handleOpenAddBrandModal = () => {
+    setBrandToEdit(null);
+    setIsAddEditBrandModalOpen(true);
+  };
+
+  const handleOpenEditBrandModal = (brand: BrandItem) => {
+    setBrandToEdit(brand);
+    setIsAddEditBrandModalOpen(true);
+  };
+
+  const handleSaveBrand = (brandData: Omit<BrandItem, 'id'>) => {
+    if (brandToEdit) {
+      updateBrand(brandToEdit.id, brandData);
+      showToast(
+        t('toast.brandUpdated', 'Brand Updated'),
+        t('toast.brandUpdatedMsg', { name: brandData.name, defaultValue: `${brandData.name} updated successfully` }),
+        'gold'
+      );
+    } else {
+      addBrand(brandData);
+      showToast(
+        t('toast.brandAdded', 'Brand Added'),
+        t('toast.brandAddedMsg', { name: brandData.name, defaultValue: `${brandData.name} added to luxury collections` }),
+        'gold'
+      );
+    }
+    setIsAddEditBrandModalOpen(false);
+    setBrandToEdit(null);
+  };
+
+  const handleToggleBrandActive = (brand: BrandItem) => {
+    updateBrand(brand.id, { isActive: !brand.isActive });
+    showToast(
+      brand.isActive ? t('toast.brandHidden', 'Brand Hidden') : t('toast.brandActivated', 'Brand Activated'),
+      brand.name,
+      'info'
+    );
+  };
+
   const handleOpenAddModal = () => {
     setProductToEdit(null);
     setIsAddEditModalOpen(true);
@@ -720,6 +792,18 @@ export const AccountPage: React.FC = () => {
                   {pendingOrdersCount}
                 </span>
               )}
+            </button>
+
+            <button
+              onClick={() => setActiveTab('brands')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-[2px] transition-all cursor-pointer ${
+                activeTab === 'brands'
+                  ? 'bg-[#C9A45C] text-[#070707] shadow-lg shadow-[#C9A45C]/20'
+                  : 'bg-[#151310] text-[#A7A29A] hover:text-[#F5F2EA] border border-[#C9A45C]/20'
+              }`}
+            >
+              <Tags className="w-4 h-4" />
+              <span>{t('admin.tabs.brands', 'Brands & Categories')} ({brands.length})</span>
             </button>
 
             <button
@@ -1241,7 +1325,266 @@ export const AccountPage: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 3: STOCK ALERTS & RESTOCK PRIORITY */}
+        {/* TAB 3: BRANDS & CATEGORIES / HOUSES MANAGER */}
+        {activeTab === 'brands' && (
+          <div className="space-y-6">
+            {/* Header / Filter Toolbar */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-[#0D0C0A] border border-[#C9A45C]/25 space-y-4">
+              <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
+                {/* Search Bar */}
+                <div className="relative flex-1 w-full">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8E713D] rtl:left-auto rtl:right-3.5" />
+                  <input
+                    type="text"
+                    value={brandSearchQuery}
+                    onChange={e => setBrandSearchQuery(e.target.value)}
+                    placeholder={t('admin.brands.searchPlaceholder', 'Search brand by name, Arabic title, or collection tag...')}
+                    className="w-full pl-10 pr-4 rtl:pl-4 rtl:pr-10 py-2.5 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-xs text-[#F5F2EA] placeholder-stone-500 focus:outline-none focus:border-[#C9A45C]"
+                  />
+                  {brandSearchQuery && (
+                    <button
+                      onClick={() => setBrandSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 rtl:right-auto rtl:left-3 text-xs text-[#A7A29A] hover:text-white cursor-pointer"
+                    >
+                      {t('search.clear', 'Clear')}
+                    </button>
+                  )}
+                </div>
+
+                {/* Filter & Action Buttons */}
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto justify-between lg:justify-end">
+                  {/* Status Pills */}
+                  <div className="flex items-center gap-1 bg-[#151310] p-1 rounded-xl border border-white/5">
+                    <button
+                      onClick={() => setBrandStatusFilter('all')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                        brandStatusFilter === 'all'
+                          ? 'bg-[#C9A45C] text-[#070707] font-bold'
+                          : 'text-[#A7A29A] hover:text-[#F5F2EA]'
+                      }`}
+                    >
+                      {t('admin.brands.allBrands', 'All')} ({brands.length})
+                    </button>
+                    <button
+                      onClick={() => setBrandStatusFilter('active')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                        brandStatusFilter === 'active'
+                          ? 'bg-[#C9A45C] text-[#070707] font-bold'
+                          : 'text-[#A7A29A] hover:text-[#F5F2EA]'
+                      }`}
+                    >
+                      {t('admin.brands.activeOnly', 'Active')} ({brands.filter(b => b.isActive).length})
+                    </button>
+                    <button
+                      onClick={() => setBrandStatusFilter('hidden')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                        brandStatusFilter === 'hidden'
+                          ? 'bg-[#C9A45C] text-[#070707] font-bold'
+                          : 'text-[#A7A29A] hover:text-[#F5F2EA]'
+                      }`}
+                    >
+                      {t('admin.brands.hiddenOnly', 'Hidden')} ({brands.filter(b => !b.isActive).length})
+                    </button>
+                  </div>
+
+                  {/* Add Brand Master Button */}
+                  <button
+                    onClick={handleOpenAddBrandModal}
+                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#C9A45C] to-[#E3C27A] hover:brightness-110 text-[#070707] font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-[#C9A45C]/25 transition-all cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4 stroke-[3]" />
+                    <span>{t('admin.brands.addBrand', 'Add Brand / Atelier')}</span>
+                  </button>
+
+                  {/* Reset to Defaults */}
+                  <button
+                    onClick={() => {
+                      if (window.confirm('Reset all brand categories to default curated luxury houses?')) {
+                        resetBrandsToDefault();
+                        showToast(
+                          t('toast.brandsReset', 'Brands Restored'),
+                          t('toast.brandsResetMsg', 'Brand catalog restored to factory curated luxury collections'),
+                          'gold'
+                        );
+                      }
+                    }}
+                    className="p-2.5 rounded-xl bg-[#151310] hover:bg-red-950/30 border border-white/10 hover:border-red-500/40 text-[#A7A29A] hover:text-red-400 text-xs transition-colors cursor-pointer"
+                    title={t('admin.brands.resetDefaults', 'Reset to Default Brands')}
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Explanatory Info Card */}
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-[#151310]/70 border border-[#C9A45C]/20 text-xs text-[#A7A29A]">
+                <Sparkles className="w-4 h-4 text-[#C9A45C] shrink-0" />
+                <p className="leading-relaxed">
+                  {t('admin.brands.subtitle', 'Manage storefront brand showcase circles, brand names, Arabic typography, and custom high-resolution logos. Brands marked Active appear in the home circular carousel.')}
+                </p>
+              </div>
+            </div>
+
+            {/* Brands Grid */}
+            {filteredBrands.length === 0 ? (
+              <div className="p-12 text-center rounded-2xl bg-[#0D0C0A] border border-white/10 space-y-4">
+                <Tags className="w-12 h-12 text-[#8E713D] mx-auto opacity-50" />
+                <h3 className="font-cinzel text-lg text-[#F5F2EA]">
+                  {t('admin.brands.empty', 'No brands found matching your search.')}
+                </h3>
+                <p className="text-xs text-[#A7A29A] max-w-md mx-auto">
+                  {brandSearchQuery
+                    ? 'Try adjusting your search query or reset the filter status.'
+                    : 'Click "+ Add Brand / Atelier" to introduce a new perfume house to your collection.'}
+                </p>
+                {brandSearchQuery ? (
+                  <button
+                    onClick={() => {
+                      setBrandSearchQuery('');
+                      setBrandStatusFilter('all');
+                    }}
+                    className="px-4 py-2 rounded-full bg-[#151310] border border-[#C9A45C]/30 text-xs text-[#E3C27A] font-semibold cursor-pointer"
+                  >
+                    {t('search.clear', 'Clear Filters')}
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleOpenAddBrandModal}
+                    className="px-5 py-2.5 rounded-full bg-[#C9A45C] text-[#070707] text-xs font-bold uppercase tracking-wider cursor-pointer"
+                  >
+                    {t('admin.brands.addBrand', 'Add Brand / Atelier')}
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {filteredBrands.map(brand => {
+                  const linkedCount = products.filter(
+                    p => p.brand && p.brand.toLowerCase() === brand.name.toLowerCase()
+                  ).length;
+                  const preset = (Array.isArray(ICON_PRESETS) ? ICON_PRESETS.find(p => p.id === brand.iconPreset) : null) || (Array.isArray(ICON_PRESETS) ? ICON_PRESETS[0] : null);
+
+                  return (
+                    <div
+                      key={brand.id}
+                      className={`group relative rounded-2xl p-5 bg-[#0D0C0A] border transition-all duration-300 flex flex-col justify-between ${
+                        brand.isActive
+                          ? 'border-[#C9A45C]/25 hover:border-[#C9A45C]/70 shadow-lg shadow-black/40 hover:shadow-[#C9A45C]/10'
+                          : 'border-white/5 opacity-60 hover:opacity-100 bg-[#090807]'
+                      }`}
+                    >
+                      {/* Top Bar: Order & Active Switch */}
+                      <div className="flex items-center justify-between gap-2 mb-4">
+                        <span className="px-2 py-0.5 rounded-md bg-[#151310] border border-white/10 text-[10px] font-mono text-[#8E713D]">
+                          #{brand.displayOrder}
+                        </span>
+
+                        <button
+                          onClick={() => handleToggleBrandActive(brand)}
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors ${
+                            brand.isActive
+                              ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/25'
+                              : 'bg-stone-800/80 border border-stone-700 text-stone-400 hover:bg-stone-700'
+                          }`}
+                          title={brand.isActive ? 'Click to hide from carousel' : 'Click to show in carousel'}
+                        >
+                          <span className={`w-1.5 h-1.5 rounded-full ${brand.isActive ? 'bg-emerald-400' : 'bg-stone-500'}`} />
+                          {brand.isActive
+                            ? t('admin.brands.activeBadge', 'Visible')
+                            : t('admin.brands.hiddenBadge', 'Hidden')}
+                        </button>
+                      </div>
+
+                      {/* Circular Brand Avatar Preview */}
+                      <div className="flex flex-col items-center text-center my-2">
+                        <div
+                          onClick={() => handleOpenEditBrandModal(brand)}
+                          className="relative w-24 h-24 rounded-full p-[2px] bg-gradient-to-br from-[#E3C27A] via-[#C9A45C] to-[#8E713D] shadow-xl cursor-pointer group-hover:scale-105 transition-transform duration-300"
+                          title={t('admin.brands.changeLogo', 'Click to edit brand or change logo')}
+                        >
+                          <div className="w-full h-full rounded-full bg-[#12100C] overflow-hidden flex items-center justify-center relative">
+                            {brand.logoUrl ? (
+                              <img
+                                src={brand.logoUrl}
+                                alt={brand.name}
+                                referrerPolicy="no-referrer"
+                                className="w-full h-full object-cover rounded-full"
+                              />
+                            ) : (
+                              <div className="text-[#E3C27A] w-12 h-12 flex items-center justify-center">
+                                {preset && typeof preset.renderIcon === 'function' ? preset.renderIcon() : null}
+                              </div>
+                            )}
+
+                            {/* Hover Overlay "Change Logo" */}
+                            <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-[10px] font-bold text-[#E3C27A] uppercase tracking-wider gap-1">
+                              <ImageIcon className="w-4 h-4" />
+                              <span>{t('admin.brands.changeLogo', 'Change Logo')}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Brand Name & Arabic Name */}
+                        <h4 className="font-cinzel text-base font-bold text-[#F5F2EA] mt-3 group-hover:text-[#E3C27A] transition-colors truncate max-w-full">
+                          {brand.name}
+                        </h4>
+                        {brand.nameAr && (
+                          <div className="font-serif-luxury text-sm text-[#C9A45C] mt-0.5 truncate max-w-full">
+                            {brand.nameAr}
+                          </div>
+                        )}
+
+                        {/* Tag Pill & Products Count */}
+                        <div className="flex flex-wrap items-center justify-center gap-1.5 mt-2.5">
+                          {brand.tag && (
+                            <span className="px-2 py-0.5 rounded-full bg-[#151310] border border-[#C9A45C]/30 text-[9px] font-bold uppercase tracking-[1.5px] text-[#E3C27A]">
+                              {brand.tag}
+                            </span>
+                          )}
+                          <span className="px-2 py-0.5 rounded-full bg-[#151310] border border-white/5 text-[9px] text-[#A7A29A]">
+                            {t('admin.brands.linkedProducts', { count: linkedCount, defaultValue: `${linkedCount} Products` })}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Card Bottom Actions */}
+                      <div className="pt-4 mt-4 border-t border-white/5 flex items-center justify-between gap-2">
+                        {/* Edit & Logo Button */}
+                        <button
+                          onClick={() => handleOpenEditBrandModal(brand)}
+                          className="flex-1 py-1.5 px-3 rounded-lg bg-[#151310] hover:bg-[#C9A45C]/20 border border-[#C9A45C]/30 hover:border-[#C9A45C] text-xs font-semibold text-[#E3C27A] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                          <span>{t('common.edit', 'Edit')}</span>
+                        </button>
+
+                        {/* Link to Shop filter */}
+                        <button
+                          onClick={() => navigateTo(`/shop?brand=${encodeURIComponent(brand.name)}`)}
+                          className="p-2 rounded-lg bg-[#151310] hover:bg-[#1f1c16] border border-white/10 hover:border-[#C9A45C]/40 text-[#A7A29A] hover:text-[#F5F2EA] transition-colors cursor-pointer"
+                          title="View brand in Boutique"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5 rtl-flip" />
+                        </button>
+
+                        {/* Delete Brand */}
+                        <button
+                          onClick={() => setBrandToDelete(brand)}
+                          className="p-2 rounded-lg bg-[#151310] hover:bg-red-500/20 border border-white/10 hover:border-red-500/40 text-[#A7A29A] hover:text-red-400 transition-colors cursor-pointer"
+                          title={t('admin.brands.deleteBrand', 'Delete brand from collections')}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 4: STOCK ALERTS & RESTOCK PRIORITY */}
         {activeTab === 'alerts' && (
           <div className="space-y-6">
             <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-amber-500/30 space-y-4">
@@ -1409,6 +1752,56 @@ export const AccountPage: React.FC = () => {
         onSave={handleSaveProduct}
         productToEdit={productToEdit}
       />
+
+      {/* Add / Edit Brand Modal */}
+      <AddEditBrandModal
+        isOpen={isAddEditBrandModalOpen}
+        onClose={() => {
+          setIsAddEditBrandModalOpen(false);
+          setBrandToEdit(null);
+        }}
+        onSave={handleSaveBrand}
+        brandToEdit={brandToEdit}
+      />
+
+      {/* Delete Brand Confirmation Modal */}
+      {brandToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="p-6 rounded-2xl bg-[#0D0C0A] border border-red-500/40 max-w-md w-full space-y-4 shadow-2xl">
+            <h3 className="font-cinzel text-base font-bold text-red-400">
+              {t('admin.brands.deleteConfirmTitle', 'Delete Brand / Collection?')}
+            </h3>
+            <p className="text-xs text-[#A7A29A] leading-relaxed">
+              {t('admin.brands.deleteConfirmDesc', {
+                name: brandToDelete.name,
+                defaultValue: `Are you sure you want to remove "${brandToDelete.name}"? This brand will no longer appear in the circular storefront showcase or filter collections.`
+              })}
+            </p>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => setBrandToDelete(null)}
+                className="px-4 py-2 rounded-full border border-white/10 text-xs text-[#A7A29A] hover:text-white cursor-pointer"
+              >
+                {t('common.cancel', 'Cancel')}
+              </button>
+              <button
+                onClick={() => {
+                  deleteBrand(brandToDelete.id);
+                  setBrandToDelete(null);
+                  showToast(
+                    t('toast.brandDeleted', 'Brand Removed'),
+                    brandToDelete.name,
+                    'info'
+                  );
+                }}
+                className="px-5 py-2 rounded-full bg-red-500 hover:bg-red-600 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+              >
+                {t('admin.inventory.confirmDelete', 'Confirm Delete')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Order Invoice Receipt Modal */}
       <OrderInvoiceModal

@@ -18,6 +18,17 @@ export interface FragranceNotes {
   base: string[];
 }
 
+export interface BrandItem {
+  id: string;
+  name: string;
+  nameAr?: string;
+  tag?: string;
+  logoUrl?: string;
+  iconPreset?: string;
+  displayOrder?: number;
+  isActive?: boolean;
+}
+
 export interface ProductReview {
   id: string;
   author: string;

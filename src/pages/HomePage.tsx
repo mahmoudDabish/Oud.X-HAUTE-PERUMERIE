@@ -1,6 +1,7 @@
 import React from 'react';
 import { Hero } from '../components/home/Hero';
 import { CollectionCards } from '../components/home/CollectionCards';
+import { BrandLogos } from '../components/home/BrandLogos';
 import { TrustFeatures } from '../components/home/TrustFeatures';
 import { BestSellers } from '../components/home/BestSellers';
 import { NewArrivals } from '../components/home/NewArrivals';
@@ -17,7 +18,10 @@ export const HomePage: React.FC = () => {
       {/* 2. Collection Categories */}
       <CollectionCards />
 
-      {/* 3. Value Proposition / Trust Features Strip */}
+      {/* 3. Luxury Brand Houses Carousel */}
+      <BrandLogos />
+
+      {/* 4. Value Proposition / Trust Features Strip */}
       <TrustFeatures />
 
       {/* 4. Best Sellers Section */}

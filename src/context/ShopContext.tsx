@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { Product, CartItem, UserProfile, Order, UserAddress } from '../types';
+import { Product, CartItem, UserProfile, Order, UserAddress, BrandItem } from '../types';
 import { productService } from '../services/productService';
 import { orderService } from '../services/orderService';
 import { authService } from '../services/authService';
 import { wishlistService } from '../services/wishlistService';
+import { brandService } from '../services/brandService';
 import { supabase } from '../lib/supabaseClient';
 import i18n from '../i18n';
 import { formatPriceLocalized } from '../i18n/presentation';
@@ -86,6 +87,13 @@ interface ShopContextType {
   quickAdjustStock: (id: string, delta: number) => void;
   resetProductsToDefault: () => void;
 
+  // Brands & Houses Management
+  brands: BrandItem[];
+  addBrand: (brandData: Omit<BrandItem, 'id'>) => BrandItem;
+  updateBrand: (id: string, updatedFields: Partial<BrandItem>) => void;
+  deleteBrand: (id: string) => void;
+  resetBrandsToDefault: () => void;
+
   // Admin & Order Fulfillment
   allOrders: Order[];
   updateOrderStatus: (orderId: string, status: Order['status'], trackingNumber?: string) => void;
@@ -139,7 +147,12 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Failed to load products from Supabase:', error);
         // Do NOT fallback to mock products. Let the UI handle empty states.
       } else if (data) {
-        setProducts(data);
+        setProducts([...data].sort((a, b) => {
+          const aOut = (a.stock ?? 0) <= 0;
+          const bOut = (b.stock ?? 0) <= 0;
+          if (aOut !== bOut) return aOut ? 1 : -1;
+          return 0;
+        }));
       }
       setIsLoadingProducts(false);
     }
@@ -584,6 +597,43 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     showToast(i18n.t('toast.catalogSync', 'Catalog Sync'), i18n.t('toast.catalogSyncMsg', 'Synced latest products from database'), 'info');
   };
 
+  // Store Brands State & Management
+  const [brands, setBrands] = useState<BrandItem[]>(() => brandService.getBrands());
+
+  useEffect(() => {
+    const handleBrandSync = (e: any) => {
+      if (e.detail) setBrands(e.detail);
+      else setBrands(brandService.getBrands());
+    };
+    window.addEventListener('oudx_brands_updated', handleBrandSync);
+    return () => window.removeEventListener('oudx_brands_updated', handleBrandSync);
+  }, []);
+
+  const addBrand = useCallback((newBrandData: Omit<BrandItem, 'id'>) => {
+    const added = brandService.addBrand(newBrandData);
+    setBrands(brandService.getBrands());
+    showToast(i18n.t('toast.brandAdded', 'Brand Added'), `${added.name} added to live collection`, 'gold');
+    return added;
+  }, [showToast]);
+
+  const updateBrand = useCallback((id: string, updates: Partial<BrandItem>) => {
+    const updated = brandService.updateBrand(id, updates);
+    setBrands(brandService.getBrands());
+    showToast(i18n.t('toast.brandUpdated', 'Brand Updated'), `${updated?.name || 'Brand'} saved`, 'gold');
+  }, [showToast]);
+
+  const deleteBrand = useCallback((id: string) => {
+    brandService.deleteBrand(id);
+    setBrands(brandService.getBrands());
+    showToast(i18n.t('toast.brandDeleted', 'Brand Removed'), 'Brand removed from collection', 'info');
+  }, [showToast]);
+
+  const resetBrandsToDefault = useCallback(() => {
+    const defaults = brandService.resetToDefaults();
+    setBrands(defaults);
+    showToast(i18n.t('toast.brandsReset', 'Brands Reset'), 'Default curated brands restored', 'gold');
+  }, [showToast]);
+
   // Admin Orders Operations
   const updateOrderStatus = async (orderId: string, status: Order['status'], trackingNumber?: string) => {
     // Optimistic update in UI
@@ -738,6 +788,11 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     adjustStock,
     quickAdjustStock,
     resetProductsToDefault,
+    brands,
+    addBrand,
+    updateBrand,
+    deleteBrand,
+    resetBrandsToDefault,
     updateOrderStatus,
     updateOrderShipping,
     deleteOrder,
@@ -780,6 +835,11 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     user,
     allOrders,
     isLoggedIn,
+    brands,
+    addBrand,
+    updateBrand,
+    deleteBrand,
+    resetBrandsToDefault,
     toasts,
     showToast,
     removeToast,

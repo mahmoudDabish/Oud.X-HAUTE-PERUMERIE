@@ -65,6 +65,11 @@ export const SearchModal: React.FC = () => {
           p.description.toLowerCase().includes(q) ||
           (p.descriptionAr && p.descriptionAr.toLowerCase().includes(q))
         );
+      }).sort((a, b) => {
+        const aOut = (a.stock ?? 0) <= 0;
+        const bOut = (b.stock ?? 0) <= 0;
+        if (aOut !== bOut) return aOut ? 1 : -1;
+        return 0;
       })
     : [];
 

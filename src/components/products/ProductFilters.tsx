@@ -55,7 +55,40 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
     return [...presetFamilies, ...Array.from(new Set(customFromProducts))];
   }, [products]);
 
+  const availableBrands = React.useMemo(() => {
+    const list = [
+      'Maison Asrar',
+      'Gulf Orchid',
+      'Armaf',
+      'Lattafa',
+      'Ibraheem Al.Qurashi',
+      'Gissah',
+      'Afnan Perfumes',
+      'Ajmal',
+      'Alezz',
+      'Al Majed Oud',
+      'Rasasi',
+      'OUD_X PRIVE'
+    ];
+    if (products) {
+      products.forEach(p => {
+        if (p.brand && !list.some(b => b.toLowerCase() === p.brand.toLowerCase())) {
+          list.push(p.brand);
+        }
+      });
+    }
+    return list;
+  }, [products]);
+
   const concentrations = ['Extrait de Parfum', 'Eau de Parfum'];
+
+  const toggleBrand = (b: string) => {
+    const exists = filters.brand.includes(b);
+    onChange({
+      ...filters,
+      brand: exists ? filters.brand.filter(item => item !== b) : [...filters.brand, b]
+    });
+  };
 
   const toggleGender = (g: string) => {
     const exists = filters.gender.includes(g);
@@ -190,6 +223,36 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
               </span>
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* Brands / Houses Section */}
+      <div className="space-y-2">
+        <label className="block text-[11px] font-bold uppercase tracking-[2px] text-[#C9A45C]">
+          {t('common.brand', 'Brands & Houses')}
+        </label>
+        <div className="space-y-1.5 max-h-44 overflow-y-auto custom-scrollbar pr-1">
+          {availableBrands.map((brandName) => {
+            const isChecked = filters.brand.includes(brandName);
+            return (
+              <label
+                key={brandName}
+                onClick={() => toggleBrand(brandName)}
+                className="flex items-center gap-2.5 text-xs text-[#A7A29A] hover:text-[#F5F2EA] cursor-pointer select-none py-1 px-1.5 rounded-lg hover:bg-white/5 transition-colors"
+              >
+                <div
+                  className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                    isChecked
+                      ? 'border-[#C9A45C] bg-[#C9A45C] text-[#070707]'
+                      : 'border-[#C9A45C]/30 bg-[#070707]/60'
+                  }`}
+                >
+                  {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
+                </div>
+                <span className="truncate">{brandName}</span>
+              </label>
+            );
+          })}
         </div>
       </div>
 

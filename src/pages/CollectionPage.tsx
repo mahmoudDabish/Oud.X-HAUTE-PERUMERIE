@@ -78,6 +78,10 @@ export const CollectionPage: React.FC<CollectionPageProps> = ({ collectionId }) 
       }
       return true;
     }).sort((a, b) => {
+      const aOut = (a.stock ?? 0) <= 0;
+      const bOut = (b.stock ?? 0) <= 0;
+      if (aOut !== bOut) return aOut ? 1 : -1;
+
       if (sortBy === 'price-low') return a.price - b.price;
       if (sortBy === 'price-high') return b.price - a.price;
       if (sortBy === 'rating') return b.rating - a.rating;

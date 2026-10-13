@@ -8,7 +8,7 @@ export const NewArrivals: React.FC = () => {
   const { navigateTo, products, isLoadingProducts } = useShop();
   const { t } = useTranslation();
 
-  const newProduct = products?.find(p => p.isNew) || products?.[0];
+  const newProduct = products?.find(p => p.isNew && (p.stock ?? 0) > 0) || products?.find(p => p.isNew) || products?.find(p => (p.stock ?? 0) > 0) || products?.[0];
   const perfumeName = newProduct?.name || 'Royal Oud Imperial Reserve';
   const slug = newProduct?.slug || 'royal-oud-imperial';
   const link = `/products/${slug}`;

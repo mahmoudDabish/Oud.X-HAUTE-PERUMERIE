@@ -4,7 +4,7 @@ import { useShop } from '../context/ShopContext';
 import { ProductCard } from '../components/products/ProductCard';
 import { ProductFilters } from '../components/products/ProductFilters';
 import { FilterState } from '../types';
-import { SlidersHorizontal, ChevronRight, Grid3X3, LayoutGrid, Sparkles } from 'lucide-react';
+import { SlidersHorizontal, ChevronRight, Grid3X3, LayoutGrid, Sparkles, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { getLocalizedCategory } from '../i18n/presentation';
 
@@ -37,7 +37,7 @@ export const ShopPage: React.FC = () => {
       gender: params.get('gender') ? params.get('gender')!.split(',') : [],
       fragranceFamily: [],
       concentration: [],
-      brand: [],
+      brand: params.get('brand') ? params.get('brand')!.split(',').filter(Boolean) : [],
       priceRange: [0, 6000],
       minRating: 0,
       availability: (params.get('availability') as any) || 'all',
@@ -67,6 +67,19 @@ export const ShopPage: React.FC = () => {
 
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const brandParam = params.get('brand');
+    if (brandParam) {
+      const brands = brandParam.split(',').filter(Boolean);
+      setFilters(prev => ({
+        ...prev,
+        brand: brands,
+        category: initialCategory
+      }));
+    }
+  }, [currentRoute, initialCategory]);
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
     let changed = false;
     
     if (filters.category !== 'all') { params.set('category', filters.category); changed = true; }
@@ -74,6 +87,9 @@ export const ShopPage: React.FC = () => {
     
     if (filters.gender.length > 0) { params.set('gender', filters.gender.join(',')); changed = true; }
     else if (params.has('gender')) { params.delete('gender'); changed = true; }
+    
+    if (filters.brand.length > 0) { params.set('brand', filters.brand.join(',')); changed = true; }
+    else if (params.has('brand')) { params.delete('brand'); changed = true; }
     
     if (filters.availability !== 'all') { params.set('availability', filters.availability); changed = true; }
     else if (params.has('availability')) { params.delete('availability'); changed = true; }
@@ -149,15 +165,33 @@ export const ShopPage: React.FC = () => {
         if (!filters.concentration.includes(product.concentration)) return false;
       }
 
+      // Brand / Atelier filter
+      if (filters.brand.length > 0) {
+        const matchesBrand = filters.brand.some(b => {
+          const target = b.trim().toLowerCase();
+          return (
+            (product.brand && product.brand.toLowerCase().includes(target)) ||
+            (product.category && product.category.toLowerCase().includes(target)) ||
+            (product.name && product.name.toLowerCase().includes(target)) ||
+            (product.description && product.description.toLowerCase().includes(target))
+          );
+        });
+        if (!matchesBrand) return false;
+      }
+
       // Price range
       if (product.price > filters.priceRange[1]) return false;
 
       return true;
     }).sort((a, b) => {
+      const aOut = (a.stock ?? 0) <= 0;
+      const bOut = (b.stock ?? 0) <= 0;
+      if (aOut !== bOut) return aOut ? 1 : -1;
+
       if (filters.sortBy === 'price-low') return a.price - b.price;
       if (filters.sortBy === 'price-high') return b.price - a.price;
       if (filters.sortBy === 'rating') return b.rating - a.rating;
-      if (filters.sortBy === 'newest') return (b.isNewArrival ? 1 : 0) - (a.isNewArrival ? 1 : 0);
+      if (filters.sortBy === 'newest') return ((b.isNew || (b as any).isNewArrival) ? 1 : 0) - ((a.isNew || (a as any).isNewArrival) ? 1 : 0);
       return 0; // featured default
     });
   }, [products, filters, initialFilterSale, initialFilterNew, initialFilterBest]);
@@ -265,6 +299,34 @@ export const ShopPage: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            {/* Active Brand Filters Bar */}
+            {filters.brand.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 p-3 rounded-lg bg-[#0D0C0A] border border-[#C9A45C]/20">
+                <span className="text-[11px] text-[#C9A45C] font-semibold uppercase tracking-wider">{t('common.brand', 'Brand')}:</span>
+                {filters.brand.map(b => (
+                  <span
+                    key={b}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs bg-[#151310] border border-[#C9A45C]/40 text-[#F5F2EA] shadow-sm"
+                  >
+                    <span className="font-medium text-[#F0D9A4]">{b}</span>
+                    <button
+                      onClick={() => setFilters({ ...filters, brand: filters.brand.filter(item => item !== b) })}
+                      className="hover:text-red-400 p-0.5 rounded-full transition-colors cursor-pointer"
+                      aria-label={`Remove filter ${b}`}
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))}
+                <button
+                  onClick={() => setFilters({ ...filters, brand: [] })}
+                  className="text-xs text-[#A7A29A] hover:text-[#C9A45C] underline cursor-pointer ml-1"
+                >
+                  {t('shop.filters.reset', 'Clear')}
+                </button>
+              </div>
+            )}
 
             {/* Products Grid */}
             {isLoadingProducts ? (

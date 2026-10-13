@@ -99,6 +99,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
 
   const relatedProducts = products
     .filter(p => p.id !== product.id && (p.category === product.category || p.fragranceFamily === product.fragranceFamily))
+    .sort((a, b) => {
+      const aOut = (a.stock ?? 0) <= 0;
+      const bOut = (b.stock ?? 0) <= 0;
+      if (aOut !== bOut) return aOut ? 1 : -1;
+      return 0;
+    })
     .slice(0, 4);
 
   const handleAddToCart = () => {

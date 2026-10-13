@@ -11,7 +11,7 @@ export const BestSellers: React.FC = () => {
 
   const bestSellerProducts = products.filter(p => p.isBestSeller || p.badge === 'BEST SELLER');
 
-  const filtered = activeTab === 'all'
+  const filtered = (activeTab === 'all'
     ? bestSellerProducts
     : bestSellerProducts.filter(p => {
         if (activeTab === 'men') {
@@ -21,7 +21,13 @@ export const BestSellers: React.FC = () => {
           return p.category === 'oud' || p.fragranceFamily === 'Smoky Oud' || p.name.toLowerCase().includes('oud');
         }
         return p.category === activeTab || p.gender === activeTab;
-      });
+      })
+  ).sort((a, b) => {
+    const aOut = (a.stock ?? 0) <= 0;
+    const bOut = (b.stock ?? 0) <= 0;
+    if (aOut !== bOut) return aOut ? 1 : -1;
+    return 0;
+  });
 
   const tabLabels: Record<'all' | 'oud' | 'men' | 'unisex', string> = {
     all: t('common.all'),

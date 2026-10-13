@@ -16,13 +16,19 @@ export const useSmoothScroll = () => useContext(SmoothScrollContext);
 
 export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const lenisRef = useRef<Lenis | null>(null);
-  const {
-    currentRoute,
-    isCartDrawerOpen,
-    isMobileMenuOpen,
-    isSearchOpen,
-    quickViewProduct
-  } = useShop();
+  
+  let shop: any = null;
+  try {
+    shop = useShop();
+  } catch {
+    // Graceful fallback if called during bootstrap
+  }
+
+  const currentRoute = shop?.currentRoute || '/';
+  const isCartDrawerOpen = shop?.isCartDrawerOpen || false;
+  const isMobileMenuOpen = shop?.isMobileMenuOpen || false;
+  const isSearchOpen = shop?.isSearchOpen || false;
+  const quickViewProduct = shop?.quickViewProduct || null;
 
   useEffect(() => {
     // Check if user prefers reduced motion or is on a touch device
