@@ -16,58 +16,14 @@ export const Hero: React.FC = () => {
   const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const defaultSlides = [
-    {
-      id: '01',
-      eyebrow: t('home.hero.eyebrow1'),
-      titleLine1: t('home.hero.title1Line1'),
-      titleLine2: t('home.hero.title1Line2'),
-      description: t('home.hero.desc1'),
-      primaryCta: t('home.hero.shopProduct'),
-      primaryLink: '/products/badee-al-oud-oud-for-glory',
-      secondaryCta: t('home.hero.exploreCollections'),
-      secondaryLink: '/shop',
-      image: '/images/hero_oud_bottle_1787700482747.jpg',
-      badge: t('home.hero.featuredMasterpiece'),
-      perfumeName: "Bade'e Al Oud (Oud For Glory)",
-      notes: getLocalizedNotesList(['Smoked Agarwood', 'Saffron', 'Royal Amber']).join(' • ')
-    },
-    {
-      id: '02',
-      eyebrow: t('home.hero.eyebrow2'),
-      titleLine1: t('home.hero.title2Line1'),
-      titleLine2: t('home.hero.title2Line2'),
-      description: t('home.hero.desc2'),
-      primaryCta: t('home.hero.shopProduct'),
-      primaryLink: '/products/khamrah-qahwa',
-      secondaryCta: t('home.hero.exploreCollections'),
-      secondaryLink: '/shop',
-      image: '/images/new_arrivals_perfume_1787700509279.jpg',
-      badge: t('home.hero.gourmandFavorite'),
-      perfumeName: 'Khamrah Qahwa Sublime',
-      notes: getLocalizedNotesList(['Qahwa Coffee', 'Candied Dates', 'Bourbon Vanilla']).join(' • ')
-    },
-    {
-      id: '03',
-      eyebrow: t('home.hero.eyebrow3'),
-      titleLine1: t('home.hero.title3Line1'),
-      titleLine2: t('home.hero.title3Line2'),
-      description: t('home.hero.desc3'),
-      primaryCta: t('home.hero.shopProduct'),
-      primaryLink: '/products/royal-oud-imperial',
-      secondaryCta: t('home.hero.exploreCollections'),
-      secondaryLink: '/shop',
-      image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1400&auto=format&fit=crop',
-      badge: t('home.hero.limited500'),
-      perfumeName: 'Royal Oud Imperial Reserve',
-      notes: getLocalizedNotesList(['Assam Oud', 'Taif Rose', 'Omani Frankincense']).join(' • ')
-    }
-  ];
-
   const slides = React.useMemo(() => {
+    if (isLoadingProducts) return [];
+
     const featuredProducts = products?.filter(p => p.isFeatured) || [];
-    if (featuredProducts.length === 0) {
-      return defaultSlides;
+    const sourceProducts = featuredProducts.length > 0 ? featuredProducts : (products?.slice(0, 3) || []);
+
+    if (sourceProducts.length === 0) {
+      return [];
     }
 
     const presetTitles = [
@@ -76,7 +32,7 @@ export const Hero: React.FC = () => {
       { line1: t('home.hero.title2Line1'), line2: t('home.hero.title2Line2'), eyebrow: t('home.hero.eyebrow2') },
     ];
 
-    return featuredProducts.map((p, index) => {
+    return sourceProducts.map((p, index) => {
       const preset = presetTitles[index % presetTitles.length];
       
       let notesDisplay = '';
@@ -101,20 +57,119 @@ export const Hero: React.FC = () => {
         primaryLink: `/products/${p.slug}`,
         secondaryCta: t('home.hero.exploreCollections'),
         secondaryLink: '/shop',
-        image: p.images[0] || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1400&auto=format&fit=crop',
+        image: p.images?.[0] || '',
         badge: p.badge || t('home.hero.featuredMasterpiece'),
         perfumeName: getLocalizedProductName(p, p.name),
         notes: notesDisplay
       };
     });
-  }, [products, t]);
+  }, [products, isLoadingProducts, t]);
 
   useEffect(() => {
+    if (slides.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % slides.length);
     }, 7000);
     return () => clearInterval(timer);
   }, [slides.length]);
+
+  // If products are currently loading from backend, render luxury skeleton loader
+  if (isLoadingProducts) {
+    return (
+      <section className="relative min-h-[85vh] lg:min-h-[92vh] flex items-center bg-[#070707] overflow-hidden">
+        {/* Background ambient radial aura and vertical line */}
+        <div className="absolute top-1/2 right-1/4 w-[450px] h-[450px] bg-radial from-[#C9A45C]/15 to-transparent rounded-full blur-[60px] pointer-events-none -translate-y-1/2" />
+        <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-[#C9A45C]/10 rounded-full blur-[80px] pointer-events-none -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-20 right-[12%] w-[1px] h-[450px] bg-gradient-to-b from-transparent via-[#C9A45C]/30 to-transparent pointer-events-none hidden lg:block" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 w-full relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Hero Skeleton (7 Cols) */}
+            <div className="lg:col-span-7 space-y-6 sm:space-y-8 text-left rtl:text-right">
+              {/* Eyebrow skeleton */}
+              <div className="w-36 h-7 rounded-full bg-[#151310]/80 border border-[#C9A45C]/20 animate-pulse" />
+
+              {/* Title skeleton */}
+              <div className="space-y-3">
+                <div className="w-3/4 h-10 sm:h-14 rounded-lg bg-[#151310] border border-[#C9A45C]/10 animate-pulse" />
+                <div className="w-1/2 h-10 sm:h-14 rounded-lg bg-[#151310] border border-[#C9A45C]/10 animate-pulse" />
+              </div>
+
+              {/* Subtext skeleton */}
+              <div className="space-y-2 max-w-xl">
+                <div className="w-full h-4 rounded bg-[#151310]/80 animate-pulse" />
+                <div className="w-4/5 h-4 rounded bg-[#151310]/80 animate-pulse" />
+              </div>
+
+              {/* CTA Buttons skeleton */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+                <div className="w-40 h-12 rounded-xl bg-[#C9A45C]/20 border border-[#C9A45C]/30 animate-pulse" />
+                <div className="w-40 h-12 rounded-xl bg-[#151310]/80 border border-[#C9A45C]/20 animate-pulse" />
+              </div>
+
+              {/* Bottom slide info skeleton */}
+              <div className="pt-6 sm:pt-8 flex items-center justify-between border-t border-[#C9A45C]/15 max-w-lg">
+                <div className="w-24 h-4 rounded bg-[#151310]/80 animate-pulse" />
+                <div className="w-32 h-4 rounded bg-[#151310]/80 animate-pulse" />
+                <div className="flex items-center gap-1.5">
+                  <div className="w-7 h-7 rounded bg-[#151310] border border-[#C9A45C]/20 animate-pulse" />
+                  <div className="w-7 h-7 rounded bg-[#151310] border border-[#C9A45C]/20 animate-pulse" />
+                </div>
+              </div>
+            </div>
+
+            {/* Right Hero Flacon Skeleton (5 Cols) */}
+            <div className="lg:col-span-5 relative flex items-center justify-center">
+              <div className="absolute w-72 h-72 rounded-full bg-[#C9A45C]/15 blur-3xl pointer-events-none animate-pulse" />
+              <div className="relative w-full max-w-md aspect-[4/5] rounded-2xl p-3.5 border border-[#C9A45C]/25 bg-[#151310]/60 backdrop-blur-xl shadow-2xl flex items-center justify-center">
+                <div className="relative w-full h-full rounded-xl overflow-hidden bg-black/60 flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 rounded-full border-2 border-[#C9A45C]/30 border-t-[#C9A45C] animate-spin mb-4" />
+                  <span className="text-[10px] tracking-[4px] uppercase text-[#A7A29A]/70 font-semibold animate-pulse">
+                    OUD-X HAUTE PARFUMERIE
+                  </span>
+                </div>
+                <div className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-[#C9A45C]" />
+                <div className="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-[#C9A45C]" />
+                <div className="absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-[#C9A45C]" />
+                <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-[#C9A45C]" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (slides.length === 0) {
+    return (
+      <section className="relative min-h-[50vh] flex items-center justify-center bg-[#070707] overflow-hidden py-16">
+        <div className="text-center space-y-4 px-4 z-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C9A45C]/30 bg-[#151310]/60 backdrop-blur-md">
+            <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" />
+            <span className="text-[10px] font-semibold tracking-[4px] text-[#C9A45C] uppercase">
+              OUD-X HAUTE PARFUMERIE
+            </span>
+          </div>
+          <h1 className="font-serif-luxury text-3xl sm:text-5xl font-normal text-[#F5F2EA]">
+            {t('home.hero.title1Line1')}
+          </h1>
+          <p className="text-sm text-[#A7A29A] max-w-md mx-auto">
+            {t('home.hero.desc1')}
+          </p>
+          <div className="pt-2">
+            <Button
+              onClick={() => navigateTo('/shop')}
+              variant="primary"
+              size="lg"
+              className="shadow-xl shadow-[#C9A45C]/15 tracking-[2px] font-bold"
+            >
+              {t('home.hero.exploreCollections')}
+            </Button>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   const active = slides[currentSlide] || slides[0];
 

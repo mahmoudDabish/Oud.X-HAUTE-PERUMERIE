@@ -9,11 +9,15 @@ export const NewArrivals: React.FC = () => {
   const { t } = useTranslation();
 
   const newProduct = products?.find(p => p.isNew && (p.stock ?? 0) > 0) || products?.find(p => p.isNew) || products?.find(p => (p.stock ?? 0) > 0) || products?.[0];
-  const perfumeName = newProduct?.name || 'Royal Oud Imperial Reserve';
-  const slug = newProduct?.slug || 'royal-oud-imperial';
+  const perfumeName = newProduct?.name || '';
+  const slug = newProduct?.slug || '';
   const link = `/products/${slug}`;
-  const image = newProduct?.images?.[0] || '/images/new_arrivals_perfume_1787700509279.jpg';
+  const image = newProduct?.images?.[0] || '';
   const description = newProduct?.description || t('home.newArrivals.defaultDesc');
+
+  if (!isLoadingProducts && !newProduct) {
+    return null;
+  }
 
   return (
     <section className="py-24 bg-[#0D0C0A] relative overflow-hidden border-t border-[#C9A45C]/15">
@@ -22,8 +26,39 @@ export const NewArrivals: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {isLoadingProducts ? (
-          <div className="py-24 flex items-center justify-center">
-            <div className="w-12 h-12 border-4 border-[#C9A45C]/30 border-t-[#C9A45C] rounded-full animate-spin"></div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            {/* Left Column Skeleton */}
+            <div className="lg:col-span-6 space-y-6 sm:space-y-8 text-left rtl:text-right">
+              <div className="w-28 h-6 rounded-full bg-[#151310] border border-[#C9A45C]/20 animate-pulse" />
+              <div className="space-y-3">
+                <div className="w-3/4 h-12 rounded-lg bg-[#151310] border border-[#C9A45C]/10 animate-pulse" />
+                <div className="w-1/2 h-10 rounded-lg bg-[#151310] border border-[#C9A45C]/10 animate-pulse" />
+              </div>
+              <div className="space-y-2 max-w-lg">
+                <div className="w-full h-4 rounded bg-[#151310] animate-pulse" />
+                <div className="w-4/5 h-4 rounded bg-[#151310] animate-pulse" />
+              </div>
+              <div className="grid grid-cols-2 gap-4 pt-2">
+                <div className="h-24 rounded-xl bg-[#151310]/60 border border-[#C9A45C]/15 animate-pulse" />
+                <div className="h-24 rounded-xl bg-[#151310]/60 border border-[#C9A45C]/15 animate-pulse" />
+              </div>
+              <div className="flex gap-4 pt-2">
+                <div className="w-36 h-12 rounded-xl bg-[#C9A45C]/20 border border-[#C9A45C]/30 animate-pulse" />
+                <div className="w-36 h-12 rounded-xl bg-[#151310] border border-[#C9A45C]/20 animate-pulse" />
+              </div>
+            </div>
+
+            {/* Right Column Skeleton */}
+            <div className="lg:col-span-6 relative">
+              <div className="relative rounded-2xl overflow-hidden border border-[#C9A45C]/25 bg-[#151310]/60 backdrop-blur-xl p-3.5">
+                <div className="aspect-[4/3] sm:aspect-[16/11] rounded-xl overflow-hidden bg-black/60 flex flex-col items-center justify-center animate-pulse">
+                  <div className="w-10 h-10 rounded-full border-2 border-[#C9A45C]/30 border-t-[#C9A45C] animate-spin mb-3" />
+                  <span className="text-[10px] tracking-[3px] uppercase text-[#A7A29A]/70 font-semibold">
+                    OUD-X
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
@@ -91,15 +126,22 @@ export const NewArrivals: React.FC = () => {
             {/* Right Column: Large Cinematic Visual with Frosted Glass Pod */}
             <div className="lg:col-span-6 relative">
               <div className="relative rounded-2xl overflow-hidden border border-[#C9A45C]/25 bg-[#151310]/60 backdrop-blur-xl shadow-2xl p-3.5">
-                <div className="aspect-[4/3] sm:aspect-[16/11] rounded-xl overflow-hidden relative">
-                  <img
-                    src={image}
-                    alt={perfumeName}
-                    referrerPolicy="no-referrer"
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700"
-                  />
+                <div className="aspect-[4/3] sm:aspect-[16/11] rounded-xl overflow-hidden relative bg-black/60 flex items-center justify-center">
+                  {image ? (
+                    <img
+                      src={image}
+                      alt={perfumeName}
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-center p-6">
+                      <Sparkles className="w-10 h-10 text-[#C9A45C] mb-2 animate-pulse" />
+                      <span className="text-xs uppercase tracking-[3px] text-[#A7A29A]">OUD-X Haute Parfumerie</span>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-transparent pointer-events-none" />
 
                   {/* Floating Capsule Badge - Frosted Glass */}

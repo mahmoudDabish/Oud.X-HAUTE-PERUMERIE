@@ -8,18 +8,19 @@ const DEFAULT_HOME_COLLECTIONS: HomeCollection[] = [
   { id: 'men', title: 'MEN COLLECTION', subtitle: 'Powerful woods, smoky birch, and bold spiced resins.', image_url: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1000&auto=format&fit=crop', href: '/collections/men', icon_type: 'men', display_order: 1, is_active: true },
   { id: 'women', title: 'WOMEN COLLECTION', subtitle: 'Velvety Damask roses, radiant florals, and sweet amber nectar.', image_url: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=1000&auto=format&fit=crop', href: '/collections/women', icon_type: 'women', display_order: 2, is_active: true },
   { id: 'unisex', title: 'UNISEX COLLECTION', subtitle: 'Masterfully balanced gourmand amber, coffee, and golden spices.', image_url: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=1000&auto=format&fit=crop', href: '/collections/unisex', icon_type: 'unisex', display_order: 3, is_active: true },
-  { id: 'oud', title: 'OUD COLLECTION', subtitle: 'Pure aged agarwood, rare resin extracts, and imperial elixirs.', image_url: '/images/hero_oud_bottle_1787700482747.jpg', href: '/collections/oud', icon_type: 'oud', display_order: 4, is_active: true }
+  { id: 'oud', title: 'OUD COLLECTION', subtitle: 'Pure aged agarwood, rare resin extracts, and imperial elixirs.', image_url: 'https://images.unsplash.com/photo-1615634260167-c8cdede054de?q=80&w=1000&auto=format&fit=crop', href: '/collections/oud', icon_type: 'oud', display_order: 4, is_active: true }
 ];
 
 export const CollectionCards: React.FC = () => {
   const { navigateTo } = useShop();
   const { t } = useTranslation();
-  const [collections, setCollections] = useState<HomeCollection[]>(DEFAULT_HOME_COLLECTIONS);
-  const [isLoading, setIsLoading] = useState(false);
+  const [collections, setCollections] = useState<HomeCollection[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     async function loadCollections() {
+      setIsLoading(true);
       setError(null);
       const { data, error: err } = await collectionService.getHomeCollections();
       if (err) {
@@ -30,6 +31,7 @@ export const CollectionCards: React.FC = () => {
       } else {
         setCollections(DEFAULT_HOME_COLLECTIONS);
       }
+      setIsLoading(false);
     }
     loadCollections();
   }, []);
@@ -66,15 +68,47 @@ export const CollectionCards: React.FC = () => {
 
   if (isLoading && collections.length === 0) {
     return (
-      <section className="py-20 bg-[#0D0C0A] relative border-t border-[#C9A45C]/15 overflow-hidden min-h-[600px] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#C9A45C]/30 border-t-[#C9A45C] rounded-full animate-spin"></div>
+      <section className="py-20 bg-[#0D0C0A] relative border-t border-[#C9A45C]/15 overflow-hidden">
+        {/* Soft background aura */}
+        <div className="absolute top-1/2 left-1/3 w-96 h-96 bg-[#C9A45C]/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Section Header Skeleton */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4 text-left rtl:text-right">
+            <div>
+              <div className="w-32 h-4 rounded-full bg-[#151310] border border-[#C9A45C]/20 mb-3 animate-pulse" />
+              <div className="w-64 h-9 rounded-lg bg-[#151310] border border-[#C9A45C]/10 animate-pulse" />
+            </div>
+            <div className="w-72 h-4 rounded bg-[#151310] animate-pulse" />
+          </div>
+
+          {/* Cards Skeleton Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="h-96 sm:h-[420px] rounded-2xl overflow-hidden border border-[#C9A45C]/15 bg-[#151310]/60 backdrop-blur-md flex flex-col justify-between p-6 animate-pulse"
+              >
+                <div className="w-10 h-10 rounded-full bg-[#070707]/75 border border-[#C9A45C]/30 flex items-center justify-center">
+                  <div className="w-4 h-4 rounded-full bg-[#C9A45C]/20" />
+                </div>
+                <div className="space-y-3 p-4 rounded-xl bg-[#0D0C0A]/75 border border-[#C9A45C]/15">
+                  <div className="w-20 h-3 rounded bg-[#C9A45C]/20" />
+                  <div className="w-36 h-6 rounded bg-[#151310]" />
+                  <div className="w-full h-3 rounded bg-[#151310]" />
+                  <div className="w-24 h-3 rounded bg-[#C9A45C]/30" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
     );
   }
 
   if (error && collections.length === 0) {
     return (
-      <section className="py-20 bg-[#0D0C0A] relative border-t border-[#C9A45C]/15 overflow-hidden min-h-[600px] flex items-center justify-center">
+      <section className="py-20 bg-[#0D0C0A] relative border-t border-[#C9A45C]/15 overflow-hidden min-h-[400px] flex items-center justify-center">
         <div className="text-[#A7A29A] text-sm">{t('shop.empty.title')}</div>
       </section>
     );

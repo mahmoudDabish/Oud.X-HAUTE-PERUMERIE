@@ -87,8 +87,22 @@ export const BestSellers: React.FC = () => {
 
         {/* Product Cards Grid: 4 columns desktop, 3 tablet, 2 mobile */}
         {isLoadingProducts ? (
-          <div className="py-12 flex items-center justify-center">
-            <div className="w-12 h-12 border-4 border-[#C9A45C]/30 border-t-[#C9A45C] rounded-full animate-spin"></div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="rounded-2xl border border-[#C9A45C]/15 bg-[#151310]/60 p-3 sm:p-4 space-y-3 animate-pulse"
+              >
+                <div className="aspect-[3/4] rounded-xl bg-black/50 border border-[#C9A45C]/10 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full border border-[#C9A45C]/20 border-t-[#C9A45C] animate-spin" />
+                </div>
+                <div className="space-y-2">
+                  <div className="w-20 h-3 rounded bg-[#C9A45C]/20" />
+                  <div className="w-3/4 h-4 rounded bg-[#151310]" />
+                  <div className="w-16 h-4 rounded bg-[#C9A45C]/30" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
