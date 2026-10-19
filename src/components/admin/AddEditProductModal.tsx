@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Product, FragranceConcentration, FragranceFamily, FragranceGender } from '../../types';
 import { X, Sparkles, Plus, Trash2, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';
+import { useShop } from '../../context/ShopContext';
+import { brandService, DEFAULT_BRANDS } from '../../services/brandService';
 import {
   getLocalizedCategory,
   getLocalizedGender,
@@ -29,16 +31,6 @@ const PRESET_IMAGES = [
   { label: 'Minimalist Noir Bottle', url: 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=1000&auto=format&fit=crop' }
 ];
 
-const PRESET_BRANDS = [
-  'OUD_X PRIVE',
-  'LATTAFA PRIVE',
-  'MAISON FRANCIS KURKDJIAN',
-  'NASOMATTO',
-  'TOM FORD PRIVATE BLEND',
-  'ROJA PARFUMS',
-  'XERJOFF CASAMORATI'
-];
-
 export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
   isOpen,
   onClose,
@@ -46,10 +38,57 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
   productToEdit
 }) => {
   const { t } = useTranslation();
+  const { brands: shopBrands = [], products: shopProducts = [] } = useShop();
   const isEditing = !!productToEdit;
+
+  // Available brands consolidated from website catalog, active brands, and defaults
+  const availableBrands = useMemo(() => {
+    const brandMap = new Map<string, { name: string; nameAr?: string }>();
+
+    // 1. Preset website default brands
+    DEFAULT_BRANDS.forEach(b => {
+      if (b.name) {
+        brandMap.set(b.name.trim().toLowerCase(), { name: b.name.trim(), nameAr: b.nameAr?.trim() });
+      }
+    });
+
+    // 2. Dynamic brands from shop / brandService
+    const currentBrands = (shopBrands && shopBrands.length > 0) ? shopBrands : brandService.getBrands();
+    currentBrands.forEach(b => {
+      if (b.name && b.isActive !== false) {
+        const key = b.name.trim().toLowerCase();
+        const existing = brandMap.get(key);
+        brandMap.set(key, {
+          name: b.name.trim(),
+          nameAr: b.nameAr?.trim() || existing?.nameAr
+        });
+      }
+    });
+
+    // 3. Ensure house brand 'OUD_X PRIVE' is in the list
+    if (!brandMap.has('oud_x prive')) {
+      brandMap.set('oud_x prive', { name: 'OUD_X PRIVE', nameAr: 'عود إكس بريفيه' });
+    }
+
+    // 4. Any brand present in existing catalog products
+    if (shopProducts && shopProducts.length > 0) {
+      shopProducts.forEach(p => {
+        if (p.brand && p.brand.trim()) {
+          const key = p.brand.trim().toLowerCase();
+          if (!brandMap.has(key)) {
+            brandMap.set(key, { name: p.brand.trim() });
+          }
+        }
+      });
+    }
+
+    return Array.from(brandMap.values());
+  }, [shopBrands, shopProducts]);
 
   const [name, setName] = useState('');
   const [brand, setBrand] = useState('OUD_X PRIVE');
+  const [isCustomBrand, setIsCustomBrand] = useState(false);
+  const [customBrandInput, setCustomBrandInput] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [description, setDescription] = useState('');
   const [story, setStory] = useState('');
@@ -109,7 +148,23 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
   useEffect(() => {
     if (productToEdit) {
       setName(productToEdit.name || '');
-      setBrand(productToEdit.brand || 'OUD_X PRIVE');
+
+      const existingBrand = (productToEdit.brand || 'OUD_X PRIVE').trim();
+      const matchedBrand = availableBrands.find(b => b.name.toLowerCase() === existingBrand.toLowerCase());
+      if (matchedBrand) {
+        setBrand(matchedBrand.name);
+        setIsCustomBrand(false);
+        setCustomBrandInput('');
+      } else if (existingBrand) {
+        setBrand(existingBrand);
+        setIsCustomBrand(true);
+        setCustomBrandInput(existingBrand);
+      } else {
+        setBrand('OUD_X PRIVE');
+        setIsCustomBrand(false);
+        setCustomBrandInput('');
+      }
+
       setSubtitle(productToEdit.subtitle || '');
       setDescription(productToEdit.description || '');
       setStory(productToEdit.story || '');
@@ -173,7 +228,10 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
       // Reset form clean without hardcoded English text
       setName('');
       setNameAr('');
-      setBrand('OUD_X PRIVE');
+      const defaultBrand = availableBrands.find(b => b.name.toLowerCase() === 'oud_x prive')?.name || availableBrands[0]?.name || 'OUD_X PRIVE';
+      setBrand(defaultBrand);
+      setIsCustomBrand(false);
+      setCustomBrandInput('');
       setSubtitle('');
       setSubtitleAr('');
       setDescription('');
@@ -202,7 +260,7 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
         { size: '100ml / 3.4 fl.oz', price: 1950, compareAtPrice: undefined }
       ]);
     }
-  }, [productToEdit, isOpen]);
+  }, [productToEdit, isOpen, availableBrands]);
 
   if (!isOpen) return null;
 
@@ -245,13 +303,14 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
         .filter(Boolean);
 
     const finalFragranceFamily = isCustomFamily ? (customFamilyInput.trim() || 'Smoky Oud') : fragranceFamily;
+    const finalBrand = isCustomBrand ? (customBrandInput.trim() || 'OUD_X PRIVE') : brand.trim();
     const hasArNotes = Boolean(topNotesAr.trim() || heartNotesAr.trim() || baseNotesAr.trim());
 
     const productPayload: Partial<Product> = {
       ...(productToEdit || {}),
       name: name.trim(),
       nameAr: nameAr.trim() || productToEdit?.nameAr || undefined,
-      brand: brand.trim(),
+      brand: finalBrand,
       subtitle: subtitle.trim() || `${concentration} • ${finalFragranceFamily}`,
       subtitleAr: subtitleAr.trim() || productToEdit?.subtitleAr || undefined,
       description:
@@ -391,22 +450,64 @@ export const AddEditProductModal: React.FC<AddEditProductModalProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs uppercase font-bold tracking-[2px] text-[#C9A45C]">
-                {t('admin.modals.brand', 'Maison / Brand')}
-              </label>
-              <input
-                type="text"
-                list="brand-suggestions"
-                value={brand}
-                onChange={e => setBrand(e.target.value)}
-                placeholder={t('admin.modals.placeholders.brand', 'OUD_X PRIVE')}
-                className="w-full px-4 py-2.5 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-sm text-[#F5F2EA] focus:outline-none focus:border-[#C9A45C]"
-              />
-              <datalist id="brand-suggestions">
-                {PRESET_BRANDS.map(b => (
-                  <option key={b} value={b} />
-                ))}
-              </datalist>
+              <div className="flex items-center justify-between">
+                <label className="block text-xs uppercase font-bold tracking-[2px] text-[#C9A45C]">
+                  {t('admin.modals.brand', 'Brand / Atelier')}
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isCustomBrand) {
+                      setIsCustomBrand(false);
+                      const defaultBrand = availableBrands.find(b => b.name.toLowerCase() === 'oud_x prive')?.name || availableBrands[0]?.name || 'OUD_X PRIVE';
+                      setBrand(defaultBrand);
+                    } else {
+                      setIsCustomBrand(true);
+                      setCustomBrandInput(brand || '');
+                    }
+                  }}
+                  className="text-[10px] text-[#E3C27A] hover:text-[#F0D9A4] transition-colors font-semibold flex items-center gap-1 cursor-pointer"
+                >
+                  {isCustomBrand ? (
+                    <span>← {t('admin.modals.chooseFromList', 'Choose From List')}</span>
+                  ) : (
+                    <span>+ {t('admin.modals.addCustom', 'Add Custom')}</span>
+                  )}
+                </button>
+              </div>
+
+              {!isCustomBrand ? (
+                <select
+                  value={brand}
+                  onChange={e => {
+                    if (e.target.value === '__custom__') {
+                      setIsCustomBrand(true);
+                      setCustomBrandInput('');
+                    } else {
+                      setBrand(e.target.value);
+                    }
+                  }}
+                  className="w-full px-4 py-2.5 bg-[#151310] border border-[#C9A45C]/30 rounded-xl text-sm text-[#F5F2EA] focus:outline-none focus:border-[#C9A45C] cursor-pointer"
+                >
+                  {availableBrands.map(b => (
+                    <option key={b.name} value={b.name} className="bg-[#151310] text-[#F5F2EA]">
+                      {b.nameAr ? `${b.name} (${b.nameAr})` : b.name}
+                    </option>
+                  ))}
+                  <option value="__custom__" className="bg-[#1C1813] text-[#E3C27A] font-semibold">
+                    + {t('admin.modals.addCustomBrand', 'Custom Brand / Atelier...')}
+                  </option>
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  value={customBrandInput}
+                  onChange={e => setCustomBrandInput(e.target.value)}
+                  placeholder={t('admin.modals.placeholders.brand', 'OUD_X PRIVE')}
+                  className="w-full px-4 py-2.5 bg-[#151310] border border-[#C9A45C]/50 rounded-xl text-sm text-[#F5F2EA] placeholder-stone-600 focus:outline-none focus:border-[#E3C27A]"
+                  autoFocus
+                />
+              )}
             </div>
           </div>
 

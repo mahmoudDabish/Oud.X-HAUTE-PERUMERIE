@@ -26,7 +26,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
   onCloseMobile
 }) => {
   const { t } = useTranslation();
-  const { formatPrice, products } = useShop();
+  const { formatPrice, products, brands: shopBrands = [] } = useShop();
 
   const categories = [
     { label: getLocalizedCategory('all', t), value: 'all' },
@@ -70,6 +70,13 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
       'Rasasi',
       'OUD_X PRIVE'
     ];
+    if (shopBrands && shopBrands.length > 0) {
+      shopBrands.forEach(b => {
+        if (b.name && b.isActive !== false && !list.some(existing => existing.toLowerCase() === b.name.toLowerCase())) {
+          list.push(b.name);
+        }
+      });
+    }
     if (products) {
       products.forEach(p => {
         if (p.brand && !list.some(b => b.toLowerCase() === p.brand.toLowerCase())) {
@@ -78,7 +85,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
       });
     }
     return list;
-  }, [products]);
+  }, [products, shopBrands]);
 
   const concentrations = ['Extrait de Parfum', 'Eau de Parfum'];
 
