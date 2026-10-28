@@ -52,18 +52,22 @@ export const BrandLogos: React.FC = () => {
     scrollRef.current.scrollBy({ left: step * factor, behavior: 'smooth' });
   };
 
+  const [failedLogos, setFailedLogos] = useState<Record<string, boolean>>({});
+
   const handleBrandClick = (brandName: string) => {
     navigateTo(`/shop?brand=${encodeURIComponent(brandName)}`);
   };
 
   const renderBrandInsignia = (brand: BrandItem) => {
-    if (brand.logoUrl) {
+    if (brand.logoUrl && !failedLogos[brand.id]) {
       return (
         <img
           src={brand.logoUrl}
           alt={brand.name}
-          className="w-full h-full object-contain rounded-full"
+          referrerPolicy="no-referrer"
+          className="w-full h-full object-contain rounded-full transition-transform duration-300"
           loading="lazy"
+          onError={() => setFailedLogos(prev => ({ ...prev, [brand.id]: true }))}
         />
       );
     }

@@ -416,6 +416,7 @@ export const AccountPage: React.FC = () => {
   const [brandToDelete, setBrandToDelete] = useState<BrandItem | null>(null);
   const [brandSearchQuery, setBrandSearchQuery] = useState('');
   const [brandStatusFilter, setBrandStatusFilter] = useState<'all' | 'active' | 'hidden'>('all');
+  const [failedBrandLogos, setFailedBrandLogos] = useState<Record<string, boolean>>({});
 
   // Inventory Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -1503,12 +1504,13 @@ export const AccountPage: React.FC = () => {
                           title={t('admin.brands.changeLogo', 'Click to edit brand or change logo')}
                         >
                           <div className="w-full h-full rounded-full bg-[#12100C] overflow-hidden flex items-center justify-center relative">
-                            {brand.logoUrl ? (
+                            {brand.logoUrl && !failedBrandLogos[brand.id] ? (
                               <img
                                 src={brand.logoUrl}
                                 alt={brand.name}
                                 referrerPolicy="no-referrer"
-                                className="w-full h-full object-cover rounded-full"
+                                className="w-full h-full object-contain rounded-full p-1"
+                                onError={() => setFailedBrandLogos(prev => ({ ...prev, [brand.id]: true }))}
                               />
                             ) : (
                               <div className="text-[#E3C27A] w-12 h-12 flex items-center justify-center">

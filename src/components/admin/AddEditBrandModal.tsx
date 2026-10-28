@@ -67,11 +67,20 @@ export const AddEditBrandModal: React.FC<AddEditBrandModalProps> = ({
     setUploadError(null);
     setIsUploading(true);
 
+    // Immediate visual preview while optimizing & uploading
+    const tempPreview = URL.createObjectURL(file);
+    setLogoUrl(tempPreview);
+
     const { url, error } = await brandService.uploadBrandLogo(file);
     setIsUploading(false);
 
     if (error || !url) {
       setUploadError(error?.message || 'Failed to upload logo.');
+      if (brandToEdit?.logoUrl) {
+        setLogoUrl(brandToEdit.logoUrl);
+      } else {
+        setLogoUrl('');
+      }
     } else {
       setLogoUrl(url);
     }
@@ -79,7 +88,7 @@ export const AddEditBrandModal: React.FC<AddEditBrandModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!name.trim() || isUploading) return;
 
     onSave({
       name: name.trim(),
@@ -131,6 +140,7 @@ export const AddEditBrandModal: React.FC<AddEditBrandModalProps> = ({
                   <img
                     src={logoUrl}
                     alt={name || 'Brand Logo'}
+                    referrerPolicy="no-referrer"
                     className="w-full h-full object-contain rounded-full"
                     onError={() => setUploadError('Invalid image URL or failed to load image.')}
                   />
@@ -321,17 +331,33 @@ export const AddEditBrandModal: React.FC<AddEditBrandModalProps> = ({
                     {isUploading ? (
                       <div className="flex flex-col items-center justify-center py-2 text-[#C9A45C]">
                         <Loader2 className="w-6 h-6 animate-spin mb-1" />
-                        <span className="text-xs font-semibold">{t('admin.brands.uploading', 'Uploading logo to storage...')}</span>
+                        <span className="text-xs font-semibold">{t('admin.brands.uploading', 'Optimizing and preparing logo...')}</span>
                       </div>
                     ) : (
                       <div className="flex flex-col items-center justify-center py-2 text-[#A7A29A] hover:text-[#F5F2EA]">
                         <Upload className="w-6 h-6 text-[#C9A45C] mb-1" />
                         <span className="text-xs font-semibold text-[#F5F2EA]">{t('admin.brands.clickUpload', 'Click to choose brand logo image')}</span>
-                        <span className="text-[10px] text-[#A7A29A]">PNG with transparent background, WebP, SVG, or JPG (up to 5MB)</span>
+                        <span className="text-[10px] text-[#A7A29A]">PNG, WebP, SVG, or JPG (auto-optimized for retina display)</span>
                       </div>
                     )}
                   </label>
                 </div>
+
+                {logoUrl && (
+                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#070707] border border-[#C9A45C]/30 text-xs">
+                    <div className="flex items-center gap-2">
+                      <img src={logoUrl} alt="Logo" referrerPolicy="no-referrer" className="w-7 h-7 rounded-full object-contain bg-[#12100C] p-0.5 border border-[#C9A45C]/40" />
+                      <span className="text-[#E3C27A] font-medium text-[11px]">✓ {t('admin.brands.customLogoReady', 'Custom logo ready to save')}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setLogoUrl('')}
+                      className="text-[10px] text-red-400 hover:text-red-300 font-semibold cursor-pointer"
+                    >
+                      {t('common.remove', 'Remove')}
+                    </button>
+                  </div>
+                )}
 
                 {uploadError && (
                   <p className="text-xs text-red-400">{uploadError}</p>
@@ -349,8 +375,11 @@ export const AddEditBrandModal: React.FC<AddEditBrandModalProps> = ({
                   <LinkIcon className="w-4 h-4 text-[#C9A45C] shrink-0" />
                   <input
                     type="url"
-                    value={logoUrl}
-                    onChange={e => setLogoUrl(e.target.value)}
+                    value={logoUrl.startsWith('data:') ? '' : logoUrl}
+                    onChange={e => {
+                      setUploadError(null);
+                      setLogoUrl(e.target.value);
+                    }}
                     placeholder="https://example.com/brand-logo.png"
                     className="w-full px-3 py-2 bg-[#070707] border border-white/10 rounded-lg text-xs text-[#F5F2EA] focus:outline-none focus:border-[#C9A45C]"
                   />
@@ -384,9 +413,11 @@ export const AddEditBrandModal: React.FC<AddEditBrandModalProps> = ({
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-full bg-[#C9A45C] hover:bg-[#E3C27A] text-[#070707] text-xs font-bold uppercase tracking-wider transition-colors shadow-lg shadow-[#C9A45C]/20 cursor-pointer"
+              disabled={isUploading}
+              className="px-6 py-2.5 rounded-full bg-[#C9A45C] hover:bg-[#E3C27A] disabled:opacity-50 text-[#070707] text-xs font-bold uppercase tracking-wider transition-colors shadow-lg shadow-[#C9A45C]/20 cursor-pointer flex items-center gap-1.5"
             >
-              {isEditing ? t('common.saveChanges', 'Save Changes') : t('admin.brands.createBtn', 'Add Brand')}
+              {isUploading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              <span>{isEditing ? t('common.saveChanges', 'Save Changes') : t('admin.brands.createBtn', 'Add Brand')}</span>
             </button>
           </div>
 
