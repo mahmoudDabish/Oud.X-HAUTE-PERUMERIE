@@ -924,6 +924,8 @@
   },
   "products": {
     "outOfStock": "Out of Stock",
-    "noReviewsYet": "No reviews yet."
+    "noReviewsYet": "No reviews yet.",
+    "quickAdd": "Quick Add",
+    "quickView": "Quick View"
   }
 }

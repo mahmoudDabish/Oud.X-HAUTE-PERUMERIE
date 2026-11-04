@@ -924,6 +924,8 @@
   },
   "products": {
     "outOfStock": "نفد من المخزون",
-    "noReviewsYet": "لا توجد تقييمات حتى الآن"
+    "noReviewsYet": "لا توجد تقييمات حتى الآن",
+    "quickAdd": "إضافة سريعة",
+    "quickView": "نظرة سريعة"
   }
 }

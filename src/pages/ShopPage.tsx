@@ -168,13 +168,30 @@ export const ShopPage: React.FC = () => {
       // Brand / Atelier filter
       if (filters.brand.length > 0) {
         const matchesBrand = filters.brand.some(b => {
+          if (!product.brand) return false;
           const target = b.trim().toLowerCase();
-          return (
-            (product.brand && product.brand.toLowerCase().includes(target)) ||
-            (product.category && product.category.toLowerCase().includes(target)) ||
-            (product.name && product.name.toLowerCase().includes(target)) ||
-            (product.description && product.description.toLowerCase().includes(target))
-          );
+          const prodBrand = product.brand.trim().toLowerCase();
+
+          if (prodBrand === target) return true;
+
+          const targetClean = target.replace(/[^a-z0-9]/g, '');
+          const prodBrandClean = prodBrand.replace(/[^a-z0-9]/g, '');
+          if (targetClean === prodBrandClean) return true;
+
+          // Special case for house brand variations (OUD.X / OUD_X PRIVE / OUD.X Atelier)
+          if (targetClean.startsWith('oudx') && prodBrandClean.startsWith('oudx')) {
+            return true;
+          }
+
+          // Handle brand name suffixes like "Perfumes", "Parfums" (e.g. Afnan vs Afnan Perfumes)
+          if (
+            (targetClean.length >= 4 && prodBrandClean.startsWith(targetClean)) ||
+            (prodBrandClean.length >= 4 && targetClean.startsWith(prodBrandClean))
+          ) {
+            return true;
+          }
+
+          return false;
         });
         if (!matchesBrand) return false;
       }

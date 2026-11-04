@@ -157,7 +157,7 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
             <button
               onClick={handleQuickView}
               className="p-2 rounded-full bg-[#070707]/75 text-[#A7A29A] hover:text-[#F5F2EA] hover:bg-[#070707] border border-[#C9A45C]/20 backdrop-blur-md transition-all duration-200 opacity-0 group-hover:opacity-100 hidden sm:flex items-center justify-center"
-              aria-label={t('products.quickView')}
+              aria-label={t('products.quickView', 'Quick View')}
             >
               <Eye className="w-3.5 h-3.5" />
             </button>
@@ -175,7 +175,7 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
             leftIcon={product.stock > 0 ? <ShoppingBag className="w-3.5 h-3.5" /> : undefined}
             className="shadow-xl shadow-black/80 text-[10px] tracking-[2px] font-bold"
           >
-            {product.stock <= 0 ? t('products.outOfStock') : t('products.quickAdd')}
+            {product.stock <= 0 ? t('products.outOfStock', 'Out of Stock') : t('products.quickAdd', 'Quick Add')}
           </Button>
         </div>
       </div>
